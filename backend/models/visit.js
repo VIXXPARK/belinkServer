@@ -15,6 +15,10 @@ module.exports = (sequelize,DataTypes)=>{
                 model:'users',
                 key:'userId'
             }
+        },
+        infect:{
+            type:DataTypes.BOOLEAN,
+            defautlValue:false
         }
     },{
         timestamps:true
