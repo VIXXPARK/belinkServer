@@ -29,6 +29,7 @@ exports.register = (req,res)=>{
 exports.getUser = (req,res,next)=>{
     model.User.findOne({where:{phNum:req.body.phNum}})
     .then((data)=>{
+        console.log(data)
         if((data==null || data==undefined)==false){
             res.json({
                 success:true,
@@ -67,4 +68,30 @@ exports.makeMember = (req,res,next)=>{
             message:err
         })
     })
+}
+
+exports.makeFriend = (req,res,next)=>{
+    model.Friend.bulkCreate(req.body,{returning:true})
+    .then(result=>{
+        res.json({
+            success:true,
+            data:result
+        })
+    })
+}
+
+exports.getMyFriend = (req,res,next)=>{
+    model.Friend.findAll({
+        attributes:['hidden','updatedAt'],
+        where:{device:req.body.id},
+        include:[{model:model.User,as:'deviceUser',attributes:['username']},
+                {model:model.User,as:'myFriendUser',attributes:['username']}],
+    })
+    .then(result=>{
+        res.json({
+            success:true,
+            data:result
+        })
+    })
+    .catch(err=>res.status(404).send(err))
 }
