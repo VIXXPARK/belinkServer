@@ -49,16 +49,13 @@ db.Group=require('./group')(sequelize,Sequelize);
 db.Friend=require('./friend')(sequelize,Sequelize);
 db.Store=require('./store')(sequelize,Sequelize);
 db.Visit=require('./visit')(sequelize,Sequelize);
+db.Member=require('./member')(sequelize,Sequelize);
 
-  
-
-db.User.hasMany(db.Group)
 db.User.hasMany(db.Friend)
 db.User.hasMany(db.Visit)
 
 db.Store.hasMany(db.Visit)
 
-db.Group.belongsTo(db.User)
 db.Friend.belongsTo(db.User)
 db.Visit.belongsTo(db.User)
 

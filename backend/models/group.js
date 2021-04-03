@@ -3,7 +3,7 @@ const User = require("./user")
 
 module.exports = (sequelize,DataTypes)=>{
     return sequelize.define('group',{
-        groupId:{
+        id:{
             type:DataTypes.UUID,
             allowNull:false,
             unique:true,

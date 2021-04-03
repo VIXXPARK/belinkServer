@@ -32,9 +32,39 @@ exports.getUser = (req,res,next)=>{
         if((data==null || data==undefined)==false){
             res.json({
                 success:true,
-                userlist:data
+                data:data
             })
         }
     })
    
+}
+
+exports.makeGroup = (req,res,next)=>{
+    model.Group.create({
+        groupName:req.body.groupName,
+        createdAt:new Date().getTime(),
+        updatedAt:new Date().getTime()
+    })
+    .then(result=>{
+        res.json({
+            success:true,
+            data:result
+        })
+    })
+}
+
+exports.makeMember = (req,res,next)=>{
+    model.Member.bulkCreate(req.body,{returning:true})
+    .then(result=>{
+        res.json({
+            success:true,
+            data:result
+        })
+    })
+    .catch(err=>{
+        res.status(404).json({
+            success:false,
+            message:err
+        })
+    })
 }
