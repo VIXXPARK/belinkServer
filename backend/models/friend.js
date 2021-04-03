@@ -6,7 +6,7 @@ module.exports = (sequelize,DataTypes)=>{
             type:DataTypes.UUID,
             references:{
                 model:'users',
-                key:'userId'
+                key:'id'
             }
         },
         hidden:{
