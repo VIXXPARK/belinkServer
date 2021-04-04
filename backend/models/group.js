@@ -1,23 +1,19 @@
+const { Sequelize } = require(".");
 const User = require("./user")
 
-module.exports = (sequelize,DataTpyes)=>{
+module.exports = (sequelize,DataTypes)=>{
     return sequelize.define('group',{
-        groupId:{
-            type:DataTpyes.UUID,
+        id:{
+            type:DataTypes.UUID,
             allowNull:false,
             unique:true,
-            primaryKey:true
+            primaryKey:true,
+            defaultValue:DataTypes.UUIDV4
+
         },
         groupName:{
-            type:DataTpyes.STRING,
+            type:DataTypes.STRING,
             allowNull:true
-        },
-        userId:{
-            type:DataTpyes.UUID,
-            references:{
-                model:'users',
-                key:'userId'
-            }
         }
     },{
         timestamps:true
