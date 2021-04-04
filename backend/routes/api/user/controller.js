@@ -113,7 +113,6 @@ exports.makeFriend = (req,res,next)=>{
 }
 
 exports.getMyFriend = (req,res,next)=>{
-    console.log(req.body.id)
     model.Friend.findAll({
         attributes:['hidden','updatedAt'],
         where:{device:req.body.id},
@@ -126,5 +125,30 @@ exports.getMyFriend = (req,res,next)=>{
         })
     })
     .catch(err=>res.status(404).send(err))
+}
+
+exports.editUser = (req,res,next)=>{
+    model.User.update({
+                phNum:req.body.phNum,
+                username:req.body.username
+                },{
+                where:{id:req.body.id}
+            })
+            .then(result=>{
+                res.json({
+                    success:result
+                })
+            })
+}
+
+exports.deleteUser = (req,res,next)=>{
+    model.User.destroy({
+        where:{id:req.body.id}
+    })
+    .then(result=>{
+        res.json({
+            success:result
+        })
+    })
 }
 
