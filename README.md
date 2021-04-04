@@ -14,6 +14,7 @@ api
     형식으로 작성하며 controller 부분에는
     exports.camelName= (req,res,next)=>{}
     식으로 작성한다. 그리고 controller부분에는 카멜형식으로 네이밍한다.
+    
     index부분에는 router를 생성하고 해당 controller에 맞는 url과 method를 선정하고 
     router.post('/get-user',controller.getUser)식으로 작성한다.
 ```
