@@ -1,4 +1,7 @@
 const model = require('../../../models')
+const jwt = require('jsonwebtoken');
+const key = require('../../../key')
+
 
 exports.register = (req,res)=>{
     model.User.findOne({where:{phNum:req.body.phNum}})
@@ -29,7 +32,6 @@ exports.register = (req,res)=>{
 exports.getUser = (req,res,next)=>{
     model.User.findOne({where:{phNum:req.body.phNum}})
     .then((data)=>{
-        console.log(data)
         if((data==null || data==undefined)==false){
             res.json({
                 success:true,
@@ -39,6 +41,36 @@ exports.getUser = (req,res,next)=>{
     })
    
 }
+
+
+exports.login = (req,res,next)=>{
+    model.User.findOne({where:{phNum:req.body.phNum}})
+    .then((data)=>{
+        if(!data){
+            return res.status(404).send({message:"User not found"})
+        }
+        var token = jwt.sign(
+            {
+                username:data.username,
+                phNum:data.phNum,
+                active:data.active
+            },key.secretKey,{
+                expiresIn:'30d',
+                issuer:'belink',
+                subject:'userInfo'
+            }
+        );
+        res.json({
+            success:true,
+            accessToken:token
+        })
+
+    })
+    .catch(err=>{
+        res.status(500).send({message:err.message})
+    })
+}
+
 
 exports.makeGroup = (req,res,next)=>{
     model.Group.create({
@@ -81,17 +113,18 @@ exports.makeFriend = (req,res,next)=>{
 }
 
 exports.getMyFriend = (req,res,next)=>{
+    console.log(req.body.id)
     model.Friend.findAll({
         attributes:['hidden','updatedAt'],
         where:{device:req.body.id},
-        include:[{model:model.User,as:'deviceUser',attributes:['username']},
-                {model:model.User,as:'myFriendUser',attributes:['username']}],
+        include:[{model:model.User,as:'deviceUser',attributes:['id','username','phNum']},
+                {model:model.User,as:'myFriendUser',attributes:['id','username','phNum']}],
     })
     .then(result=>{
         res.json({
-            success:true,
             data:result
         })
     })
     .catch(err=>res.status(404).send(err))
 }
+
