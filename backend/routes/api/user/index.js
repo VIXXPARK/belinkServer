@@ -8,6 +8,6 @@ router.post('/edit-group',controller.makeGroup)
 router.post('/make-member',controller.makeMember)
 router.post('/edit-friend',controller.makeFriend)
 router.post('/get-my-friend',controller.getMyFriend)
-router.post('/edit-info',controller.editUser)
+router.put('/edit-info',controller.editUser)
 router.delete('/edit-info',controller.deleteUser)
 module.exports = router
