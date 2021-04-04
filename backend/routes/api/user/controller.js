@@ -1,6 +1,6 @@
-const model = require('../../../models')
+const model = require('../../../models');
 const jwt = require('jsonwebtoken');
-const key = require('../../../key')
+const key = require('../../../key');
 
 
 exports.register = (req,res)=>{

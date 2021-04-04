@@ -51,6 +51,7 @@ db.Friend=require('./friend')(sequelize,Sequelize);
 db.Store=require('./store')(sequelize,Sequelize);
 db.Visit=require('./visit')(sequelize,Sequelize);
 db.Member=require('./member')(sequelize,Sequelize);
+db.EntryNotice=require('./entryNotice')(sequelize,Sequelize);
 
 db.User.hasMany(db.Visit)
 db.Store.hasMany(db.Visit)
@@ -60,7 +61,7 @@ db.User.hasMany(db.Friend,{
     foreignKey:{
         name:'device'
     }
-    })
+})
 db.User.hasMany(db.Friend,{
     as:'myFriendUser',
     foreignKey:{
@@ -83,6 +84,17 @@ db.Friend.belongsTo(db.User,{
         allowNull:false
     }
 })
+
+db.EntryNotice.belongsTo(db.User,{
+    foreignKey : {
+        name : 'userId'
+    }
+});
+db.EntryNotice.belongsTo(db.Store,{
+    foreignKey : {
+        name : 'storeId'
+    }
+});
 
 
 
