@@ -1,9 +1,9 @@
 module.exports = (sequelize,DataTypes)=>{
     return sequelize.define("member",{
-        groupId:{
+        teamId:{
             type:DataTypes.UUID,
             references:{
-                model:'groups',
+                model:'teams',
                 key:'id'
             }
         },

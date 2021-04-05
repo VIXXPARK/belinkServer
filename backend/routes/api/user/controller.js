@@ -72,9 +72,9 @@ exports.login = (req,res,next)=>{
 }
 
 
-exports.makeGroup = (req,res,next)=>{
-    model.Group.create({
-        groupName:req.body.groupName,
+exports.makeTeam = (req,res,next)=>{
+    model.Team.create({
+        teamName:req.body.teamName,
         createdAt:new Date().getTime(),
         updatedAt:new Date().getTime()
     })
@@ -115,7 +115,7 @@ exports.makeFriend = (req,res,next)=>{
 exports.getMyFriend = (req,res,next)=>{
     model.Friend.findAll({
         attributes:['hidden','updatedAt'],
-        where:{device:req.body.id},
+        where:{device:req.body.id,hidden:req.body.hidden},
         include:[{model:model.User,as:'deviceUser',attributes:['id','username','phNum']},
                 {model:model.User,as:'myFriendUser',attributes:['id','username','phNum']}],
     })
@@ -152,3 +152,13 @@ exports.deleteUser = (req,res,next)=>{
     })
 }
 
+exports.deleteMember = (req,res,next)=>{
+    model.Member.destroy({
+        where:{userId:req.body.userId,teamId:req.body.teamId}
+    })
+    .then(result=>{
+        res.json({
+            success:result
+        })
+    })
+}

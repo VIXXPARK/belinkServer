@@ -46,7 +46,7 @@ db.Sequelize = Sequelize;
 
 
 db.User=require('./user')(sequelize,Sequelize);
-db.Group=require('./group')(sequelize,Sequelize);
+db.Team=require('./team')(sequelize,Sequelize);
 db.Friend=require('./friend')(sequelize,Sequelize);
 db.Store=require('./store')(sequelize,Sequelize);
 db.Visit=require('./visit')(sequelize,Sequelize);

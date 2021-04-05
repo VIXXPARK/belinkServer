@@ -2,7 +2,7 @@ const { Sequelize } = require(".");
 const User = require("./user")
 
 module.exports = (sequelize,DataTypes)=>{
-    return sequelize.define('group',{
+    return sequelize.define('team',{
         id:{
             type:DataTypes.UUID,
             allowNull:false,
@@ -11,7 +11,7 @@ module.exports = (sequelize,DataTypes)=>{
             defaultValue:DataTypes.UUIDV4
 
         },
-        groupName:{
+        teamName:{
             type:DataTypes.STRING,
             allowNull:true
         }
