@@ -72,9 +72,9 @@ exports.login = (req,res,next)=>{
 }
 
 
-exports.makeGroup = (req,res,next)=>{
-    model.Group.create({
-        groupName:req.body.groupName,
+exports.makeTeam = (req,res,next)=>{
+    model.Team.create({
+        teamName:req.body.teamName,
         createdAt:new Date().getTime(),
         updatedAt:new Date().getTime()
     })
@@ -85,6 +85,21 @@ exports.makeGroup = (req,res,next)=>{
         })
     })
 }
+
+exports.editTeam = (req,res,next)=>{
+    model.Team.update({
+        teamName:req.body.teamName,
+        where:{id:req.body.id}
+    })
+    .then(result=>{
+        res.json({
+            success:result
+        })
+    })
+}
+
+
+
 
 exports.makeMember = (req,res,next)=>{
     model.Member.bulkCreate(req.body,{returning:true})
@@ -115,7 +130,7 @@ exports.makeFriend = (req,res,next)=>{
 exports.getMyFriend = (req,res,next)=>{
     model.Friend.findAll({
         attributes:['hidden','updatedAt'],
-        where:{device:req.body.id},
+        where:{device:req.body.id,hidden:req.body.hidden},
         include:[{model:model.User,as:'deviceUser',attributes:['id','username','phNum']},
                 {model:model.User,as:'myFriendUser',attributes:['id','username','phNum']}],
     })
@@ -152,3 +167,28 @@ exports.deleteUser = (req,res,next)=>{
     })
 }
 
+exports.deleteMember = (req,res,next)=>{
+    model.Member.destroy({
+        where:{team_member:req.body.userId,team_room:req.body.teamId}
+    })
+    .then(result=>{
+        res.json({
+            success:result
+        })
+    })
+}
+
+exports.getMember = (req,res,next)=>{
+    model.Member.findAll({
+        attributes:['updatedAt'],
+        where:{team_room:req.body.team_room},
+        include:[{model:model.User,as:'teamMember',attributes:['id','username']},
+                {model:model.Team,as:'teamRoom',attributes:['id','teamName']}],
+        
+    })
+    .then(result=>{
+        res.json({
+            data:result
+        })
+    })
+}

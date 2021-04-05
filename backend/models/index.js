@@ -46,7 +46,7 @@ db.Sequelize = Sequelize;
 
 
 db.User=require('./user')(sequelize,Sequelize);
-db.Group=require('./group')(sequelize,Sequelize);
+db.Team=require('./team')(sequelize,Sequelize);
 db.Friend=require('./friend')(sequelize,Sequelize);
 db.Store=require('./store')(sequelize,Sequelize);
 db.Visit=require('./visit')(sequelize,Sequelize);
@@ -54,6 +54,39 @@ db.Member=require('./member')(sequelize,Sequelize);
 
 db.User.hasMany(db.Visit)
 db.Store.hasMany(db.Visit)
+
+
+db.User.hasMany(db.Member,{
+    as:'teamMember',
+    foreignKey:{
+        name:'team_member'
+    }
+})
+
+db.Team.hasMany(db.Member,{
+    as:'teamRoom',
+    foreignKey:{
+        name:'team_room'
+    }
+})
+
+
+db.Member.belongsTo(db.User,{
+    as:'teamMember',
+    foreignKey:{
+        name:'team_member',
+        allowNull:false
+    }
+})
+
+db.Member.belongsTo(db.Team,{
+    as:'teamRoom',
+    foreignKey:{
+        name:'team_room',
+        allowNull:false
+    }
+})
+
 
 db.User.hasMany(db.Friend,{
     as:'deviceUser',
