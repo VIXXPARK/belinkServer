@@ -22,6 +22,10 @@ module.exports = (sequelize,DataTypes)=>{
         admin:{
             type:DataTypes.BOOLEAN,
             defaultValue:false
+        },
+        infect:{
+            type:DataTypes.BOOLEAN,
+            defaultValue:false
         }
 
     },{
