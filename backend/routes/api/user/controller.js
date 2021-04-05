@@ -86,6 +86,21 @@ exports.makeTeam = (req,res,next)=>{
     })
 }
 
+exports.editTeam = (req,res,next)=>{
+    model.Team.update({
+        teamName:req.body.teamName,
+        where:{id:req.body.id}
+    })
+    .then(result=>{
+        res.json({
+            success:result
+        })
+    })
+}
+
+
+
+
 exports.makeMember = (req,res,next)=>{
     model.Member.bulkCreate(req.body,{returning:true})
     .then(result=>{
@@ -154,11 +169,26 @@ exports.deleteUser = (req,res,next)=>{
 
 exports.deleteMember = (req,res,next)=>{
     model.Member.destroy({
-        where:{userId:req.body.userId,teamId:req.body.teamId}
+        where:{team_member:req.body.userId,team_room:req.body.teamId}
     })
     .then(result=>{
         res.json({
             success:result
+        })
+    })
+}
+
+exports.getMember = (req,res,next)=>{
+    model.Member.findAll({
+        attributes:['updatedAt'],
+        where:{team_room:req.body.team_room},
+        include:[{model:model.User,as:'teamMember',attributes:['id','username']},
+                {model:model.Team,as:'teamRoom',attributes:['id','teamName']}],
+        
+    })
+    .then(result=>{
+        res.json({
+            data:result
         })
     })
 }
