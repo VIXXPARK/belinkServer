@@ -2,7 +2,6 @@ const model = require('../../../models')
 const jwt = require('jsonwebtoken');
 const key = require('../../../key')
 
-
 exports.register = (req,res)=>{
     model.User.findOne({where:{phNum:req.body.phNum}})
     .then((data)=>{
@@ -185,6 +184,19 @@ exports.getMember = (req,res,next)=>{
         include:[{model:model.User,as:'teamMember',attributes:['id','username']},
                 {model:model.Team,as:'teamRoom',attributes:['id','teamName']}],
         
+    })
+    .then(result=>{
+        res.json({
+            data:result
+        })
+    })
+}
+
+exports.getMyTeam = (req,res,next)=>{
+    model.Member.findAll({
+        attributes:['updatedAt'],
+        where:{team_member:req.body.team_member},
+        include:[{model:model.Team,as:'teamRoom',attributes:['id','teamName']}],
     })
     .then(result=>{
         res.json({

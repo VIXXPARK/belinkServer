@@ -70,7 +70,6 @@ db.Team.hasMany(db.Member,{
     }
 })
 
-
 db.Member.belongsTo(db.User,{
     as:'teamMember',
     foreignKey:{
@@ -116,8 +115,6 @@ db.Friend.belongsTo(db.User,{
         allowNull:false
     }
 })
-
-
 
 db.Visit.belongsTo(db.User)
 
