@@ -80,7 +80,7 @@ exports.makeTeam = (req,res,next)=>{
     .then(result=>{
         res.json({
             success:true,
-            data:result
+            id:result.id
         })
     })
 }
@@ -128,10 +128,10 @@ exports.makeFriend = (req,res,next)=>{
 
 exports.getMyFriend = (req,res,next)=>{
     model.Friend.findAll({
-        attributes:['hidden','updatedAt'],
+        attributes:[],
         where:{device:req.body.id,hidden:req.body.hidden},
-        include:[{model:model.User,as:'deviceUser',attributes:['id','username','phNum']},
-                {model:model.User,as:'myFriendUser',attributes:['id','username','phNum']}],
+        include:[
+                {model:model.User,as:'myFriendUser',attributes:["id","phNum","username"]}]
     })
     .then(result=>{
         res.json({
@@ -157,7 +157,7 @@ exports.editUser = (req,res,next)=>{
 
 exports.deleteUser = (req,res,next)=>{
     model.User.destroy({
-        where:{id:req.body.id}
+        where:{id:req.params.id}
     })
     .then(result=>{
         res.json({

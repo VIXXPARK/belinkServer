@@ -10,7 +10,7 @@ router.post('/make-member',controller.makeMember)
 router.post('/edit-friend',controller.makeFriend)
 router.post('/get-my-friend',controller.getMyFriend)
 router.put('/edit-info',controller.editUser)
-router.delete('/edit-info',controller.deleteUser)
+router.get('/edit-info/:id',controller.deleteUser)
 router.delete('/edit-memeber',controller.deleteMember)
 router.post('/get-member',controller.getMember)
 module.exports = router
