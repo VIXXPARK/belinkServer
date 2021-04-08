@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= pageTitle %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css'>
+  </head>
+  <body>
+    <div id="map" style="width:100%; height:750px;"></div>
+
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=89b4d30725bca9f863cc0743d4b2eebb"></script>
+    <script>
+    const mapContainer = document.getElementById('map'),
+        mapOption = {
+            center: new kakao.maps.LatLng(33.450701, 126.570667),
+            level: 3
+        };
+
+    //지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
+    const map = new kakao.maps.Map(mapContainer, mapOption);
+    </script>
+    
+    <form action="/show-places" method="POST">
+      <label for="places">Choose a place:</label>
+      <br>
+      <select name="places" id="places">
+        <option value = "restaurant">Restaurant</option>
+        <option value = "cafe">Cafe</option>
+        <option value = "leisure">Leisure</option>
+      </select>
+      <br>
+      <input type="submit" value="Search">
+    </form>
+    <hr>
+    <table>
+      <% for(var i = 0; i < places.length; i++){ %>
+        <tr>
+          <td style="border: 1px solid black"><input type="hidden" name="entry_Place" id="<%= i %>" value = "Test" ><%= places[i] %></td>
+          <!-- <td style="border: 1px solid black"><input type="hidden" name="entry_Place" id="<%= i %>" value = "Test" ><%= storeId[i] %></td> -->
+          <td><a href="/prediction/send-confirmation/<%= storeId[i] %>"><input type="button" value="수락"></a><td>
+        </tr>
+      <% } %>
+    </table>
+  </body>
+</html>

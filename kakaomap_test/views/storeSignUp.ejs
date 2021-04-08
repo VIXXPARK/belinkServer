@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= pageTitle %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css'>
+  </head>
+  <body>
+    <div id="map" style="width:100%; height:750px;"></div>
+
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=89b4d30725bca9f863cc0743d4b2eebb"></script>
+    <script>
+    const mapContainer = document.getElementById('map'),
+        mapOption = {
+            center: new kakao.maps.LatLng(33.450701, 126.570667),
+            level: 3
+        };
+
+    //지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
+    const map = new kakao.maps.Map(mapContainer, mapOption);
+    </script>
+    
+    <form action="/store/signup" method="POST">
+      매장 이름: <input type="text" name="name">
+      <br>
+      매장 위치: <input type="text" name="location">
+      <br>
+      <br>
+      <label for="type">업종 선택:</label>
+      <br>
+      <select name="type" id="type">
+        <option value = "restaurant">식당</option>
+        <option value = "cafe">카페</option>
+        <option value = "hotel">숙박</option>
+        <option value = "hospital">병원</option>
+        <option value = "pharmacy">약국</option>
+      </select>
+      <br>
+      <input type="submit" value="Search">
+    </form>
+  </body>
+</html>
