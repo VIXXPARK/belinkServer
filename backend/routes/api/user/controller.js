@@ -204,3 +204,15 @@ exports.getMyTeam = (req,res,next)=>{
         })
     })
 }
+
+exports.infectUser = (req,res,next)=>{
+    model.User.update({
+        infect:req.body.infect,
+        },{where:{id:req.body.id}
+    })
+    .then(result=>{
+        res.json({
+            success:true
+        })
+    })
+}
