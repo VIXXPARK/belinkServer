@@ -13,4 +13,5 @@ router.put('/edit-info',controller.editUser)
 router.get('/edit-info/:id',controller.deleteUser)
 router.delete('/edit-memeber',controller.deleteMember)
 router.post('/get-member',controller.getMember)
+router.put('/infect-user',controller.infectUser)
 module.exports = router

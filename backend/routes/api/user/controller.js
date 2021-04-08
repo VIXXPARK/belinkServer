@@ -5,12 +5,19 @@ const key = require('../../../key')
 exports.register = (req,res)=>{
     model.User.findOne({where:{phNum:req.body.phNum}})
     .then((data)=>{
+        var phNum = req.body.phNum
         if((data==null || data==undefined)==false){
             res.json({
                 success:false,
-                msg:"already exists"
+                data:"already exists"
             })
-        }else{
+        }else if(phNum.length!=11){
+            res.json({
+                success:false,
+                data:"휴대전화 번호 길이가 다릅니다."
+            })
+        }
+        else{
             model.User.create({
                 phNum:req.body.phNum,
                 username:req.body.username
@@ -78,21 +85,31 @@ exports.makeTeam = (req,res,next)=>{
         updatedAt:new Date().getTime()
     })
     .then(result=>{
+        if(req.body.teamName==null){
+            res.json({
+                success:false
+            })
+        }
         res.json({
             success:true,
             id:result.id
         })
     })
+    .catch(err=>res.status(404).json({
+        success:false,
+        msg:err
+    }))
 }
 
 exports.editTeam = (req,res,next)=>{
     model.Team.update({
-        teamName:req.body.teamName,
-        where:{id:req.body.id}
+        teamName:req.body.teamName},
+        {where:{id:req.body.id}
     })
     .then(result=>{
+        var bool = result[0]==1
         res.json({
-            success:result
+            success:bool
         })
     })
 }
@@ -119,9 +136,24 @@ exports.makeMember = (req,res,next)=>{
 exports.makeFriend = (req,res,next)=>{
     model.Friend.bulkCreate(req.body,{returning:true})
     .then(result=>{
+        
+        return model.Friend.findAll()
+    })
+    .then(response =>{
+        if(response.device==null || response.myFriend==null){
+            res.json({
+                success:false,
+            })
+        }
         res.json({
             success:true,
-            data:result
+            data:response
+        })
+    })
+    .catch(err=>{
+        res.status(404).json({
+            success:false,
+            message:err
         })
     })
 }
@@ -134,6 +166,11 @@ exports.getMyFriend = (req,res,next)=>{
                 {model:model.User,as:'myFriendUser',attributes:["id","phNum","username"]}]
     })
     .then(result=>{
+        if(result.length==0){
+            res.status(404).json({
+                msg:"err"
+            })
+        }
         res.json({
             data:result
         })
@@ -149,8 +186,9 @@ exports.editUser = (req,res,next)=>{
                 where:{id:req.body.id}
             })
             .then(result=>{
+                var bool = result[0]==1
                 res.json({
-                    success:result
+                    success:bool
                 })
             })
 }
@@ -160,8 +198,9 @@ exports.deleteUser = (req,res,next)=>{
         where:{id:req.params.id}
     })
     .then(result=>{
+        var bool = result[0]==1
         res.json({
-            success:result
+            success:bool
         })
     })
 }
@@ -171,8 +210,9 @@ exports.deleteMember = (req,res,next)=>{
         where:{team_member:req.body.userId,team_room:req.body.teamId}
     })
     .then(result=>{
+        var bool = result[0]==1
         res.json({
-            success:result
+            success:bool
         })
     })
 }
@@ -181,8 +221,8 @@ exports.getMember = (req,res,next)=>{
     model.Member.findAll({
         attributes:['updatedAt'],
         where:{team_room:req.body.team_room},
-        include:[{model:model.User,as:'teamMember',attributes:['id','username']},
-                {model:model.Team,as:'teamRoom',attributes:['id','teamName']}],
+        include:[{model:model.User,as:'teamMember',attributes:['id','username','phNum']},
+                {model:model.Team,as:'teamRoom',attributes:['id','teamName','phNum']}],
         
     })
     .then(result=>{
@@ -199,8 +239,26 @@ exports.getMyTeam = (req,res,next)=>{
         include:[{model:model.Team,as:'teamRoom',attributes:['id','teamName']}],
     })
     .then(result=>{
+        if(req.body.team_member == null){
+            res.status(404).json({
+                msg:"id가 없습니다."
+            })
+        }
         res.json({
             data:result
+        })
+    })
+}
+
+exports.infectUser = (req,res,next)=>{
+    model.User.update({
+        infect:req.body.infect,
+        },{where:{id:req.body.id}
+    })
+    .then(result=>{
+        var bool = result[0]==1
+        res.json({
+            success:bool
         })
     })
 }
