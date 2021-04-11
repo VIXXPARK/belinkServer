@@ -3,10 +3,11 @@ const { Sequelize } = require(".");
 module.exports = (sequelize,DataTypes)=>{
     return sequelize.define('store',{
         id:{
-            type:DataTypes.STRING,
+            type:DataTypes.UUID,
             primaryKey:true,
             allowNull:false,
             unique:true,
+            defaultValue:DataTypes.UUIDV4
         },
         storeName:{
             type:DataTypes.STRING,

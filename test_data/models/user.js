@@ -22,9 +22,13 @@ module.exports = (sequelize,DataTypes)=>{
         admin:{
             type:DataTypes.BOOLEAN,
             defaultValue:false
+        },
+        infect:{
+            type:DataTypes.TINYINT,
+            defaultValue:0
         }
 
     },{
-        timestamps:false,
+        timestamps:true,
     });
 };
