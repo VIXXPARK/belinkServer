@@ -1,6 +1,8 @@
 const model = require('../../../models')
 const jwt = require('jsonwebtoken');
-const key = require('../../../key')
+const key = require('../../../key');
+const { Sequelize } = require('../../../models');
+const Op = Sequelize.Op
 
 exports.register = (req,res)=>{
     model.User.findOne({where:{phNum:req.body.phNum}})
@@ -29,10 +31,7 @@ exports.register = (req,res)=>{
                 })
             })
         }
-        
     })
-    
-    
 }
 
 exports.getUser = (req,res,next)=>{
@@ -46,6 +45,24 @@ exports.getUser = (req,res,next)=>{
         }
     })
    
+}
+
+
+
+exports.contactUser = (req,res,next)=>{
+    console.log(req.body.phNum)
+
+    model.User.findAll({
+        attributes:["id","phNum","username"],
+        where:{
+            "phNum":req.body.phNum
+        }
+    })
+    .then(result=>{
+        res.json({
+            data:result
+        })
+    })
 }
 
 
@@ -136,15 +153,10 @@ exports.makeMember = (req,res,next)=>{
 exports.makeFriend = (req,res,next)=>{
     model.Friend.bulkCreate(req.body,{returning:true})
     .then(result=>{
-        
         return model.Friend.findAll()
     })
     .then(response =>{
-        if(response.device==null || response.myFriend==null){
-            res.json({
-                success:false,
-            })
-        }
+       
         res.json({
             success:true,
             data:response
@@ -222,8 +234,7 @@ exports.getMember = (req,res,next)=>{
         attributes:['updatedAt'],
         where:{team_room:req.body.team_room},
         include:[{model:model.User,as:'teamMember',attributes:['id','username','phNum']},
-                {model:model.Team,as:'teamRoom',attributes:['id','teamName','phNum']}],
-        
+                {model:model.Team,as:'teamRoom',attributes:['id','teamName']}],
     })
     .then(result=>{
         res.json({
