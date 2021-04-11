@@ -4,6 +4,7 @@ const controller = require('./controller')
 router.post('/signup',controller.register) //회원가입
 router.post('/get-user',controller.getUser) //유저정보 확인하기
 router.post('/contact-user',controller.contactUser)
+router.post('/id-contact-user',controller.idContactUser)
 router.post('/login',controller.login)      //jwt생성 및 로그인
 router.post('/edit-team',controller.makeTeam)//그룹방 만들기
 router.put('/edit-team',controller.editTeam) //그룹방 수정하기

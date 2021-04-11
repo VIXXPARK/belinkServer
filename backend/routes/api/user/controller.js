@@ -66,6 +66,23 @@ exports.contactUser = (req,res,next)=>{
 }
 
 
+exports.idContactUser = (req,res,next)=>{
+    console.log(req.body.phNum)
+
+    model.User.findAll({
+        attributes:["id","phNum","username"],
+        where:{
+            "id":req.body.id
+        }
+    })
+    .then(result=>{
+        res.json({
+            data:result
+        })
+    })
+}
+
+
 exports.login = (req,res,next)=>{
     model.User.findOne({where:{phNum:req.body.phNum}})
     .then((data)=>{
@@ -135,11 +152,11 @@ exports.editTeam = (req,res,next)=>{
 
 
 exports.makeMember = (req,res,next)=>{
+    console.log(req.body)
     model.Member.bulkCreate(req.body,{returning:true})
     .then(result=>{
         res.json({
-            success:true,
-            data:result
+            success:true
         })
     })
     .catch(err=>{
