@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+
+<h3>Make Team:</h3>
+<form action="/user/edit-team" method="post">
+    <table>
+        <% for(var i = 0; i < friendInfo.length; i++) { %>
+            <tr>
+                <td style="border:1px solid black"><%= friendInfo[i]["myFriendUser.username"] %></td><td><input type='checkbox' id='friend' name='friend' value='<%= friendInfo[i]["myFriendUser.id"] %>'></td>
+            </tr>
+        <% } %>
+    </table>
+    <input type="hidden" name = "myId" value="<%= myId %>">
+    <input type="submit" value="Make Team">
+</form>
+
+</body>
+</html>

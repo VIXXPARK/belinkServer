@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+
+<h3>Edit User: <%= username %></h3>
+<form action="/user/edit-info" method="post">
+    <table>
+        <tr>
+            <td>Phone Number: </td>
+            <td><input type="text" name="phNum" value="<%= phNum %>"></td>
+        </tr>
+        <tr>
+            <td>Username: </td>
+            <td><input type="text" name="username" value="<%= username %>"></td>
+        </tr>
+        <tr>
+            <input type="hidden" name="id" value="<%= id %>"></td>
+            <td><input type="submit" value="Edit User"></td>
+        </tr>
+    </table>
+</form>
+<form action="/user/edit-info/<%= id %>" method="get">
+    <td><input type="submit" value="DELETE User"></td>
+</form>
+<form action="/user/get-my-friend" method="post">
+    <td><input type="hidden" name="id" value="<%= id %>"></td>
+    <td><input type="submit" value="GET FRIENDS"></td>
+</form>
+<form action="/user/make-team-page" method="post">
+    <td><input type="hidden" name="id" value="<%= id %>"></td>
+    <td><input type="submit" value="MAKE TEAM"></td>
+</form>
+</body>
+</html>
