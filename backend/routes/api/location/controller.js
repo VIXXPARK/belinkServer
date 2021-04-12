@@ -23,7 +23,6 @@ exports.showPlace = (req, res) => {
 }
 exports.savePlace = (req, res) => {
     model.Visit.create({
-        infect: req.body.infect,
         userId: req.body.userId,
         storeId: req.body.storeId
     })

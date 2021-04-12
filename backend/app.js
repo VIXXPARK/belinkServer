@@ -5,8 +5,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 
-
-
 var {sequelize} = require('./models');
 
 var app = express();
@@ -23,6 +21,12 @@ sequelize.sync().then(()=>{
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+app.set('view engine', 'ejs'); // 렌더링 엔진 모드를 ejs로 설정
+app.set('views',  __dirname + '/views');    // ejs이 있는 폴더를 지정
+
+app.get('/', (req, res) => {
+    res.render('index');    // index.ejs을 사용자에게 전달
+})
 
 app.use(logger('dev'));
 app.use(express.json());

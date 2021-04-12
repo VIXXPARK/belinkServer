@@ -21,7 +21,7 @@ module.exports = (sequelize,DataTypes)=>{
             type:DataTypes.TINYINT,
             defaultValue:0
         },
-        comapnyNum:{
+        companyNum:{
             type:DataTypes.STRING,
         }
     },{
