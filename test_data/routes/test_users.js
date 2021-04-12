@@ -16,6 +16,6 @@ module.exports = function(){
     models.User.bulkCreate(testUsers
     , {returnung: true})
     .then((result) => {
-        console.log(result)
+        //console.log(result)
     })
 }
