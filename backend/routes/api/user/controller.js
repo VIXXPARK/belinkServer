@@ -248,7 +248,7 @@ exports.deleteMember = (req,res,next)=>{
 
 exports.getMember = (req,res,next)=>{
     model.Member.findAll({
-        attributes:['updatedAt'],
+        attributes:[],
         where:{team_room:req.body.team_room},
         include:[{model:model.User,as:'teamMember',attributes:['id','username','phNum']},
                 {model:model.Team,as:'teamRoom',attributes:['id','teamName']}],
