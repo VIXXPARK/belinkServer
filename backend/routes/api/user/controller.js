@@ -250,8 +250,7 @@ exports.getMember = (req,res,next)=>{
     model.Member.findAll({
         attributes:[],
         where:{team_room:req.body.team_room},
-        include:[{model:model.User,as:'teamMember',attributes:['id','username','phNum']},
-                {model:model.Team,as:'teamRoom',attributes:['id','teamName']}],
+        include:[{model:model.User,as:'teamMember',attributes:['id','username','phNum']}],
     })
     .then(result=>{
         res.json({
