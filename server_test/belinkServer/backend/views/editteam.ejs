@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+
+<h3>Edit Team:</h3>
+    <table>
+        <% for(var i = 0; i < teamInfo.length; i++) { %>
+            <tr>
+                <form action="/user/edit-team-test" method="post">
+                    <td><input type="hidden" name="id" value="<%= teamInfo[i]['teamRoom.id'] %>"></td>
+                    <td><input type="text" name="teamName" value="<%= teamInfo[i]['teamRoom.teamName'] %>"></td>
+                    <td><input type="submit" value="edit"></td></form>
+                <form action="/user/get-member" method="post">
+                    <td><input type="hidden" name="team_room" value="<%= teamInfo[i]['teamRoom.id'] %>"></td>
+                    <td><input type="submit" value="show"></td></form>
+            </tr>
+        <% } %>
+    </table>
+</body>
+</html>

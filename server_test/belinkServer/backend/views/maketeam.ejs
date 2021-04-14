@@ -11,11 +11,11 @@
     <table>
         <% for(var i = 0; i < friendInfo.length; i++) { %>
             <tr>
-                <td style="border:1px solid black"><%= friendInfo[i]["myFriendUser.username"] %></td><td><input type='checkbox' id='friend' name='friend' value='<%= friendInfo[i]["myFriendUser.id"] %>'></td>
+                <td style="border:1px solid black"><%= friendInfo[i]["myFriendUser.username"] %></td><td><input type='checkbox' id='id' name='id' value='<%= friendInfo[i]["myFriendUser.id"] %>'></td>
             </tr>
         <% } %>
     </table>
-    <input type="hidden" name = "myId" value="<%= myId %>">
+    <input type="hidden" name = "id" value="<%= myId %>">
     <input type="submit" value="Make Team">
 </form>
 

@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": "0000",
-    "database": "belink",
+    "database": "test_db",
     "host": "localhost",
     "dialect": "mysql"
   },

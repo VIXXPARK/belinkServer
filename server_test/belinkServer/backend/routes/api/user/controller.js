@@ -98,14 +98,14 @@ exports.login = (req,res,next)=>{
 
 
 exports.makeTeam = (req,res,next)=>{
-    var friendId = req.body.friend;
+    var id = req.body.id;
 
     model.User.findAll({
         raw: true, 
         attributes: [[sequelize.fn('GROUP_CONCAT', sequelize.col('username')), 'teamName']],
         where:{
             id:{
-                [Op.or]: friendId
+                [Op.or]: id
             }
         }
     }).then((result) => {
@@ -114,17 +114,16 @@ exports.makeTeam = (req,res,next)=>{
             createdAt:new Date().getTime(),
             updatedAt:new Date().getTime()
         }).then((resultB) => {
-            //여기서 for문 안쓸수 있는 방법이 없을까..?
-            for(const curId of friendId )
-            model.Member.create({
-                team_member: curId,
-                team_room: resultB.dataValues.id,
-                createdAt: resultB.dataValues.createdAt,
-                updatedAt: resultB.dataValues.updatedAt
-            })
+            for(const curId of id ){
+                model.Member.create({
+                    team_member: curId,
+                    team_room: resultB.dataValues.id,
+                    createdAt: resultB.dataValues.createdAt,
+                    updatedAt: resultB.dataValues.updatedAt
+                })
+            }
         })
     })
-    //이렇게 하면 makeMember가 필요 없을 지도..?
 
     
     /*
@@ -152,6 +151,7 @@ exports.makeTeam = (req,res,next)=>{
 }
 
 exports.editTeam = (req,res,next)=>{
+    console.log(req.body);
     model.Team.update({
         teamName:req.body.teamName},
         {where:{id:req.body.id}
@@ -257,23 +257,70 @@ exports.deleteUser = (req,res,next)=>{
 }
 
 exports.deleteMember = (req,res,next)=>{
-    model.Member.destroy({
+    model.Member.delete({
+        raw: true,
         where:{team_member:req.body.userId,team_room:req.body.teamId}
     })
     .then(result=>{
-        var bool = result[0]==1
-        res.json({
-            success:bool
-        })
+        if(result){
+            model.Team.findOne({
+                raw: true,
+                where: {
+                    id: req.body.teamId
+                }
+            }).then(result => {
+                if(result.createdAt.valueOf() == result.updatedAt.valueOf()){
+                    model.User.findAll({
+                        //select GROUP_CONCAT(users.username) as teamName from members left join users on members.team_member = users.id WHERE members.team_room = 'ac281f30-491a-481f-ae2e-d45756e0e005';
+                        raw: true, 
+                        attributes: [[sequelize.fn('GROUP_CONCAT', sequelize.col('username')), 'teamName']],
+                        include:[{
+                            model:model.Member,as:'teamMember',
+                            attributes:["team_room"],
+                            where: {
+                                team_room: result.id
+                            }
+                        }]
+                    }).then(result => {
+                        console.log(result)
+                        model.Team.update({
+                            teamName: result[0]['teamName'],
+                            createdAt: sequelize.fn('NOW'),
+                            updatedAt: sequelize.fn('NOW')
+                        },{
+                            where:{
+                                id: result[0]['teamMember.team_room']
+                            }
+                        }).then(result => {
+                            var bool = (result[0] == 1)
+                            res.json({
+                                success: bool
+                            })
+                        })
+                    })
+                }
+                else{
+                    res.json({
+                        success: true
+                    })
+                }
+            })
+        }
+        else{
+            res.json({
+                success: false
+            })
+        }
     })
 }
 
 exports.getMember = (req,res,next)=>{
     model.Member.findAll({
-        attributes:['updatedAt'],
-        where:{team_room:req.body.team_room},
-        include:[{model:model.User,as:'teamMember',attributes:['id','username','phNum']},
-                {model:model.Team,as:'teamRoom',attributes:['id','teamName','phNum']}],
+        raw: true,
+        attributes: ['updatedAt'],
+        where: {team_room:req.body.team_room},
+        include: [{model:model.User,as:'teamMember',attributes:['id','username','phNum']},
+                {model:model.Team,as:'teamRoom',attributes:['teamName']}],
         
     })
     .then(result=>{

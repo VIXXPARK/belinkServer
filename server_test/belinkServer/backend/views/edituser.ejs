@@ -34,5 +34,9 @@
     <td><input type="hidden" name="id" value="<%= id %>"></td>
     <td><input type="submit" value="MAKE TEAM"></td>
 </form>
+<form action="/user/show-team-page" method="post">
+    <td><input type="hidden" name="team_member" value="<%= id %>"></td>
+    <td><input type="submit" value="GET TEAM"></td>
+</form>
 </body>
 </html>
