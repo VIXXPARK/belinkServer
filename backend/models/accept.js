@@ -10,6 +10,9 @@ module.exports = (sequelize,DataTypes)=>{
         accepted:{
             type: DataTypes.BOOLEAN,
             defaultValue: true
+        },
+        total:{
+            type: DataTypes.INTEGER,
         }
     },{
         timestamps:true

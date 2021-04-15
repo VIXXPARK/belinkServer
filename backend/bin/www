@@ -28,7 +28,7 @@ var server = http.createServer(app);
 
 server.listen(port);
 
-//webSocket(server, app); //app까지 넘겨줘야 라우터에서 socket사용가능
+// webSocket(server, app); //app까지 넘겨줘야 라우터에서 socket사용가능
 
 server.on('error', onError);
 server.on('listening', onListening);

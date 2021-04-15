@@ -122,10 +122,10 @@ db.Visit.belongsTo(db.User)
 
 db.Visit.belongsTo(db.Store)
 
-// db.Store.hasMany(db.Accept)
+db.User.hasMany(db.Accept)
 db.Team.hasMany(db.Accept)
 
-// db.Accept.belongsTo(db.Store)
+db.Accept.belongsTo(db.User)
 db.Accept.belongsTo(db.Team)
 
 module.exports = db;

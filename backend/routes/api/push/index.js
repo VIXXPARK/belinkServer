@@ -1,7 +1,8 @@
 const router = require('express').Router()
 const controller = require('./controller')
-const middleware = require('./middleware')
 
-router.post('/pushMsg', controller.pushMsg)
-router.post('/accepted', middleware.isOk, controller.accept)
+router.post('/pushMsg', controller.pushMsg1)
+router.post('/accepted', controller.accept)
+router.post('/rejected', controller.reject)
+//router.post('/seqCheck', controller.seqCheck)
 module.exports = router
