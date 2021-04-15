@@ -24,11 +24,11 @@ module.exports = (sequelize,DataTypes)=>{
             defaultValue:false
         },
         infect:{
-            type:DataTypes.BOOLEAN,
-            defaultValue:false
+            type:DataTypes.TINYINT,
+            defaultValue:0
         }
 
     },{
-        timestamps:false,
+        timestamps:true,
     });
 };

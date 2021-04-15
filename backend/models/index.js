@@ -61,7 +61,7 @@ db.Store.hasMany(db.Visit)
 db.User.hasMany(db.Member,{
     as:'teamMember',
     foreignKey:{
-        name:'team_member'
+        name:'team_member',
     }
 })
 
