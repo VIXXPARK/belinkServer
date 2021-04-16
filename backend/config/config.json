@@ -3,7 +3,7 @@
     "username": "admin",
     "password": "belinkserver",
     "database": "belink",
-    "host": "cuomegzgvi5b.ap-northeast-2.rds.amazonaws.com",
+    "host": "belink-database.cuomegzgvi5b.ap-northeast-2.rds.amazonaws.com",
     "dialect": "mysql",
     "ssl":true
   },
