@@ -1,11 +1,10 @@
 {
   "development": {
-    "username": "admin",
-    "password": "belinkserver",
+    "username": "belink",
+    "password": "",
     "database": "belink",
-    "host": "belink-database.cuomegzgvi5b.ap-northeast-2.rds.amazonaws.com",
-    "dialect": "mysql",
-    "ssl":true
+    "host": "127.0.0.1",
+    "dialect": "mysql"
   },
   "test": {
     "username": "root",
