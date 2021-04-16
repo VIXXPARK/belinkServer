@@ -3,8 +3,9 @@
     "username": "admin",
     "password": "belinkserver",
     "database": "belink",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "host": "cuomegzgvi5b.ap-northeast-2.rds.amazonaws.com",
+    "dialect": "mysql",
+    "ssl":true
   },
   "test": {
     "username": "root",
