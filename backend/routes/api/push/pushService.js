@@ -45,36 +45,30 @@ exports.personalPush = async (req, res, senderId) => {
     
 }
 
-exports.groupPush = async (req, res, team_room, TITLE, TEXT, isOk) => {
+exports.groupPush = async (req, res, noti, data) => {
+    const { team_room, userId, storeId } = req.body;
     
     try{
-        const tokens = model.Member.findAll({ where :{ teamId : team_room }})
         const result = await model.Member.findAll({
             attributes: ['updatedAt'],
             where: { team_room: team_room },
-            include: [{ model: model.User, as: 'teamMember', attributes: ['username'] }]
+            include: [{ model: model.User, as: 'teamMember', attributes: ['token'] }]
             // required: true = inner join
             // right: true = right outer join
         })
         const array = []
         for(let i=0; i< result.length; i++)
         {
-            array.push(result[i].teamMember.username)
+            array.push(result[i].teamMember.token)
         }
-        // const registrationTokens = array
-        const registrationTokens = [
-            'ekA0s7dITHuW5Qb3MfqVRg:APA91bFW1tux1vyGhU49Xs28I0N4_C2GsDFvfZ6a8gw-SMid_dAbg-UWpnXIadJ6Z0nYJ2PCOK4jJhxilzwfR-7KYGiEYsEYVDDSe_O9aDb9_PUvy8AjbRweNSgzYP91x1aG1dtt9p_9'
-        ];
+        const registrationTokens = array
+        // const registrationTokens = [
+        //     '<--기기토큰-->'
+        // ];
 
         const message = {
-            notification: {
-                title: TITLE,
-                body: TEXT,
-            },
-            data:{
-                storeId: '<--StoreId : uuid를 넣어줌-->',
-                isOk: isOk
-            },
+            notification: noti,
+            data: data,
             tokens: registrationTokens,
         }
 
