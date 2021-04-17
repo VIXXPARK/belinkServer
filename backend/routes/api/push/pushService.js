@@ -11,7 +11,7 @@ exports.personalPush = async (req, res, senderId) => {
     try{
         //team_room은 같은 주제를 구독한 그룹에게 메시지를 보내기 위함임
         //storeId는 메시지 전송할때 data에 넣어서 모두 수락시 방문장소 위치 기록용도
-        const target_token = 'ekA0s7dITHuW5Qb3MfqVRg:APA91bFW1tux1vyGhU49Xs28I0N4_C2GsDFvfZ6a8gw-SMid_dAbg-UWpnXIadJ6Z0nYJ2PCOK4jJhxilzwfR-7KYGiEYsEYVDDSe_O9aDb9_PUvy8AjbRweNSgzYP91x1aG1dtt9p_9'; //푸시메시지를 받을 디바이스의 토큰
+        const target_token = ''; //푸시메시지를 받을 디바이스의 토큰
 
         const message = {
             notification: {

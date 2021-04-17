@@ -13,7 +13,7 @@ exports.register = (req,res)=>{
                 success:false,
                 data:"already exists"
             })
-        }else if(phNum.length!=11){
+        }else if(phNum.length!=13){
             res.json({
                 success:false,
                 data:"휴대전화 번호 길이가 다릅니다."
@@ -149,6 +149,25 @@ exports.editTeam = (req,res,next)=>{
     })
 }
 
+exports.deleteTeam = (req,res,next)=>{
+    model.Member.destroy({
+        where:{team_room:req.body.id}
+    })
+    .then((result)=>{
+        console.log("result: ",result)
+        model.Team.destroy({
+            where:{id:req.body.id}
+        })
+        .then(fin=>{
+            console.log("fin: ", fin)
+            var bool = fin==1
+            res.json({
+                success:bool
+            })
+        })
+    })
+    
+}
 
 
 
