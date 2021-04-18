@@ -84,13 +84,16 @@ exports.idContactUser = (req,res,next)=>{
 
 
 exports.login = (req,res,next)=>{
+    console.log(req.body)
     model.User.findOne({where:{phNum:req.body.phNum}})
     .then((data)=>{
+        console.log(data)
         if(!data){
             return res.status(404).send({message:"User not found"})
         }
         var token = jwt.sign(
             {
+                id:data.id,
                 username:data.username,
                 phNum:data.phNum,
                 active:data.active
@@ -100,6 +103,7 @@ exports.login = (req,res,next)=>{
                 subject:'userInfo'
             }
         );
+        console.log(token)
         res.json({
             success:true,
             accessToken:token
@@ -209,7 +213,7 @@ exports.makeFriend = (req,res,next)=>{
 exports.getMyFriend = (req,res,next)=>{
     model.Friend.findAll({
         attributes:[],
-        where:{device:req.body.id,hidden:req.body.hidden},
+        where:{device:req.decoded.id,hidden:false},
         include:[
                 {model:model.User,as:'myFriendUser',attributes:["id","phNum","username"]}]
     })
@@ -243,7 +247,7 @@ exports.editUser = (req,res,next)=>{
 
 exports.deleteUser = (req,res,next)=>{
     model.User.destroy({
-        where:{id:req.params.id}
+        where:{id:req.decoded.id}
     })
     .then(result=>{
         var bool = result[0]==1
@@ -306,5 +310,12 @@ exports.infectUser = (req,res,next)=>{
         res.json({
             success:bool
         })
+    })
+}
+
+exports.check = (req,res,next)=>{
+    console.log(req.decoded)
+    res.json({
+        success:true
     })
 }
