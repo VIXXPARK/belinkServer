@@ -91,7 +91,8 @@ exports.login = (req,res,next)=>{
         console.log(token)
         res.json({
             success:true,
-            accessToken:token
+            accessToken:token,
+            id:data.id
         })
 
     })
