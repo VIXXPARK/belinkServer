@@ -34,21 +34,6 @@ exports.register = (req,res)=>{
     })
 }
 
-exports.getUser = (req,res,next)=>{
-    model.User.findOne({where:{phNum:req.body.phNum}})
-    .then((data)=>{
-        if((data==null || data==undefined)==false){
-            res.json({
-                success:true,
-                data:data
-            })
-        }
-    })
-   
-}
-
-
-
 exports.contactUser = (req,res,next)=>{
     console.log(req.body.phNum)
 
@@ -310,12 +295,5 @@ exports.infectUser = (req,res,next)=>{
         res.json({
             success:bool
         })
-    })
-}
-
-exports.check = (req,res,next)=>{
-    console.log(req.decoded)
-    res.json({
-        success:true
     })
 }
