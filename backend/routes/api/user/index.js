@@ -17,4 +17,7 @@ router.get('/edit-info',authMiddleware,controller.deleteUser)  //회원탈퇴
 router.delete('/edit-memeber',controller.deleteMember)//멤버 삭제하기
 router.post('/get-member',controller.getMember)//멤버 목록 가져오기
 router.put('/infect-user',controller.infectUser)//감염환자시 infect true로 변경
+router.get('/test',(req,res,next)=>{
+    res.send({"success":true})
+})
 module.exports = router
