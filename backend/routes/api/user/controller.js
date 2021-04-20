@@ -9,12 +9,12 @@ exports.register = (req,res)=>{
     .then((data)=>{
         var phNum = req.body.phNum
         if((data==null || data==undefined)==false){
-            res.json({
+            res.status(400).json({
                 success:false,
                 data:"already exists"
             })
         }else if(phNum.length!=13){
-            res.json({
+            res.status(400).json({
                 success:false,
                 data:"휴대전화 번호 길이가 다릅니다."
             })
@@ -25,7 +25,7 @@ exports.register = (req,res)=>{
                 username:req.body.username
             })
             .then(result=>{
-                res.json({
+                res.status(201).json({
                     success:true,
                     data:result
                 })
@@ -150,7 +150,7 @@ exports.deleteTeam = (req,res,next)=>{
         .then(fin=>{
             console.log("fin: ", fin)
             var bool = fin==1
-            res.json({
+            res.status(410).json({
                 success:bool
             })
         })
@@ -233,11 +233,11 @@ exports.editUser = (req,res,next)=>{
 
 exports.deleteUser = (req,res,next)=>{
     model.User.destroy({
-        where:{id:req.decoded.id}
+        where:{id:req.decoded.id||req.body.id}
     })
     .then(result=>{
         var bool = result[0]==1
-        res.json({
+        res.status(410).json({
             success:bool
         })
     })
