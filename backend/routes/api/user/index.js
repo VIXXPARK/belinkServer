@@ -14,8 +14,8 @@ router.post('/edit-friend',controller.makeFriend)// 친구 목록 만들기
 router.get('/get-my-friend',authMiddleware,controller.getMyFriend) // 친구 목록 불러오기
 router.put('/edit-info',controller.editUser)        //개인정보 수정하기
 router.get('/edit-info',authMiddleware,controller.deleteUser)  //회원탈퇴
-router.delete('/edit-memeber',controller.deleteMember)//멤버 삭제하기
-router.post('/get-member',controller.getMember)//멤버 목록 가져오기
+router.delete('/edit-member',controller.deleteMember)//멤버 삭제하기
+router.get('/get-member/',controller.getMember)//멤버 목록 가져오기
 router.put('/infect-user',controller.infectUser)//감염환자시 infect true로 변경
 
 router.delete('/test/delete',controller.testDelete)//mocha 테스트때 쓰일 삭제 기능

@@ -2,15 +2,16 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../app');
 const model = require('../models');
-const should = chai.should();
 const expect = chai.expect;
 chai.use(chaiHttp);
-
+var userId=""
 before(async ()=>{
-    model.User.destroy({})
-    model.User.create({
+    await model.User.create({
         phNum:'111-2222-3333',
         username:'init'
+    })
+    .then(res=>{
+        userId=res.id
     })
     
 })
@@ -137,6 +138,29 @@ describe('DELETE 회원탈퇴했을 때', () =>{
                     reject(new Error("회원 탈퇴가 제대로 이루어지지 않았습니다."))
                 }
                 resolve(res.body);
+            })
+        })
+    })
+})
+
+describe('PUT 회원 유저 정보 수정',() => {
+    it('성공적으로 회원정보수정을 했을 때',()=>{
+        return new Promise((resolve,reject)=>{
+            var params={
+                id:userId,
+                phNum:'111-2222-3333',
+                username:'무야호'
+            }
+            chai.request(server)
+            .put('/api/user/edit-info')
+            .send(params)
+            .end((err,res)=>{
+                expect(res).status(200)
+                expect(res.body.success).to.equal(true)
+                if(err){
+                    reject(err)
+                }
+                resolve()
             })
         })
     })

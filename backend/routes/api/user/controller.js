@@ -100,27 +100,31 @@ exports.login = (req,res,next)=>{
 }
 
 
-exports.makeTeam = (req,res,next)=>{
-    model.Team.create({
-        teamName:req.body.teamName,
-        createdAt:new Date().getTime(),
-        updatedAt:new Date().getTime()
-    })
-    .then(result=>{
-        if(req.body.teamName==null){
-            res.json({
-                success:false
-            })
-        }
-        res.json({
-            success:true,
-            id:result.id
+exports.makeTeam = async (req,res,next)=>{
+
+    if(req.body.teamName==null || req.body.teamName==""){
+       await res.status(400).json({
+            success:false,
+            message:"팀 이름을 적어주세요"
         })
-    })
-    .catch(err=>res.status(404).json({
-        success:false,
-        msg:err
-    }))
+    }else{
+        await model.Team.create({
+            teamName:req.body.teamName,
+            createdAt:new Date().getTime(),
+            updatedAt:new Date().getTime()
+        })
+        .then(result=>{
+            res.status(201).json({
+                success:true,
+                id:result.id
+            })
+        })
+        .catch(err=>res.status(404).json({
+            success:false,
+            msg:err
+        }))
+    }
+    
 }
 
 exports.editTeam = (req,res,next)=>{
@@ -156,19 +160,54 @@ exports.deleteTeam = (req,res,next)=>{
 
 
 
-exports.makeMember = (req,res,next)=>{
-    model.Member.bulkCreate(req.body,{returning:true})
-    .then(result=>{
-        res.json({
-            success:true
-        })
-    })
-    .catch(err=>{
-        res.status(404).json({
+exports.makeMember = async (req,res,next)=>{
+    if(req.body==null||req.body==undefined||req.body.length==0){
+        res.status(400).json({
             success:false,
-            message:err
+            message:"멤버를 선택해주세요"
         })
-    })
+    }else{
+        await model.Team.findOne({
+            where:{id:req.body[0].team_room}
+        })
+        .then((res)=>{
+            if(res==null || res==undefined){
+                res.status(400).json({
+                    success:false,
+                    message:"존재하지 않는 그룹입니다."
+                })
+            }
+        })
+        for(step=0;step<req.body.length;step++){
+            await model.User.findOne({
+                where:{id:req.body[step].team_member}
+            })
+            .then((res)=>{
+                if(res==null || res==undefined){
+                    res.status(400).json({
+                        success:false,
+                        message:"존재하지 유저가 있습니다."
+                    })
+                }
+            })
+        }
+        
+        await model.Member.bulkCreate(req.body,{returning:true})
+        .then(result=>{
+            console.log(req.body)
+            res.json({
+                success:true
+            })
+        })
+        .catch(err=>{
+            res.status(404).json({
+                success:false,
+                message:err
+            })
+        })
+    }
+
+    
 }
 
 exports.makeFriend = (req,res,next)=>{
@@ -232,8 +271,14 @@ exports.deleteUser = (req,res,next)=>{
     })
     .then(result=>{
         var bool = result[0]==1
-        res.status(410).json({
+        res.status(200).json({
             success:bool
+        })
+    })
+    .catch(err=>{
+        res.status(400).json({
+            success:false,
+            message:'잘못된 정보입니다.'
         })
     })
 }
@@ -243,7 +288,8 @@ exports.deleteMember = (req,res,next)=>{
         where:{team_member:req.body.userId,team_room:req.body.teamId}
     })
     .then(result=>{
-        var bool = result[0]==1
+        console.log(result)
+        var bool = result==1
         res.json({
             success:bool
         })
@@ -253,14 +299,26 @@ exports.deleteMember = (req,res,next)=>{
 exports.getMember = (req,res,next)=>{
     model.Member.findAll({
         attributes:[],
-        where:{team_room:req.body.team_room},
+        where:{team_room:req.query.team_room},
         include:[{model:model.User,as:'teamMember',attributes:['id','username','phNum']}],
     })
     .then(result=>{
-        res.json({
-            data:result
-        })
+        if(result.length==0){
+            res.status(400).json({
+                success:false,
+                message:'잘못된 팀 정보입니다.'
+            })
+        }else{
+            res.json({
+                data:result
+            })
+        }
+        
     })
+    .catch(err=>res.status(400).json({
+        success:false,
+        message:err
+    }))
 }
 
 exports.getMyTeam = (req,res,next)=>{
