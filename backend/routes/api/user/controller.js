@@ -11,7 +11,7 @@ exports.register = (req,res)=>{
         if((data==null || data==undefined)==false){
             res.status(400).json({
                 success:false,
-                data:"already exists"
+                data:"이미 존재하는 유저입니다"
             })
         }else if(phNum.length!=13){
             res.status(400).json({
@@ -35,7 +35,6 @@ exports.register = (req,res)=>{
 }
 
 exports.contactUser = (req,res,next)=>{
-    console.log(req.body.phNum)
 
     model.User.findAll({
         attributes:["id","phNum","username"],
@@ -52,7 +51,6 @@ exports.contactUser = (req,res,next)=>{
 
 
 exports.idContactUser = (req,res,next)=>{
-    console.log(req.body.phNum)
 
     model.User.findAll({
         attributes:["id","phNum","username"],
@@ -69,12 +67,13 @@ exports.idContactUser = (req,res,next)=>{
 
 
 exports.login = (req,res,next)=>{
-    console.log(req.body)
     model.User.findOne({where:{phNum:req.body.phNum}})
     .then((data)=>{
-        console.log(data)
         if(!data){
-            return res.status(404).send({message:"User not found"})
+            return res.status(400).send({
+                success:false,
+                message:"존재하지 않은 유저입니다."
+            })
         }
         var token = jwt.sign(
             {
@@ -88,7 +87,6 @@ exports.login = (req,res,next)=>{
                 subject:'userInfo'
             }
         );
-        console.log(token)
         res.json({
             success:true,
             accessToken:token,
@@ -143,12 +141,10 @@ exports.deleteTeam = (req,res,next)=>{
         where:{team_room:req.body.id}
     })
     .then((result)=>{
-        console.log("result: ",result)
         model.Team.destroy({
             where:{id:req.body.id}
         })
         .then(fin=>{
-            console.log("fin: ", fin)
             var bool = fin==1
             res.status(410).json({
                 success:bool
@@ -161,7 +157,6 @@ exports.deleteTeam = (req,res,next)=>{
 
 
 exports.makeMember = (req,res,next)=>{
-    console.log(req.body)
     model.Member.bulkCreate(req.body,{returning:true})
     .then(result=>{
         res.json({

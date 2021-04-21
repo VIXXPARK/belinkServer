@@ -1,12 +1,18 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../app');
+const model = require('../models');
 const should = chai.should();
+const expect = chai.expect;
 chai.use(chaiHttp);
 
-
-beforeEach(async ()=>{
-    //데이터베이스 초기화
+before(async ()=>{
+    model.User.destroy({})
+    model.User.create({
+        phNum:'111-2222-3333',
+        username:'init'
+    })
+    
 })
 
 
@@ -46,11 +52,33 @@ describe('POST 데이터를 body에 넣어서 회원가입을 진행했을 때',
                 
             })
         })
+    })//it
+
+    it('회원 가입을 하는데 이미 해당 유저가 있는 경우',()=>{
+        return new Promise((resolve,reject)=>{
+            var params={
+                phNum:'111-2222-3333',
+                username:'init'
+            }
+            chai.request(server)
+            .post('/api/user/signup')
+            .send(params)
+            .end((err,res)=>{
+                res.should.have.status(400)
+                res.body.success.should.false
+                expect(res.body.data).to.equal("이미 존재하는 유저입니다")
+                if(err){
+                    reject(new Error(err))
+                }
+                resolve();
+            })
+        })
     })
 })
 
-describe('POST request on login with data', () => {
-    it('should statsu 200',()=>{
+describe('POST 로그인 절차를 시행할 경우', () => {
+
+    it('해당 로그인이 성공했을 때',()=>{
         return new Promise((resolve,reject)=>{
             var params = {
                 phNum: '010-1234-5678'
@@ -69,10 +97,31 @@ describe('POST request on login with data', () => {
                 })
             }) 
         })
+    
+    it('해당 유저가 존재하지 않을 경우',()=>{
+        return new Promise((resolve,reject)=>{
+            var params = {
+                phNum: '999-8888-7777'
+            }
+            chai.request(server)
+            .post('/api/user/login')
+            .send(params)
+            .end((err,res)=>{
+                res.should.have.status(400)
+                expect(res.body.success).to.equal(false)
+                expect(res.body.message).to.equal("존재하지 않은 유저입니다.")
+                if(err){
+                    reject(err)
+                }
+                resolve();
+            })
+        })
+    })
+    
 })
 
-describe('DELETE request on sign out with data', () =>{
-    it('should status 200',()=>{
+describe('DELETE 회원탈퇴했을 때', () =>{
+    it('성공적으로 회원탈퇴했을 때',()=>{
         return new Promise((resolve,reject)=>{
             var params = {
                 phNum:'010-1234-5678',

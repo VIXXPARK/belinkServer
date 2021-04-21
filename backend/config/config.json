@@ -4,7 +4,11 @@
     "password": "0000",
     "database": "belink",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "dialectOptions":{
+      "multipleStatments":true
+    }
+    
   },
   "test": {
     "username": "root",
