@@ -298,3 +298,15 @@ exports.infectUser = (req,res,next)=>{
         })
     })
 }
+
+exports.testDelete = (req,res,next)=>{
+    model.User.destroy({
+        where:{phNum:req.body.phNum,username:req.body.username}
+    })
+    .then(result=>{
+        
+        res.json({
+            success:result==1
+        })
+    })
+}
