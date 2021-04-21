@@ -28,7 +28,7 @@ describe('POST 데이터를 body에 넣어서 회원가입을 진행했을 때',
             .post('/api/user/signup')
             .send(params)
             .end((err,res)=>{
-                res.should.have.status(201)
+                expect(res).status(201)
                 if(err) reject(new Error("Error message"))
                 resolve();
                 
@@ -45,8 +45,8 @@ describe('POST 데이터를 body에 넣어서 회원가입을 진행했을 때',
             .post('/api/user/signup')
             .send(params)
             .end((err,res)=>{
-                res.should.have.status(400)
-                res.body.success.should.false;
+                expect(res).status(400)
+                expect(res.body.success).to.equal(false)
                 if(err) reject(new Error("Error message"))
                 resolve();
                 
@@ -64,8 +64,8 @@ describe('POST 데이터를 body에 넣어서 회원가입을 진행했을 때',
             .post('/api/user/signup')
             .send(params)
             .end((err,res)=>{
-                res.should.have.status(400)
-                res.body.success.should.false
+                expect(res).status(400)
+                expect(res.body.success).to.equal(false)
                 expect(res.body.data).to.equal("이미 존재하는 유저입니다")
                 if(err){
                     reject(new Error(err))
@@ -87,8 +87,8 @@ describe('POST 로그인 절차를 시행할 경우', () => {
                 .post('/api/user/login')
                 .send(params)
                 .end((err,res)=>{
-                    res.should.have.status(200)
-                    res.body.success.should.be.ok
+                    expect(res).status(200)
+                    expect(res.body.success).to.equal(true)
                     if(err){
                         reject(err)
                     }
@@ -107,7 +107,7 @@ describe('POST 로그인 절차를 시행할 경우', () => {
             .post('/api/user/login')
             .send(params)
             .end((err,res)=>{
-                res.should.have.status(400)
+                expect(res).status(400)
                 expect(res.body.success).to.equal(false)
                 expect(res.body.message).to.equal("존재하지 않은 유저입니다.")
                 if(err){
@@ -131,8 +131,8 @@ describe('DELETE 회원탈퇴했을 때', () =>{
             .del('/api/user/test/delete')
             .send(params)
             .end((err,res)=>{
-                res.should.have.status(200)
-                res.body.success.should.be.ok
+                expect(res).status(200)
+                expect(res.body.success).to.equal(true)
                 if(err){
                     reject(new Error("회원 탈퇴가 제대로 이루어지지 않았습니다."))
                 }
