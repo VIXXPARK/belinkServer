@@ -13,6 +13,8 @@ before_script:
   - npm install chai-http
   - npm install mocha
 
+install:
+  - npm run build
 
 branches:
   only:
@@ -24,7 +26,15 @@ notifications:
       - vixx170627@gmail.com
 
 cache:
-  npm: false
+  directories:
+    - node_modules
+
+
 
 env:
-  - NODE_ENV: test
+  - NODE_ENV: test PORT=3000
+
+script:
+  - nohup npm run start &
+  - sleep 3
+  - npm run start
