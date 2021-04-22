@@ -9,9 +9,7 @@ var firstUserId=""
 var secondUserId=""
 var thirdUserId=""
 var teamId=""
-beforeEach(()=>{
-    
-})
+
 before(async ()=>{
     await model.User.create({
         phNum:'111-1111-1111',
@@ -266,4 +264,20 @@ describe('DELETE 팀에서 나가고 싶을 때',()=>{
             })
         })
     })
+})
+
+after(async () =>{
+    await model.User.destroy({
+        truncate:{cascade: true}
+    })
+
+    await model.Team.destroy({
+        truncate:{cascade: true}
+    })
+
+    await model.Member.destroy({
+        truncate:{cascade: true}
+    })
+
+    
 })
