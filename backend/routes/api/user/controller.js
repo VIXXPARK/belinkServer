@@ -167,19 +167,39 @@ exports.makeMember =(req,res,next)=>{
             message:"멤버를 선택해주세요"
         })
     }else{
-        model.Member.bulkCreate(req.body,{returning:true})
-        .then(result=>{
-            console.log(req.body)
-            res.json({
-                success:true
+        console.log(req.body[0].team_room)
+        model.Team.findOne({
+            where:{id:req.body[0].team_room}
+        })
+        .then(teamResult=>{
+            if(teamResult==null || teamResult==undefined){
+                res.status(500).json({
+                    success:false,
+                    message:"제대로 된 그룹방이 아닙니다."
+                })
+            }
+        })
+        .then(()=>{
+            model.Member.bulkCreate(
+                req.body,
+                {
+                    returning:true,
+                    where:{team_member:{ne:null}}
+                })
+            .then(result=>{
+                console.log(req.body)
+                res.json({
+                    success:true
+                })
+            })
+            .catch(err=>{
+                res.status(500).json({
+                    success:false,
+                    message:err
+                })
             })
         })
-        .catch(err=>{
-            res.status(404).json({
-                success:false,
-                message:err
-            })
-        })
+        
     }
 
     

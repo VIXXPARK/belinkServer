@@ -174,59 +174,53 @@ describe('POST 팀 구성원 만들 때 (makeMember)',()=>{
         })
     })
 
-    // //팀 방이 실제로 존재하는지 확인 할 것
-    // it('POST 그룹 아이디를 제대로 가져오지 못했을 때',()=>{
-    //     return new Promise((resolve,reject)=>{
-    //         var params=[
-    //             {team_room:"",team_member:firstUserId},
-    //             {team_room:"",team_member:secondUserId},
-    //             {team_room:"",team_member:thirdUserId},
-    //         ]
-    //         chai.request(server)
-    //         .post('/api/user/make-member')
-    //         .send(params)
-    //         .end((err,res)=>{
-    //             console.log("*************************")
-    //             console.log(res.body)
-    //             console.log("*************************")
-    //             expect(res).status(500)
-    //             expect(res.body.success).to.equal(false)
-    //             expect(res.body).to.have.own.property('message')
-    //             if(err){
-    //                 reject(new Error(err))
-    //             }
-    //             resolve()
-    //         })
+    //팀 방이 실제로 존재하는지 확인 할 것
+    it('POST 그룹 아이디를 제대로 가져오지 못했을 때',()=>{
+        return new Promise((resolve,reject)=>{
+            var params=[
+                {team_room:"",team_member:firstUserId},
+                {team_room:"",team_member:secondUserId},
+                {team_room:"",team_member:thirdUserId},
+            ]
+            chai.request(server)
+            .post('/api/user/make-member')
+            .send(params)
+            .end((err,res)=>{
+                expect(res).status(500)
+                expect(res.body.success).to.equal(false)
+                expect(res.body).to.have.own.property('message')
+                if(err){
+                    reject(new Error(err))
+                }
+                resolve()
+            })
 
-    //     })
-    // })
+        })
+    })
 
-    // // 유저가 실제로 존재하는지 확인 할 것
-    // it('POST 유저 아이디를 제대로 가져오지 못했을 때 ',()=>{
-    //     return new Promise((resove,reject)=>{
-    //         var params=[
-    //             {team_room:teamId,team_member:""},
-    //             {team_room:teamId,team_member:secondUserId},
-    //             {team_room:teamId,team_member:thirdUserId},
-    //         ]
-    //         chai.request(server)
-    //         .post('/api/user/make-member')
-    //         .send(params)
-    //         .end((err,res)=>{
-    //             console.log("*************************")
-    //             console.log(res.body)
-    //             console.log("*************************")
-    //             expect(res).status(500)
-    //             expect(res.body.success).to.equal(false)
-    //             expect(res.body).to.have.own.property('message')
-    //             if(err){
-    //                 reject(new Error(err))
-    //             }
-    //             resolve()
-    //         })
+    // 유저가 실제로 존재하는지 확인 할 것
+    it('POST 유저 아이디를 제대로 가져오지 못했을 때 ',()=>{
+        return new Promise((resolve,reject)=>{
+            var params=[
+                {team_room:teamId,team_member:""},
+                {team_room:teamId,team_member:secondUserId},
+                {team_room:teamId,team_member:thirdUserId},
+            ]
+            chai.request(server)
+            .post('/api/user/make-member')
+            .send(params)
+            .end((err,res)=>{
+                expect(res).status(500)
+                expect(res.body.success).to.equal(false)
+                expect(res.body).to.have.own.property('message')
+                if(err){
+                    reject(new Error(err))
+                }
+                resolve()
+            })
 
-    //     })
-    // })
+        })
+    })
 
 })
 
