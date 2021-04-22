@@ -1,5 +1,0 @@
-npm install —production 
-                        을 쓰면 dependencies에 해당된 모든 패키지를 설치
--save-dev 옵션은 개발환경을 위한 패키지 의존성을 설정하기 위한 것
-
-파일명에 sepc이란 단어가 들어가면 테스트 코드

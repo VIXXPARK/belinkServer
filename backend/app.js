@@ -6,7 +6,6 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 
 
-
 var {sequelize} = require('./models');
 
 var app = express();

@@ -1,36 +1,18 @@
-const { resolve } = require('bluebird');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../app');
 const model = require('../models');
 const expect = chai.expect;
+const sequelize = require('sequelize');
 chai.use(chaiHttp);
 var firstUserId=""
 var secondUserId=""
 var thirdUserId=""
 var teamId=""
-before(async ()=>{
-    // await model.User.destroy({
-    //     where:{},
-    //     truncate:true,
-    //     force:true
-    // })
-    // await model.Friend.destroy({
-    //     where:{},
-    //     truncate:true,
-    //     force:true
-    // })
-    // await model.Member.destroy({
-    //     where:{},
-    //     truncate:true,
-    //     force:true
-    // })
+beforeEach(()=>{
     
-    // await model.Team.destroy({
-    //     where:{},
-    //     truncate:true,
-    //     force:true
-    // })
+})
+before(async ()=>{
     await model.User.create({
         phNum:'111-1111-1111',
         username:'첫번째'
