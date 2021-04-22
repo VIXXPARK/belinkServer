@@ -1,3 +1,4 @@
+const { resolve } = require('bluebird');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../app');
@@ -98,7 +99,7 @@ describe('POST 방 만들기',()=>{
             .post('/api/user/edit-team')
             .send(params)
             .end((err,res)=>{
-                expect(res).status(400)
+                expect(res).status(500)
                 expect(res.body).to.have.own.property('message')
                 if(err){
                     reject(new Error(err))
@@ -132,7 +133,7 @@ describe('PUT 팀 이름을 수정했을 경우',()=>{
     })
 })
 
-describe('POST 팀 구성원 만들 때',()=>{
+describe('POST 팀 구성원 만들 때 (makeMember)',()=>{
     it('정상적으로 팀 구성원이 있을 때',()=>{
         return new Promise((resolve,reject)=>{
             var params=[
@@ -162,11 +163,7 @@ describe('POST 팀 구성원 만들 때',()=>{
             .post('/api/user/make-member')
             .send(params)
             .end((err,res)=>{
-                console.log("**************************")
-                console.log("POST 정상적으로 팀 구성원이 존재하지 않을 때")
-                console.log(res.body)
-                console.log("**************************")
-                expect(res).status(400)
+                expect(res).status(500)
                 expect(res.body.success).to.equal(false)
                 expect(res.body.message).to.equal('멤버를 선택해주세요')
                 if(err){
@@ -177,8 +174,59 @@ describe('POST 팀 구성원 만들 때',()=>{
         })
     })
 
-    //팀 방이 실제로 존재하는지 확인 할 것
-    // 유저가 실제로 존재하는지 확인 할 것
+    // //팀 방이 실제로 존재하는지 확인 할 것
+    // it('POST 그룹 아이디를 제대로 가져오지 못했을 때',()=>{
+    //     return new Promise((resolve,reject)=>{
+    //         var params=[
+    //             {team_room:"",team_member:firstUserId},
+    //             {team_room:"",team_member:secondUserId},
+    //             {team_room:"",team_member:thirdUserId},
+    //         ]
+    //         chai.request(server)
+    //         .post('/api/user/make-member')
+    //         .send(params)
+    //         .end((err,res)=>{
+    //             console.log("*************************")
+    //             console.log(res.body)
+    //             console.log("*************************")
+    //             expect(res).status(500)
+    //             expect(res.body.success).to.equal(false)
+    //             expect(res.body).to.have.own.property('message')
+    //             if(err){
+    //                 reject(new Error(err))
+    //             }
+    //             resolve()
+    //         })
+
+    //     })
+    // })
+
+    // // 유저가 실제로 존재하는지 확인 할 것
+    // it('POST 유저 아이디를 제대로 가져오지 못했을 때 ',()=>{
+    //     return new Promise((resove,reject)=>{
+    //         var params=[
+    //             {team_room:teamId,team_member:""},
+    //             {team_room:teamId,team_member:secondUserId},
+    //             {team_room:teamId,team_member:thirdUserId},
+    //         ]
+    //         chai.request(server)
+    //         .post('/api/user/make-member')
+    //         .send(params)
+    //         .end((err,res)=>{
+    //             console.log("*************************")
+    //             console.log(res.body)
+    //             console.log("*************************")
+    //             expect(res).status(500)
+    //             expect(res.body.success).to.equal(false)
+    //             expect(res.body).to.have.own.property('message')
+    //             if(err){
+    //                 reject(new Error(err))
+    //             }
+    //             resolve()
+    //         })
+
+    //     })
+    // })
 
 })
 
@@ -189,9 +237,6 @@ describe('POST 팀 구성원 누가 있나 확인!(getMember)',()=>{
             .get('/api/user/get-member/')
             .query({team_room:teamId})
             .end((err,res)=>{
-                console.log("**************************")
-                console.log(res.body)
-                console.log("**************************")
                 expect(res).status(200)
                 expect(res.body).to.have.own.property('data')
                 if(err){
@@ -209,10 +254,7 @@ describe('POST 팀 구성원 누가 있나 확인!(getMember)',()=>{
             .get('/api/user/get-member/')
             .query({team_room:""})
             .end((err,res)=>{
-                console.log("**************************")
-                console.log(res.body)
-                console.log("**************************")
-                expect(res).status(400)
+                expect(res).status(500)
                 
                 expect(res.body.success).to.equal(false)
                 expect(res.body).to.have.own.property('message')
@@ -239,9 +281,6 @@ describe('DELETE 팀에서 나가고 싶을 때',()=>{
             .del('/api/user/edit-member')
             .send(params)
             .end((err,res)=>{
-                console.log("**************************")
-                console.log(res.body)
-                console.log("**************************")
                 expect(res).status(200)
                 expect(res.body.success).to.equal(true)
                 if(err){

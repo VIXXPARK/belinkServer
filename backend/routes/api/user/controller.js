@@ -9,12 +9,12 @@ exports.register = (req,res)=>{
     .then((data)=>{
         var phNum = req.body.phNum
         if((data==null || data==undefined)==false){
-            res.status(400).json({
+            res.status(500).json({
                 success:false,
                 data:"이미 존재하는 유저입니다"
             })
         }else if(phNum.length!=13){
-            res.status(400).json({
+            res.status(500).json({
                 success:false,
                 data:"휴대전화 번호 길이가 다릅니다."
             })
@@ -70,7 +70,7 @@ exports.login = (req,res,next)=>{
     model.User.findOne({where:{phNum:req.body.phNum}})
     .then((data)=>{
         if(!data){
-            return res.status(400).send({
+            return res.status(500).send({
                 success:false,
                 message:"존재하지 않은 유저입니다."
             })
@@ -103,7 +103,7 @@ exports.login = (req,res,next)=>{
 exports.makeTeam = async (req,res,next)=>{
 
     if(req.body.teamName==null || req.body.teamName==""){
-       await res.status(400).json({
+       await res.status(500).json({
             success:false,
             message:"팀 이름을 적어주세요"
         })
@@ -160,39 +160,14 @@ exports.deleteTeam = (req,res,next)=>{
 
 
 
-exports.makeMember = async (req,res,next)=>{
+exports.makeMember =(req,res,next)=>{
     if(req.body==null||req.body==undefined||req.body.length==0){
-        res.status(400).json({
+        res.status(500).json({
             success:false,
             message:"멤버를 선택해주세요"
         })
     }else{
-        await model.Team.findOne({
-            where:{id:req.body[0].team_room}
-        })
-        .then((res)=>{
-            if(res==null || res==undefined){
-                res.status(400).json({
-                    success:false,
-                    message:"존재하지 않는 그룹입니다."
-                })
-            }
-        })
-        for(step=0;step<req.body.length;step++){
-            await model.User.findOne({
-                where:{id:req.body[step].team_member}
-            })
-            .then((res)=>{
-                if(res==null || res==undefined){
-                    res.status(400).json({
-                        success:false,
-                        message:"존재하지 유저가 있습니다."
-                    })
-                }
-            })
-        }
-        
-        await model.Member.bulkCreate(req.body,{returning:true})
+        model.Member.bulkCreate(req.body,{returning:true})
         .then(result=>{
             console.log(req.body)
             res.json({
@@ -276,7 +251,7 @@ exports.deleteUser = (req,res,next)=>{
         })
     })
     .catch(err=>{
-        res.status(400).json({
+        res.status(500).json({
             success:false,
             message:'잘못된 정보입니다.'
         })
@@ -304,7 +279,7 @@ exports.getMember = (req,res,next)=>{
     })
     .then(result=>{
         if(result.length==0){
-            res.status(400).json({
+            res.status(500).json({
                 success:false,
                 message:'잘못된 팀 정보입니다.'
             })
@@ -315,7 +290,7 @@ exports.getMember = (req,res,next)=>{
         }
         
     })
-    .catch(err=>res.status(400).json({
+    .catch(err=>res.status(500).json({
         success:false,
         message:err
     }))
