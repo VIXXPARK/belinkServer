@@ -1,17 +1,26 @@
 language: node_js
 node_js:
-  - 12
+  - "node"
+
+services:
+  - mysql
+
+before_install
+  - mysql -e 'CREATE DATABASE belink_test'
 
 branches:
   only:
     - main
-    
+
 cache:
   directories:
     - node_modules
 
 env:
   - NODE_ENV=test
+
+install:
+  - npm install
 
 script:
   - npm test
