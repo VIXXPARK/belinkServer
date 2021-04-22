@@ -121,6 +121,48 @@ describe('POST 로그인 절차를 시행할 경우', () => {
     
 })
 
+
+describe('연락처 정보 휴대전화번호를 통해서 (contactUser)',()=>{
+    it('연락처 조회를 성공적으로 했을 때',()=>{
+        return new Promise((resolve,reject)=>{
+            var params={
+                phNum:['111-2222-3333','010-1234-5678']
+            }
+            chai.request(server)
+                .post('/api/user/contact-user')
+                .send(params)
+                .end((err,res)=>{
+                    expect(res).status(200)
+                    expect(res.body).to.have.own.property('data')
+                    if(err){
+                        reject(new Error(err))
+                    }
+                    resolve()
+                })
+        })
+    })
+
+    it('해당 연락처의 정보가 데이터베이스에 없는 경우',()=>{
+        return new Promise((resolve,reject)=>{
+            var params={
+                phNum:""
+            }
+            chai.request(server)
+                .post('/api/user/contact-user')
+                .send(params)
+                .end((err,res)=>{
+                    expect(res).status(200)
+                    expect(res.body).to.have.own.property('message')
+                    if(err){
+                        reject(new Error(err))
+                    }
+                    resolve()
+                })
+        })
+    })
+})
+
+
 describe('DELETE 회원탈퇴했을 때', () =>{
     it('성공적으로 회원탈퇴했을 때',()=>{
         return new Promise((resolve,reject)=>{
@@ -142,6 +184,9 @@ describe('DELETE 회원탈퇴했을 때', () =>{
         })
     })
 })
+
+
+
 
 describe('PUT 회원 유저 정보 수정',() => {
     it('성공적으로 회원정보수정을 했을 때',()=>{

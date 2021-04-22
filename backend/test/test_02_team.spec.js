@@ -266,6 +266,60 @@ describe('DELETE 팀에서 나가고 싶을 때',()=>{
     })
 })
 
+describe('DELETE 그룹방 자체 삭제! (deleteTeam)',()=>{
+    it('정상적으로 삭제되었을 때',()=>{
+        return new Promise((resolve,reject)=>{
+            chai.request(server)
+                .del('/api/user/delete-team')
+                .query({id:teamId})
+                .end((err,res)=>{
+                    
+                    expect(res).status(200)
+                    expect(res.body.success).to.equal(true)
+                    if(err){
+                        reject(new Error(err))
+                    }
+                    resolve()
+                })
+        })
+    })
+    it('query부분에 값이 전달 받지 않았을 때',()=>{
+        return new Promise((resolve,reject)=>{
+            chai.request(server)
+                .del('/api/user/delete-team')
+                .query()
+                .end((err,res)=>{
+                    
+                    expect(res).status(500)
+                    expect(res.body.success).to.equal(false)
+                    expect(res.body).to.have.own.property('message')
+                    if(err){
+                        reject(new Error(err))
+                    }
+                    resolve()
+                })
+        })
+    })
+    it('값이 제대로 오지 않았을 때',()=>{
+        return new Promise((resolve,reject)=>{
+            chai.request(server)
+                .del('/api/user/delete-team')
+                .query({id:teamId})
+                .end((err,res)=>{
+                    
+                    expect(res).status(200)
+                    expect(res.body.success).to.equal(false)
+                    if(err){
+                        reject(new Error(err))
+                    }
+                    resolve()
+                })
+        })
+    })
+})
+
+
+
 after(async () =>{
     await model.User.destroy({
         truncate:{cascade: true}

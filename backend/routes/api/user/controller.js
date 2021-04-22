@@ -39,12 +39,22 @@ exports.contactUser = (req,res,next)=>{
     model.User.findAll({
         attributes:["id","phNum","username"],
         where:{
-            "phNum":req.body.phNum
+            "phNum":req.body.phNum,
         }
     })
     .then(result=>{
-        res.json({
+        if(result==null || result==undefined||result.length==0){
+            res.status(200).json({
+                message:"해당되는 연락처가 없습니다."
+            })
+        }
+        res.status(200).json({
             data:result
+        })
+    })
+    .catch(err=>{
+        res.status(500).json({
+            message:err
         })
     })
 }
@@ -59,8 +69,18 @@ exports.idContactUser = (req,res,next)=>{
         }
     })
     .then(result=>{
+        if(result==null || result==undefined||result.length==0){
+            res.status(200).json({
+                message:"해당되는 연락처가 없습니다."
+            })
+        }
         res.json({
             data:result
+        })
+    })
+    .catch(err=>{
+        res.status(500).json({
+            message:err
         })
     })
 }
@@ -142,20 +162,31 @@ exports.editTeam = (req,res,next)=>{
 
 exports.deleteTeam = (req,res,next)=>{
     model.Member.destroy({
-        where:{team_room:req.body.id}
+        where:{team_room:req.query.id}
     })
     .then((result)=>{
         model.Team.destroy({
-            where:{id:req.body.id}
+            where:{id:req.query.id}
         })
         .then(fin=>{
             var bool = fin==1
-            res.status(410).json({
+            res.status(200).json({
                 success:bool
             })
         })
+        .catch(err=>{
+            res.status(500).json({
+                success:false,
+                message:"해당되는 그룹이 존재하지 않습니다."
+            })
+        })
     })
-    
+    .catch(err=>{
+        res.status(500).json({
+            success:false,
+            message:"해당되는 그룹이 존재하지 않습니다."
+        })
+    })
 }
 
 
