@@ -5,10 +5,7 @@ node_js:
 branches:
   only:
     - main
-
-services:
-  - mysql
-
+    
 cache:
   directories:
     - node_modules
@@ -17,7 +14,4 @@ env:
   - NODE_ENV=test
 
 script:
-  - echo '*****Bulid starts*****'
-  - echo 'Installing Dependencies'
-  - echo 'Running tests'
-  - mocha
+  - npm test
