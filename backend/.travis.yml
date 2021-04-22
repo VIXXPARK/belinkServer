@@ -1,0 +1,24 @@
+language: node_js
+node_js:
+  - 12.14
+
+before_script:
+  - npm install
+  - npm install dotenv
+  - npm install express
+  - npm install jsonwebtoken
+  - npm install mysql2
+  - npm install sequelize
+  - npm install chai
+  - npm install chai-http
+  - npm install mocha
+
+
+branches:
+  only:
+    - main
+
+notifications:
+  email:
+    recipients:
+      - vixx170627@gmail.com
