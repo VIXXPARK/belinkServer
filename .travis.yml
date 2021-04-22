@@ -2,20 +2,6 @@ language: node_js
 node_js:
   - 12
 
-before_script:
-  - npm install
-  - npm install dotenv
-  - npm install express
-  - npm install jsonwebtoken
-  - npm install mysql2
-  - npm install sequelize
-  - npm install chai
-  - npm install chai-http
-  - npm install mocha
-
-install:
-  - npm run build
-
 branches:
   only:
     - main
@@ -27,10 +13,8 @@ cache:
   directories:
     - node_modules
 
-
-
 env:
-  - NODE_ENV: test PORT=3000
+  - NODE_ENV=test
 
 script:
   - echo '*****Bulid starts*****'
