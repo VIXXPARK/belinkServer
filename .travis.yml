@@ -20,10 +20,8 @@ branches:
   only:
     - main
 
-notifications:
-  email:
-    recipients:
-      - vixx170627@gmail.com
+services:
+  - mysql
 
 cache:
   directories:
@@ -35,6 +33,7 @@ env:
   - NODE_ENV: test PORT=3000
 
 script:
-  - nohup npm run start &
-  - sleep 3
-  - npm run start
+  - echo '*****Bulid starts*****'
+  - echo 'Installing Dependencies'
+  - echo 'Running tests'
+  - mocha
