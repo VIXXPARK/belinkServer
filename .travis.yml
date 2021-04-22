@@ -22,5 +22,7 @@ env:
 install:
   - npm install
 
+before_script: chmod 0555 ./node_modules/.bin/mocha
+
 script:
   - npm test
