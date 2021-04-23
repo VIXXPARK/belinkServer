@@ -22,7 +22,13 @@ before_install:
   - npm install -g
   - npm install mocha chai chai-http express jsonwebtoken sequelize dotenv
   - npm install -g mysql2
-  - mysql -u root --password="" < test/travis.sql
+  - mysql -u root
+  - mysql -e 'use mysql;'
+  - mysql -e "UPDATE user SET authentication_string=null WHERE User='root';"
+  - mysql -e "FLUSH PRIVILEGES;EXIT;"
+  - mysql -u root
+  - mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY '0000';"
+
   
 install:
 
