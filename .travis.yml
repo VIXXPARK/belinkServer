@@ -2,6 +2,8 @@ language: node_js
 node_js:
   - "node"
 
+sudo: true
+
 services:
   - mysql
 
@@ -19,6 +21,21 @@ env:
 install:
   - npm install -g
   - npm install mocha chai chai-http express jsonwebtoken sequelize mysql2 dotenv
+
+
+before_scripts:
+  - wget https://repo.mysql.com//mysql-apt-config_0.8.10-1_all.deb
+  - sudo dpkg -i mysql-apt-config_0.8.10-1_all.deb
+  - sudo apt-get update -q
+  - sudo apt-get install -q -y --allow-unauthenticated -o Dpkg::Options::=--force-confnew mysql-server
+  - sudo systemctl restart mysql
+  - sudo mysql_upgrade
+  - mysql --version  
+  - mysql -u root -e 'create user belink;'
+  - mysql -u root -e "create user 'belink'@'localhost' identified by '0000';"
+  - mysql -u root -e "create database belink default character set utf8;"
+  - mysql -u root -e "grant all privileges on belink.* to 'belink'@'localhost';"
+  - mysql -u root -e "flush privileges;"
 
 script:
   - npm test
