@@ -18,6 +18,7 @@ env:
 
 install:
   - npm install -g
+  - npm install mocha chai chai-http express jsonwebtoken sequelize mysql2 dotenv
 
 script:
   - npm test
