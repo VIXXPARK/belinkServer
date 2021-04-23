@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "node"
+  - 12
 
 sudo: true
 
@@ -33,8 +33,8 @@ before_scripts:
   - mysql --version  
   - mysql -u root -e 'create user belink;'
   - mysql -u root -e "create user 'belink'@'localhost' identified by '0000';"
-  - mysql -u root -e "create database belink default character set utf8;"
-  - mysql -u root -e "grant all privileges on belink.* to 'belink'@'localhost';"
+  - mysql -u root -e "create database belink_test default character set utf8;"
+  - mysql -u root -e "grant all privileges on belink_test.* to 'belink'@'localhost';"
   - mysql -u root -e "flush privileges;"
 
 script:
