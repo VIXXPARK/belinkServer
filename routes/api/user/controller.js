@@ -35,7 +35,6 @@ exports.register = (req,res)=>{
 }
 
 exports.contactUser = (req,res,next)=>{
-
     model.User.findAll({
         attributes:["id","phNum","username"],
         where:{
@@ -48,6 +47,7 @@ exports.contactUser = (req,res,next)=>{
                 message:"해당되는 연락처가 없습니다."
             })
         }
+        
         res.status(200).json({
             data:result
         })
