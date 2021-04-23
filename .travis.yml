@@ -19,16 +19,16 @@ env:
   - NODE_ENV=test
 
 before_install:
-
+  - npm install -g
+  - npm install mocha chai chai-http express jsonwebtoken sequelize dotenv
+  - npm install -g mysql2
+  - mysql -e 'create database belink_test;'
 install:
 
 
 
 before_scripts:
-  - npm install -g
-  - npm install mocha chai chai-http express jsonwebtoken sequelize dotenv
-  - npm install -g mysql2
-  - mysql -e 'create database belink_test;'
+
   
 
 script:
