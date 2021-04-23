@@ -25,8 +25,8 @@ const production = {
 
 const test = {
     username: env.MYSQL_TEST_USERNAME,
-    password: null,
-    database: env.MYSQL_DATABASE_TEST,
+    password: env.MYSQL_TEST_PASSWORD,
+    database: env.MYSQL_TEST_DATABASE,
     host: env.MYSQL_TEST_HOST,
     dialect:env.MYSQL_DIALECT,
     dialectOptions:{
