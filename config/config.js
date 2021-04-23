@@ -24,10 +24,10 @@ const production = {
 }
 
 const test = {
-    user: env.MYSQL_USERNAME,
-    password: env.MYSQL_PASSWORD,
+    username: env.MYSQL_TEST_USERNAME,
+    password: env.MYSQL_TEST_PASSWORD,
     database: env.MYSQL_DATABASE_TEST,
-    host: env.MYSQL_HOST,
+    host: env.MYSQL_TEST_HOST,
     dialect:env.MYSQL_DIALECT,
     dialectOptions:{
         multipleStatments:true
