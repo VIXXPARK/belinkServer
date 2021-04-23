@@ -11,15 +11,6 @@ branches:
   only:
     - main
 
-addons:
-  apt:
-    sources:
-      - mysql-5.7-trusty
-    packages:
-      - mysql-server
-
-dist: trsuty
-
 
 cache:
   directories:
@@ -32,16 +23,12 @@ before_install:
   - npm install -g
   - npm install mocha chai chai-http express jsonwebtoken sequelize dotenv
   - npm install -g mysql2
-  - mysql -e 'create database belink_test'
+  - mysql -e 'create user root;'
+  - mysql -e 'create database belink_test;'
 
-  
 install:
-
-
 
 before_scripts:
   
-  
-
 script:
   - npm test
