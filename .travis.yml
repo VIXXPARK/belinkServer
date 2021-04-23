@@ -17,9 +17,7 @@ env:
   - NODE_ENV=test
 
 install:
-  - sudo npm uninstall node-gyp -g
-  - npm uninstall node-gyp
-  - npm install
+  - npm install -g
 
 script:
   - npm test
