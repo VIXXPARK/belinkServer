@@ -19,18 +19,16 @@ env:
   - NODE_ENV=test
 
 before_install:
-  - sudo mysql -e 'CREATE DATABASE IF NOT EXISTS belink_test'
-  - sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('0000') where User='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
-  - sudo mysql_upgrade -u root -p0000
-  - sudo service mysql restart
-  - sudo mysql --version
 
 install:
-  - npm install -g
-  - npm install mocha chai chai-http express jsonwebtoken sequelize mysql2 dotenv
+
 
 
 before_scripts:
+  - npm install -g
+  - npm install mocha chai chai-http express jsonwebtoken sequelize dotenv
+  - npm install -g mysql2
+  - mysql -e 'create database belink_test;'
   
 
 script:
