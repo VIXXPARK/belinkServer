@@ -11,6 +11,16 @@ branches:
   only:
     - main
 
+addons:
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
+
+dist: trsuty
+
+
 cache:
   directories:
     - node_modules
@@ -22,12 +32,7 @@ before_install:
   - npm install -g
   - npm install mocha chai chai-http express jsonwebtoken sequelize dotenv
   - npm install -g mysql2
-  - mysql -u root
-  - mysql -e 'use mysql;'
-  - mysql -e "UPDATE user SET authentication_string=null WHERE User='root';"
-  - mysql -e "FLUSH PRIVILEGES;EXIT;"
-  - mysql -u root
-  - mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY '0000';"
+  - mysql -e 'create database belink_test'
 
   
 install:
