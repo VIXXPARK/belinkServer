@@ -24,6 +24,7 @@ before_install:
   - npm install -g mysql2
   - mysql -e 'create database belink_test;'
   - mysql -e 'create database belink;'
+  - mysql -e 'grant all privileges on belink_test.* to travis@localhost identified by"";'
   
 install:
 
