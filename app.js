@@ -20,7 +20,6 @@ sequelize.sync().then(()=>{
 
 
 // view engine setup!!
-//travis.yml 브랜치 확인용
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
