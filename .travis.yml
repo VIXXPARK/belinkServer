@@ -31,11 +31,11 @@ before_scripts:
   - sudo systemctl restart mysql
   - sudo mysql_upgrade
   - mysql --version  
-  - mysql -u root -e 'create user belink;'
-  - mysql -u root -e "create user 'belink'@'localhost' identified by '0000';"
-  - mysql -u root -e "create database belink_test default character set utf8;"
-  - mysql -u root -e "grant all privileges on belink_test.* to 'belink'@'localhost';"
-  - mysql -u root -e "flush privileges;"
+  - sudo mysql -u root -e 'create user belink;'
+  - sudo mysql -u root -e "create user 'belink'@'localhost' identified by '0000';"
+  - sudo mysql -u root -e "create database belink_test default character set utf8;"
+  - sudo mysql -u root -e "grant all privileges on belink_test.* to 'belink'@'localhost';"
+  - sudo mysql -u root -e "flush privileges;"
 
 script:
   - npm test
