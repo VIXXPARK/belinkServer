@@ -13,7 +13,7 @@ var teamId=""
 before(async ()=>{
     await model.User.create({
         phNum:'111-1111-1111',
-        username:'첫번째'
+        username:'first'
     })
     .then(res=>{
         firstUserId=res.id
@@ -21,7 +21,7 @@ before(async ()=>{
 
     await model.User.create({
         phNum:'222-2222-2222',
-        username:'두번째'
+        username:'second'
     })
     .then(res=>{
         secondUserId=res.id
@@ -29,13 +29,13 @@ before(async ()=>{
 
     await model.User.create({
         phNum:'333-3333-3333',
-        username:'세번째'
+        username:'third'
     })
     .then(res=>{
         thirdUserId=res.id
     })
     await model.Team.create({
-        teamName:"일번",
+        teamName:"one",
         createdAt:new Date().getTime(),
         updatedAt:new Date().getTime()
     })
@@ -50,7 +50,7 @@ describe('POST 방 만들기',()=>{
     it('방 만들기 성공했을 경우',()=>{
         return new Promise((resolve,reject)=>{
             var params = {
-                teamName:'두식이',
+                teamName:'mike',
                 createdAt:new Date().getTime(),
                 updatedAt:new Date().getTime()
             }
@@ -95,7 +95,7 @@ describe('PUT 팀 이름을 수정했을 경우',()=>{
         return new Promise((resolve,reject)=>{
             var params ={
                 id:teamId,
-                teamName:"수정본"
+                teamName:"edition"
             }
             chai.request(server)
             .put('/api/user/edit-team')

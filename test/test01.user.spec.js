@@ -22,7 +22,7 @@ describe('POST 데이터를 body에 넣어서 회원가입을 진행했을 때',
         return new Promise((resolve,reject)=>{
             var params={
                 phNum:'010-1234-5678',
-                username:"홍길동"
+                username:"hong"
             }
         
             chai.request(server)
@@ -168,7 +168,7 @@ describe('DELETE 회원탈퇴했을 때', () =>{
         return new Promise((resolve,reject)=>{
             var params = {
                 phNum:'010-1234-5678',
-                username:'홍길동'
+                username:'hong'
             }
             chai.request(server)
             .del('/api/user/test/delete')
@@ -194,7 +194,7 @@ describe('PUT 회원 유저 정보 수정',() => {
             var params={
                 id:userId,
                 phNum:'111-2222-3333',
-                username:'무야호'
+                username:'yaho'
             }
             chai.request(server)
             .put('/api/user/edit-info')
