@@ -5,16 +5,28 @@ const model = require('../models');
 const expect = chai.expect;
 chai.use(chaiHttp);
 var userId=""
-// before(async ()=>{
-//     await model.User.create({
-//         phNum:'111-2222-3333',
-//         username:'init'
-//     })
-//     .then(res=>{
-//         userId=res.id
-//     })
-    
-// })
+
+
+describe('사전 필요한 회원가입',()=>{
+    it('USER 111-2222-3333,init',()=>{
+        return new Promise((resolve,reject)=>{
+            var params = {
+                phNum:'111-2222-3333',
+                username:'init'
+            }
+            chai.request(server)
+            .post('/api/user/signup')
+            .send(params)
+            .end((err,res)=>{
+                userId=res.body.data.id
+                resolve()
+            })
+
+        })
+    })
+
+})
+
 
 
 describe('POST 데이터를 body에 넣어서 회원가입을 진행했을 때', ()=>{
@@ -55,26 +67,26 @@ describe('POST 데이터를 body에 넣어서 회원가입을 진행했을 때',
         })
     })//it
 
-    // it('회원 가입을 하는데 이미 해당 유저가 있는 경우',()=>{
-    //     return new Promise((resolve,reject)=>{
-    //         var params={
-    //             phNum:'111-2222-3333',
-    //             username:'init'
-    //         }
-    //         chai.request(server)
-    //         .post('/api/user/signup')
-    //         .send(params)
-    //         .end((err,res)=>{
-    //             expect(res).status(500)
-    //             expect(res.body.success).to.equal(false)
-    //             expect(res.body.data).to.equal("이미 존재하는 유저입니다")
-    //             if(err){
-    //                 reject(new Error(err))
-    //             }
-    //             resolve();
-    //         })
-    //     })
-    // })
+    it('회원 가입을 하는데 이미 해당 유저가 있는 경우',()=>{
+        return new Promise((resolve,reject)=>{
+            var params={
+                phNum:'111-2222-3333',
+                username:'init'
+            }
+            chai.request(server)
+            .post('/api/user/signup')
+            .send(params)
+            .end((err,res)=>{
+                expect(res).status(500)
+                expect(res.body.success).to.equal(false)
+                expect(res.body.data).to.equal("이미 존재하는 유저입니다")
+                if(err){
+                    reject(new Error(err))
+                }
+                resolve();
+            })
+        })
+    })
 })
 
 describe('POST 로그인 절차를 시행할 경우', () => {
@@ -122,45 +134,45 @@ describe('POST 로그인 절차를 시행할 경우', () => {
 })
 
 
-// describe('연락처 정보 휴대전화번호를 통해서 (contactUser)',()=>{
-//     it('연락처 조회를 성공적으로 했을 때',()=>{
-//         return new Promise((resolve,reject)=>{
-//             var params={
-//                 phNum:['111-2222-3333','010-1234-5678']
-//             }
-//             chai.request(server)
-//                 .post('/api/user/contact-user')
-//                 .send(params)
-//                 .end((err,res)=>{
-//                     expect(res).status(200)
-//                     expect(res.body).to.have.own.property('data')
-//                     if(err){
-//                         reject(new Error(err))
-//                     }
-//                     resolve()
-//                 })
-//         })
-//     })
+describe('연락처 정보 휴대전화번호를 통해서 (contactUser)',()=>{
+    it('연락처 조회를 성공적으로 했을 때',()=>{
+        return new Promise((resolve,reject)=>{
+            var params={
+                phNum:['111-2222-3333','010-1234-5678']
+            }
+            chai.request(server)
+                .post('/api/user/contact-user')
+                .send(params)
+                .end((err,res)=>{
+                    expect(res).status(200)
+                    expect(res.body).to.have.own.property('data')
+                    if(err){
+                        reject(new Error(err))
+                    }
+                    resolve()
+                })
+        })
+    })
 
-//     it('해당 연락처의 정보가 데이터베이스에 없는 경우',()=>{
-//         return new Promise((resolve,reject)=>{
-//             var params={
-//                 phNum:""
-//             }
-//             chai.request(server)
-//                 .post('/api/user/contact-user')
-//                 .send(params)
-//                 .end((err,res)=>{
-//                     expect(res).status(200)
-//                     expect(res.body).to.have.own.property('message')
-//                     if(err){
-//                         reject(new Error(err))
-//                     }
-//                     resolve()
-//                 })
-//         })
-//     })
-// })
+    it('해당 연락처의 정보가 데이터베이스에 없는 경우',()=>{
+        return new Promise((resolve,reject)=>{
+            var params={
+                phNum:""
+            }
+            chai.request(server)
+                .post('/api/user/contact-user')
+                .send(params)
+                .end((err,res)=>{
+                    expect(res).status(200)
+                    expect(res.body).to.have.own.property('message')
+                    if(err){
+                        reject(new Error(err))
+                    }
+                    resolve()
+                })
+        })
+    })
+})
 
 
 describe('DELETE 회원탈퇴했을 때', () =>{
@@ -188,25 +200,25 @@ describe('DELETE 회원탈퇴했을 때', () =>{
 
 
 
-// describe('PUT 회원 유저 정보 수정',() => {
-//     it('성공적으로 회원정보수정을 했을 때',()=>{
-//         return new Promise((resolve,reject)=>{
-//             var params={
-//                 id:userId,
-//                 phNum:'111-2222-3333',
-//                 username:'yaho'
-//             }
-//             chai.request(server)
-//             .put('/api/user/edit-info')
-//             .send(params)
-//             .end((err,res)=>{
-//                 expect(res).status(200)
-//                 expect(res.body.success).to.equal(true)
-//                 if(err){
-//                     reject(err)
-//                 }
-//                 resolve()
-//             })
-//         })
-//     })
-// })
+describe('PUT 회원 유저 정보 수정',() => {
+    it('성공적으로 회원정보수정을 했을 때',()=>{
+        return new Promise((resolve,reject)=>{
+            var params={
+                id:userId,
+                phNum:'111-2222-3333',
+                username:'yaho'
+            }
+            chai.request(server)
+            .put('/api/user/edit-info')
+            .send(params)
+            .end((err,res)=>{
+                expect(res).status(200)
+                expect(res.body.success).to.equal(true)
+                if(err){
+                    reject(err)
+                }
+                resolve()
+            })
+        })
+    })
+})
