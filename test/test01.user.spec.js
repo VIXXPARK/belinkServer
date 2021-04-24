@@ -8,7 +8,7 @@ var userId=""
 
 
 describe('TEST1 사전 필요한 회원가입',()=>{
-    it('USER 111-2222-3333,first',()=>{
+    it('USER 111-2222-3333,init',()=>{
         return new Promise((resolve,reject)=>{
             var params = {
                 phNum:'111-2222-3333',
