@@ -24,6 +24,9 @@ describe('TEST2 사전 필요한 회원가입',()=>{
             .send(params)
             .end((err,res)=>{
                 firstUserId=res.body.data.id
+                if(err){
+                    reject(new Error(err))
+                }
                 resolve()
             })
 
@@ -40,6 +43,9 @@ describe('TEST2 사전 필요한 회원가입',()=>{
             .send(params)
             .end((err,res)=>{
                 secondUserId=res.body.data.id
+                if(err){
+                    reject(new Error(err))
+                }
                 resolve()
             })
 
@@ -56,6 +62,9 @@ describe('TEST2 사전 필요한 회원가입',()=>{
             .send(params)
             .end((err,res)=>{
                 thirdUserId=res.body.data.id
+                if(err){
+                    reject(new Error(err))
+                }
                 resolve()
             })
 
@@ -73,6 +82,9 @@ describe('TEST2 사전 필요한 회원가입',()=>{
             .send(params)
             .end((err,res)=>{
                 teamId=res.body.id
+                if(err){
+                    reject(new Error(err))
+                }
                 resolve()
             })
 
