@@ -7,8 +7,8 @@ chai.use(chaiHttp);
 var userId=""
 
 
-describe('사전 필요한 회원가입',()=>{
-    it('USER 111-2222-3333,init',()=>{
+describe('TEST1 사전 필요한 회원가입',()=>{
+    it('USER 111-2222-3333,first',()=>{
         return new Promise((resolve,reject)=>{
             var params = {
                 phNum:'111-2222-3333',
@@ -19,12 +19,14 @@ describe('사전 필요한 회원가입',()=>{
             .send(params)
             .end((err,res)=>{
                 userId=res.body.data.id
-                resolve()
+                if(err){
+                    reject(new Error(err))
+                }
+                resolve();
             })
 
         })
     })
-
 })
 
 
