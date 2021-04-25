@@ -3,7 +3,6 @@ const chaiHttp = require('chai-http');
 const server = require('../app');
 const model = require('../models');
 const expect = chai.expect;
-const sequelize = require('sequelize');
 chai.use(chaiHttp);
 var firstUserId=""
 var secondUserId=""
@@ -363,3 +362,4 @@ describe('DELETE 그룹방 자체 삭제! (deleteTeam)',()=>{
         })
     })
 })
+
