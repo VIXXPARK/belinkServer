@@ -9,6 +9,27 @@ var userId=""
 
 
 describe('POST 데이터를 body에 넣어서 회원가입을 진행했을 때', ()=>{
+
+
+    it('회원가입 요건에 따르지 않았을 때(휴대전화번호 길이가 다를때)',()=>{
+        return new Promise((resolve,reject)=>{
+            var params={
+                phNum:'010-1234-56789',
+                username:'errorman'
+            }
+            chai.request(server)
+            .post('/api/user/signup')
+            .send(params)
+            .end((err,res)=>{
+                expect(res).status(500)
+                expect(res.body.success).to.equal(false)
+                if(err) reject(new Error("Error message"))
+                resolve();
+                
+            })
+        })
+    })//it
+
     it('제대로 회원가입에 준수했을 경우',()=>{
         return new Promise((resolve,reject)=>{
             var params={
@@ -45,27 +66,6 @@ describe('POST 데이터를 body에 넣어서 회원가입을 진행했을 때',
 
         })
     })
-
-
-    it('회원가입 요건에 따르지 않았을 때(휴대전화번호 길이가 다를때)',()=>{
-        return new Promise((resolve,reject)=>{
-            var params={
-                phNum:'010-1234-56789',
-                username:'errorman'
-            }
-            chai.request(server)
-            .post('/api/user/signup')
-            .send(params)
-            .end((err,res)=>{
-                expect(res).status(500)
-                expect(res.body.success).to.equal(false)
-                if(err) reject(new Error("Error message"))
-                resolve();
-                
-            })
-        })
-    })//it
-
     it('회원 가입을 하는데 이미 해당 유저가 있는 경우',()=>{
         return new Promise((resolve,reject)=>{
             var params={
