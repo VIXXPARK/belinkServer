@@ -22,8 +22,7 @@ describe('POST 데이터를 body에 넣어서 회원가입을 진행했을 때',
             .end((err,res)=>{
                 expect(res).status(201)
                 if(err) reject(new Error("Error message"))
-                resolve();
-                
+                resolve();                
             })
         })
     })
