@@ -1,7 +1,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../app');
-const model = require('../models');
 const expect = chai.expect;
 chai.use(chaiHttp);
 var firstUserId=""
@@ -124,7 +123,7 @@ describe('POST 방 만들기',()=>{
             .post('/api/user/edit-team')
             .send(params)
             .end((err,res)=>{
-                expect(res).status(500)
+                expect(res).status(400)
                 expect(res.body).to.have.own.property('message')
                 if(err){
                     reject(new Error(err))
@@ -188,7 +187,7 @@ describe('POST 팀 구성원 만들 때 (makeMember)',()=>{
             .post('/api/user/make-member')
             .send(params)
             .end((err,res)=>{
-                expect(res).status(500)
+                expect(res).status(400)
                 expect(res.body.success).to.equal(false)
                 expect(res.body.message).to.equal('멤버를 선택해주세요')
                 if(err){
@@ -211,7 +210,7 @@ describe('POST 팀 구성원 만들 때 (makeMember)',()=>{
             .post('/api/user/make-member')
             .send(params)
             .end((err,res)=>{
-                expect(res).status(500)
+                expect(res).status(400)
                 expect(res.body.success).to.equal(false)
                 expect(res.body).to.have.own.property('message')
                 if(err){
@@ -235,7 +234,7 @@ describe('POST 팀 구성원 만들 때 (makeMember)',()=>{
             .post('/api/user/make-member')
             .send(params)
             .end((err,res)=>{
-                expect(res).status(500)
+                expect(res).status(400)
                 expect(res.body.success).to.equal(false)
                 expect(res.body).to.have.own.property('message')
                 if(err){
@@ -273,7 +272,7 @@ describe('POST 팀 구성원 누가 있나 확인!(getMember)',()=>{
             .get('/api/user/get-member/')
             .query({team_room:""})
             .end((err,res)=>{
-                expect(res).status(500)
+                expect(res).status(400)
                 
                 expect(res.body.success).to.equal(false)
                 expect(res.body).to.have.own.property('message')

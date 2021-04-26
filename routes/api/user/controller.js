@@ -9,12 +9,12 @@ exports.register = (req,res)=>{
     .then((data)=>{
         var phNum = req.body.phNum
         if((data==null || data==undefined)==false){
-            res.status(500).json({
+            res.status(400).json({
                 success:false,
                 data:"이미 존재하는 유저입니다"
             })
         }else if(phNum.length!=13){
-            res.status(500).json({
+            res.status(400).json({
                 success:false,
                 data:"휴대전화 번호 길이가 다릅니다."
             })
@@ -90,7 +90,7 @@ exports.login = (req,res,next)=>{
     model.User.findOne({where:{phNum:req.body.phNum}})
     .then((data)=>{
         if(!data){
-            return res.status(500).send({
+            return res.status(400).send({
                 success:false,
                 message:"존재하지 않은 유저입니다."
             })
@@ -123,7 +123,7 @@ exports.login = (req,res,next)=>{
 exports.makeTeam = async (req,res,next)=>{
 
     if(req.body.teamName==null || req.body.teamName==""){
-       await res.status(500).json({
+       await res.status(400).json({
             success:false,
             message:"팀 이름을 적어주세요"
         })
@@ -139,7 +139,7 @@ exports.makeTeam = async (req,res,next)=>{
                 id:result.id
             })
         })
-        .catch(err=>res.status(404).json({
+        .catch(err=>res.status(500).json({
             success:false,
             msg:err
         }))
@@ -193,7 +193,7 @@ exports.deleteTeam = (req,res,next)=>{
 
 exports.makeMember =(req,res,next)=>{
     if(req.body==null||req.body==undefined||req.body.length==0){
-        res.status(500).json({
+        res.status(400).json({
             success:false,
             message:"멤버를 선택해주세요"
         })
@@ -204,7 +204,7 @@ exports.makeMember =(req,res,next)=>{
         })
         .then(teamResult=>{
             if(teamResult==null || teamResult==undefined){
-                res.status(500).json({
+                res.status(400).json({
                     success:false,
                     message:"제대로 된 그룹방이 아닙니다."
                 })
@@ -224,7 +224,7 @@ exports.makeMember =(req,res,next)=>{
                 })
             })
             .catch(err=>{
-                res.status(500).json({
+                res.status(400).json({
                     success:false,
                     message:err
                 })
@@ -330,7 +330,7 @@ exports.getMember = (req,res,next)=>{
     })
     .then(result=>{
         if(result.length==0){
-            res.status(500).json({
+            res.status(400).json({
                 success:false,
                 message:'잘못된 팀 정보입니다.'
             })

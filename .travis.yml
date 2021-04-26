@@ -2,8 +2,6 @@ language: node_js
 node_js:
   - 12
 
-sudo: true
-
 services:
   - mysql
 
@@ -27,7 +25,5 @@ before_install:
 
 install:
 
-before_scripts:
-  
 script:
   - npm test
