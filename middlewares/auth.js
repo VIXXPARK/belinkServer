@@ -3,10 +3,8 @@ const jwt = require('jsonwebtoken')
 const key = require('../key')
 const model = require('../models')
 const authMiddleware = (req,res,next) =>{
-    // console.log(req.headers)
     const token = req.headers['x-access-token']||req.query.token
 
-    console.log(token)
     if(!token){
         return res.status(403).json({
             success:true,

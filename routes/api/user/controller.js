@@ -198,7 +198,6 @@ exports.makeMember =(req,res,next)=>{
             message:"멤버를 선택해주세요"
         })
     }else{
-        console.log(req.body[0].team_room)
         model.Team.findOne({
             where:{id:req.body[0].team_room}
         })
@@ -218,7 +217,6 @@ exports.makeMember =(req,res,next)=>{
                     where:{team_member:{ne:null}}
                 })
             .then(result=>{
-                console.log(req.body)
                 res.json({
                     success:true
                 })
@@ -258,7 +256,6 @@ exports.makeFriend = (req,res,next)=>{
             var parseBody = [];
             for(idx in req.body){
                 var x = await model.Friend.findOne({where:req.body[idx]})
-                console.log(x)
                 if(x!=null || x!=undefined){
                     continue;
                 }else{
@@ -304,9 +301,6 @@ exports.makeFriend = (req,res,next)=>{
 }
 
 exports.getMyFriend = (req,res,next)=>{
-    console.log("************************")
-    console.log(req)
-    console.log("************************")
     model.Friend.findAll({
         attributes:[],
         where:{device:req.decoded.id,hidden:false},
@@ -364,7 +358,6 @@ exports.deleteMember = (req,res,next)=>{
         where:{team_member:req.body.userId,team_room:req.body.teamId}
     })
     .then(result=>{
-        console.log(result)
         var bool = result==1
         res.json({
             success:bool

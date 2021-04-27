@@ -138,30 +138,30 @@ describe('GET 친구정보 가져오기',()=>{
             .send(params)
             .end((err,res)=>{
                 token=res.body.accessToken
+                resolve();
             })
-            resolve();
+            
         })
     })
     
-    // it('성공했을 때',()=>{
-    //     return new Promise((resolve,reject)=>{
-    //         chai.request(server)
-    //         .get('/api/user/get-my-friend')
-    //         .set("x-access-token",token)
-    //         .end((err,res)=>{
-    //             if(err){
-    //                 reject(new Error(err))
-    //             }
-    //             console.log(token)
-    //             expect(res).status(200)
-    //             expect(res.body.data[0]).have.own.property('myFriendUser')
-    //             expect(res.body.data[0].myFriendUser).have.own.property('id')
-    //             expect(res.body.data[0].myFriendUser).have.own.property('phNum')
-    //             expect(res.body.data[0].myFriendUser).have.own.property('username')
-    //             resolve();
-    //         })
-    //     })
-    // })
+    it('성공했을 때',()=>{
+        return new Promise((resolve,reject)=>{
+            chai.request(server)
+            .get('/api/user/get-my-friend')
+            .set({"x-access-token":token})
+            .end((err,res)=>{
+                if(err){
+                    reject(new Error(err))
+                }
+                expect(res).status(200)
+                expect(res.body.data[0]).have.own.property('myFriendUser')
+                expect(res.body.data[0].myFriendUser).have.own.property('id')
+                expect(res.body.data[0].myFriendUser).have.own.property('phNum')
+                expect(res.body.data[0].myFriendUser).have.own.property('username')
+                resolve();
+            })
+        })
+    })
 
     it('토큰이 제대로 존재하지 않았을 때',()=>{
         return new Promise((resolve,reject)=>{
