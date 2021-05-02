@@ -2,6 +2,7 @@ const admin = require('firebase-admin');
 const serAccount = require('../../../serviceKey.json');
 const model = require('../../../models');
 const { sequelize } = require('../../../models');
+const { Op } = require("sequelize");
 
 admin.initializeApp({
     credential: admin.credential.cert(serAccount)
@@ -56,6 +57,7 @@ exports.groupPush = async (req, res, noti, data) => {
             // required: true = inner join
             // right: true = right outer join
         })
+        console.log(result);
         const array = []
         for(let i=0; i< result.length; i++)
         {
@@ -96,6 +98,77 @@ exports.groupPush = async (req, res, noti, data) => {
                 return res.status(400).json({ success : false })
             });
     } catch (err) {
+        res.status(404).json({
+            success: false,
+            message: err
+        })
+    }
+}
+
+exports.infectionPush = async (req, res) => {
+    const { userId, name } = req.body;
+    try {
+        
+        const team_rooms = await model.Member.findAll({
+            attributes: ['team_room'],
+            where: { team_member: userId }
+        })
+        const teamRoomArray = [];
+        team_rooms.forEach((item, idx)=>{
+            teamRoomArray.push(item.team_room);
+        })
+
+        //console.log(teamRoomArray);
+
+        const result = await model.Member.findAll({
+            attributes: [],
+            where: { team_room: teamRoomArray },
+            include: [{ model: model.User, as: 'teamMember', where: {id: { [Op.not]: userId }}, attributes: ['token'] }]
+        })
+
+        const infectArray = [];
+        result.forEach((item, idx)=>{
+            infectArray.push(item.teamMember.token);
+        });
+        //console.log(infectArray);
+        
+        const registrationTokens = infectArray
+
+        const noti = {
+            title: `${name} 님이 코로나에 확진되었습니다.`,
+            body: '같이 있으셨던 분들께서는 자가 격리 해주시고, 빠른 시일 내에 가까운 선별 진료소를 찾아 코로나 검사를 받아주시기 바랍니다.'
+        }
+
+        const message = {
+            notification: noti,
+            tokens: registrationTokens,
+        }
+
+        admin
+            .messaging()
+            .sendMulticast(message)
+            .then((response) => {
+
+                console.log('Successfully sent message : ', response)
+                
+                if (response.failureCount > 0) {
+                    const failedTokens = [];
+                    response.responses.forEach((resp, idx) => {
+                    if (!resp.success) {
+                        failedTokens.push(registrationTokens[idx]);
+                    }
+                    });
+                    console.log('List of tokens that caused failures: ' + failedTokens);
+                }
+
+                return res.status(200).json({ success : true })
+            })
+            .catch( (err) => {
+                console.log('Error Sending message : ', err)
+                return res.status(400).json({ success : false })
+            });
+
+    } catch(err) {
         res.status(404).json({
             success: false,
             message: err

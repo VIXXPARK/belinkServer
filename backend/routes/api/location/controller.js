@@ -2,13 +2,12 @@ const model = require('../../../models');
 const key = require('../../../key');
 
 exports.showPlace = (req, res) => {
-    model.Visit.findAll({where:{userId:req.body.userId}})
+    model.Visit.findAll({
+        attributes: [],
+        where: { userId: req.body.userId },
+        include: [{ model: model.Store }]
+    })
     .then(result => {
-        if(!result) {
-            return res.status(404).send({
-                message:"방문한 곳이 없습니다."
-            })
-        }
         res.json({
             success: true,
             data: result

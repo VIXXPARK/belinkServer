@@ -1,6 +1,7 @@
 const model = require('../../../models');
 const { sequelize } = require('../../../models');
 const pushService = require('./pushService');
+const { Op } = require("sequelize");
 
 exports.nfcPushMsg = async (req, res, next) => {
     const { team_room, userId, storeId } = req.body;
@@ -89,8 +90,51 @@ exports.reject = async (req, res) => {
     }
 }
 
-// 바뀐것
+exports.groupInfectionPush = async (req, res) => {
+    try{
+        pushService.infectionPush(req, res);
+    } catch (err) {
+        res.status(404).json({
+            success: false,
+            message: err
+        })
+    }
+}
 
-// 1. user 테이블에 token 컬럼 추가, 저장할 때 토큰 또한 받아야한다.
-// 2. accept 테이블 새로 추가, makemember함수가 실행될 때 create한다.
-// 3. push알림 추가 (그룹nfc, 수락, 거절)
+exports.test = async(req, res) => {
+    const { userId, name } = req.body;
+    try{
+        const team_rooms = await model.Member.findAll({
+            attributes: ['team_room'],
+            where: { team_member: userId }
+        })
+        const teamRoomArray = [];
+        team_rooms.forEach((item, idx)=>{
+            teamRoomArray.push(item.team_room);
+        });
+
+        console.log(teamRoomArray);
+        console.log("check1");
+        const result = await model.Member.findAll({
+            attributes: [],
+            where: { team_room: teamRoomArray },
+            include: [{ model: model.User, as: 'teamMember', where: {id: { [Op.not]: userId }}, attributes: ['token'] }]
+        })
+        console.log("check2");
+        const infectArray = [];
+        result.forEach((item, idx)=>{
+            infectArray.push(item.teamMember.token);
+        });
+        console.log(infectArray);
+
+        res.json({
+            success: true,
+            message: infectArray
+        })
+    } catch (err) {
+        res.status(404).json({
+            success: false,
+            message: err
+        })
+    }
+}
