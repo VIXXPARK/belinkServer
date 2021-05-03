@@ -1,0 +1,29 @@
+language: node_js
+node_js:
+  - 12
+
+services:
+  - mysql
+
+branches:
+  only:
+    - main
+
+
+cache:
+  directories:
+    - node_modules
+
+env:
+  - NODE_ENV=test
+
+before_install:
+  - npm install -g
+  - npm install mocha chai chai-http express jsonwebtoken sequelize dotenv
+  - npm install -g mysql2
+  - mysql -e 'create database belink_test;'
+
+install:
+
+script:
+  - npm test

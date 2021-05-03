@@ -1,5 +1,6 @@
 # belinkServer
 세종대학교 캡스톤
+[![Build Status](https://travis-ci.com/VIXXPARK/belinkServer.svg?branch=main)](https://travis-ci.com/VIXXPARK/belinkServer)
 ------------------------
 ```
 1.  url 규칙은 api/를 시작으로 하며 그 다음 순서는 각 주요 데이터베이스 테이블 네임
@@ -25,3 +26,7 @@ api
 3.  예를 들어 api/user/get-user를 작성했다면 이러한 것을 작성했고, 안된다면 issues를 활용하여 어느 것이 안되는지
     알리도록 하자
 ```
+
+```
+1. 데이터베이스를 설정할 때 window 환경에서는 set NODE_ENV=test or development or production으로 지정해서 하자
+2. 리눅스 환경에서는 export NODE_ENV=production or test or development 이다.
