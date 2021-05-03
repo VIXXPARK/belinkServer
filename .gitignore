@@ -1,3 +1,5 @@
 node_modules
 .env
-# key.js
+key.js
+config
+serviceKey.json
