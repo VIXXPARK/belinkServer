@@ -12,10 +12,10 @@ const Op = Sequelize.Op;
 
 
 exports.getPrediction = async (req, res, next) => {
-        var curX = req.body.x;
-        var curY = req.body.y;
-        var id = req.body.id;
-        var radius = 100;
+        const curX = req.body.x;
+        const curY = req.body.y;
+        const id = req.body.id;
+        const radius = 100;
         
         let ts = Date.now()
         let dateObj = new Date(ts);
@@ -42,9 +42,17 @@ exports.getPrediction = async (req, res, next) => {
                 ['createdAt', 'DESC']
             ]
         });
-        var prior = getPrior['store.storeType'];
+        var prior = ""
+        if(getPrior == null){
+            prior = "none";
+        }
+        else{
+            prior = getPrior['store.storeType'];
+        }
 
         var getPrediction = await model.treeResult.findAll({
+            raw: true,
+            attributes:['storeType'],
             where:{
                 sTime:{
                     [Op.lte]: hour
@@ -60,7 +68,51 @@ exports.getPrediction = async (req, res, next) => {
                 }
             }
         });
-        console.log(getPrediction);
+
+        const predictedStore = getPrediction[0]['storeType'];
+        var kUrl = '';
+        const kMethod = 'GET';
+        const kHeaders = {
+            'Authorization': 'KakaoAK c9f67cf11819f1c1e3c318b99d7dfac1'
+        }
+        const kEncoding = 'utf-8';
+        if(predictedStore == 'CE7' || predictedStore == 'FD6'){
+            kUrl = "https://dapi.kakao.com/v2/local/search/category.json?category_group_code="+predictedStore+"&page=1&size=15&sort=distance&radius="+radius+"&x="+curX+"&y="+curY;
+        }
+        else{
+            var storeKeyword = '';
+            if(predictedStore == 'KAR'){
+                storeKeyword = "노래방";
+            }
+            else if(predictedStore == 'THM'){
+                storeKeyword = "테마카페";
+            }
+            else if(predictedStore == 'PC'){
+                storeKeyword = "PC방";
+            }
+            else if(predictedStore == 'TH1'){
+                storeKeyword = "영화관";
+            }
+            else if(predictedStore == 'TH2'){
+                storeKeyword = "연극극장";
+            }
+            kUrl = encodeURI("https://dapi.kakao.com/v2/local/search/keyword.json?page=1&size=15&sort=accuracy&x="+curX+"&y="+curY+"&query="+storeKeyword);
+        }
+
+        let kakaoOptions = {
+            uri: kUrl,
+            method: kMethod,
+            headers: kHeaders,
+            encoding: kEncoding
+        }
+
+        requestApi(kakaoOptions, function(err, res, body){
+            var parsedBody = JSON.parse(body);
+            var places = parsedBody['documents'];
+            for(cur of places){
+                console.log(cur['place_name']);
+            }
+        });
         
 }
 
