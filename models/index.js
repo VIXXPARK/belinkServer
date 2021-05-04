@@ -97,6 +97,9 @@ db.Team.hasMany(db.Accept)
 db.Accept.belongsTo(db.User)
 db.Accept.belongsTo(db.Team)
 
-db.useableVisit=require('./useableVisit')(sequelize,Sequelize);
+setTimeout(()=>{
+    db.useableVisit=require('./useableVisit')(sequelize,Sequelize);
+},2000)
+
 
 module.exports = db;
