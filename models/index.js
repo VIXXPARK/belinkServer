@@ -20,7 +20,7 @@ db.Friend=require('./friend')(sequelize,Sequelize);
 db.Store=require('./store')(sequelize,Sequelize);
 db.Visit=require('./visit')(sequelize,Sequelize);
 db.Member=require('./member')(sequelize,Sequelize);
-db.useableVisit=require('./useableVisit')(sequelize,Sequelize);
+// db.useableVisit=require('./useableVisit')(sequelize,Sequelize);
 db.treeResult=require('./treeResult')(sequelize,Sequelize);
 db.Accept = require('./accept')(sequelize, Sequelize);
 
