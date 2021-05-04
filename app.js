@@ -5,7 +5,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 
-
 var {sequelize} = require('./models');
 
 var app = express();
@@ -13,6 +12,7 @@ var app = express();
 
 sequelize.sync().then(()=>{
   console.log("DB CONNECT")
+  console.log(process.env.TYPE)
 }).catch(err=>{
   console.log('disconnect')
   console.log(err)
@@ -22,6 +22,7 @@ sequelize.sync().then(()=>{
 // view engine setup!!
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
 
 app.use(logger('dev'));
 app.use(express.json());

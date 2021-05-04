@@ -21,11 +21,15 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
+// const webSocket = require('../socket');
 /**
  * Listen on provided port, on all network interfaces.
  */
 
 server.listen(port);
+
+// webSocket(server, app); //app까지 넘겨줘야 라우터에서 socket사용가능
+
 server.on('error', onError);
 server.on('listening', onListening);
 

@@ -21,6 +21,8 @@ db.Store=require('./store')(sequelize,Sequelize);
 db.Visit=require('./visit')(sequelize,Sequelize);
 db.Member=require('./member')(sequelize,Sequelize);
 
+db.Accept = require('./accept')(sequelize, Sequelize);
+
 db.User.hasMany(db.Visit)
 db.Store.hasMany(db.Visit)
 
@@ -88,5 +90,11 @@ db.Friend.belongsTo(db.User,{
 db.Visit.belongsTo(db.User)
 
 db.Visit.belongsTo(db.Store)
+
+db.User.hasMany(db.Accept)
+db.Team.hasMany(db.Accept)
+
+db.Accept.belongsTo(db.User)
+db.Accept.belongsTo(db.Team)
 
 module.exports = db;

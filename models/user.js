@@ -26,6 +26,9 @@ module.exports = (sequelize,DataTypes)=>{
         infect:{
             type:DataTypes.TINYINT,
             defaultValue:0
+        },
+        token:{
+            type:DataTypes.STRING,
         }
 
     },{
