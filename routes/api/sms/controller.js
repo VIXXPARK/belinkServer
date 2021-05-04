@@ -6,6 +6,12 @@ const base64 = require('crypto-js/enc-base64');
 const redis = require('redis');
 const redisClient = redis.createClient();
 const keys = require('../../config/naver_config');
+const keys = {
+    "senderNum": process.env.senderNum,
+    "accessKey": process.env.accessKey,
+    "secretKey": process.env.secretKey,
+    "serviceId": process.env.serviceId
+}
 
 exports.sendMsg = (req, res, next) => {
         const senderNum = keys.senderNum;
