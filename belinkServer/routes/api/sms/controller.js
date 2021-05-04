@@ -5,12 +5,13 @@ const sha256 = require('crypto-js/sha256');
 const base64 = require('crypto-js/enc-base64');
 const redis = require('redis');
 const redisClient = redis.createClient();
+const keys = require('../../config/naver_config');
 
 exports.sendMsg = (req, res, next) => {
-        const senderNum = '';
-        const accessKey = '';
-        const secretKey = '';
-        const serviceId = '';
+        const senderNum = keys.senderNum;
+        const accessKey = keys.accessKey;
+        const secretKey = keys.secretKey;
+        const serviceId = keys.serviceId;
         const url = 'https://sens.apigw.ntruss.com/sms/v2/services/'+serviceId+'/messages';
         const date = Date.now().toString();
         
