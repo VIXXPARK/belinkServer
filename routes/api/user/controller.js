@@ -46,11 +46,11 @@ exports.contactUser = (req,res,next)=>{
             res.status(200).json({
                 message:"해당되는 연락처가 없습니다."
             })
+        }else{
+            res.status(200).json({
+                data:result
+            })
         }
-        
-        res.status(200).json({
-            data:result
-        })
     })
     .catch(err=>{
         res.status(500).json({
