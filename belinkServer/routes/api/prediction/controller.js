@@ -17,7 +17,7 @@ exports.getPrediction = async (req, res, next) => {
         const id = req.body.id;
         const radius = 100;
         
-        let ts = Date.now()
+        let ts = Date.now() + 32400000; //Date.now()는 UTC 기준; 한국은 UTC+9hours; 9 hours == 32400000 ms
         let dateObj = new Date(ts);
         let hour = dateObj.getHours();
         let day = dateObj.getDay();
@@ -109,17 +109,43 @@ exports.getPrediction = async (req, res, next) => {
         requestApi(kakaoOptions, function(err, res, body){
             var parsedBody = JSON.parse(body);
             var places = parsedBody['documents'];
+            var cnt = 0;
             for(cur of places){
-                console.log(cur['place_name']);
+                model.Visit.findAndCountAll({
+                //SELECT id,createdAt,updatedAt,storeId,userId,count(*) FROM visits WHERE TIMEDIFF(${dateObj},createdAt) BETWEEN "00:00:01" AND "01:00:00" AND storeId=${cur.id}  GROUP BY storeId;
+                    raw: true,
+                    where:{
+                        storeId: cur.id,
+                        [Op.and]: [
+                            sequelize.where(
+                                sequelize.fn('TIMEDIFF',dateObj,sequelize.col('visit.createdAt')),{
+                                    [Op.lte]: '01:00:00',
+                                    [Op.gt]: '00:00:01'
+                                }
+                            )
+                        ]
+                    },
+                    group: "storeId"
+                }).then(result => {
+                    if(result.count.length != 0){
+                        //console.log(result.count[0]['count']);
+                        //console.log(result.rows);
+                        cur['realTime'] = result.count[0]['count'];
+                    }
+                    else{
+                        cur['realTime'] = 0;
+                    }
+                }).then(result =>{
+                    console.log(cur);
+                })
             }
-        });
+        })
         
 }
 
 exports.makePrediction = async (req, res, next) => {
     const getView = await model.useableVisit.findAll();
     const parsedView = JSON.parse(JSON.stringify(getView));
-    //console.log(parsedView)
     const json2csvParser = new Json2csvParser({header: true});
     const csvFile = json2csvParser.parse(parsedView);
 
