@@ -22,7 +22,8 @@ exports.register = (req,res)=>{
         else{
             model.User.create({
                 phNum:req.body.phNum,
-                username:req.body.username
+                username:req.body.username,
+                token:req.body.token
             })
             .then(result=>{
                 res.status(201).json({
@@ -215,8 +216,14 @@ exports.makeMember =(req,res,next)=>{
                 {
                     returning:true,
                     where:{team_member:{ne:null}}
-                })
+            })
             .then(result=>{
+                model.Accept.create({
+                    total: Object.keys(req.body).length,
+                    teamId: req.body[0].team_room
+                })
+            })
+            .then(fin=>{
                 res.json({
                     success:true
                 })
