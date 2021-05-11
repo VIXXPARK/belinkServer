@@ -192,14 +192,14 @@ exports.deleteTeam = (req,res,next)=>{
 
 
 
-exports.makeMember =(req,res,next)=>{
+exports.makeMember = async (req,res,next)=>{
     if(req.body==null||req.body==undefined||req.body.length==0){
         res.status(400).json({
             success:false,
             message:"멤버를 선택해주세요"
         })
     }else{
-        model.Team.findOne({
+      model.Team.findOne({
             where:{id:req.body[0].team_room}
         })
         .then(teamResult=>{
@@ -211,17 +211,15 @@ exports.makeMember =(req,res,next)=>{
             }
         })
         .then(()=>{
-            model.Member.bulkCreate(
+            await model.Accept.create({
+                total: Object.keys(req.body).length,
+                teamId: req.body[0].team_room
+            })
+            await model.Member.bulkCreate(
                 req.body,
                 {
                     returning:true,
                     where:{team_member:{ne:null}}
-            })
-            .then(result=>{
-                model.Accept.create({
-                    total: Object.keys(req.body).length,
-                    teamId: req.body[0].team_room
-                })
             })
             .then(fin=>{
                 res.json({
