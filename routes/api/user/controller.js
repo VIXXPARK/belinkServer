@@ -22,7 +22,8 @@ exports.register = (req,res)=>{
         else{
             model.User.create({
                 phNum:req.body.phNum,
-                username:req.body.username
+                username:req.body.username,
+                token: req.body.token       //fcm 기기토큰을 말하는것
             })
             .then(result=>{
                 res.status(201).json({
@@ -216,6 +217,10 @@ exports.makeMember =(req,res,next)=>{
                     returning:true,
                     where:{team_member:{ne:null}}
                 })
+            model.Accept.create({
+                total: Object.keys(req.body).length,
+                teamId: req.body[0].team_room
+            })
             .then(result=>{
                 res.json({
                     success:true
