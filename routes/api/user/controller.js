@@ -192,7 +192,7 @@ exports.deleteTeam = (req,res,next)=>{
 
 
 
-exports.makeMember = async (req,res,next)=>{
+exports.makeMember = (req,res,next)=>{
     if(req.body==null||req.body==undefined||req.body.length==0){
         res.status(400).json({
             success:false,
@@ -210,7 +210,7 @@ exports.makeMember = async (req,res,next)=>{
                 })
             }
         })
-        .then(()=>{
+        .then(async ()=>{
             await model.Accept.create({
                 total: Object.keys(req.body).length,
                 teamId: req.body[0].team_room
