@@ -3,9 +3,10 @@ const express = require("express");
 const cryptoJS = require('crypto-js');
 const sha256 = require('crypto-js/sha256');
 const base64 = require('crypto-js/enc-base64');
-const redis = require('redis');
-const redisClient = redis.createClient();
+
 const keys = require('../../config/naver_config');
+const nodeCahce = require("node-cache");
+const myCache = new nodeCahce();
 
 exports.sendMsg = (req, res, next) => {
         const senderNum = keys.senderNum;
@@ -28,7 +29,7 @@ exports.sendMsg = (req, res, next) => {
             hmac.update(method);
             hmac.update(space);
             hmac.update(url2);
-            hmac.update(newLine);z
+            hmac.update(newLine);
             hmac.update(date);
             hmac.update(newLine);
             hmac.update(accessKey2);
@@ -43,8 +44,9 @@ exports.sendMsg = (req, res, next) => {
         for(var i  = 0; i < 6; i++){
             certNum = certNum*10 +(Math.floor(Math.random()*10));
         }
-        //redisClient.flushall();
-        redisClient.hmset('verification-info', req.body.to, JSON.stringify({'certNum':certNum, 'time':date}));
+
+        myCache.set(req.body.to, JSON.stringify({'certNum': certNum, 'time': date}));
+
 
         var msg = "인증번호 ["+certNum+"] 를 입력해 주세요.";
         const msgHeader = {
@@ -85,30 +87,27 @@ exports.sendMsg = (req, res, next) => {
 exports.sendCode = (req, res, next) => {
     var phNum = req.body.phNum;
     var certNum = req.body.certNum;
-    redisClient.hgetall('verification-info', function(err, obj){
-        if(err || obj == null){
-            console.log(err);
-        }
-        else{
-            if(obj[phNum]){
-                var paresedObj = JSON.parse(obj[phNum]);
-                if(Date.now()-paresedObj.time <= 180000){    //180000ms == 3 minutes
-                    if(paresedObj.certNum==certNum){
-                        console.log("Verifyed");
-                        redisClient.hdel('verification-info', phNum);
-                    }
-                    else{
-                        console.log("Incorrect Verification Number");
-                    }
-                }
-                else{
-                    console.log("Timed Out");
-                    redisClient.hdel('verification-info', phNum);
-                }
+
+    var phValue = myCache.get(phNum);
+
+    if(phValue){
+        var parsedValue = JSON.parse(phValue)
+        if(Date.now() - parsedValue.time <= 180000){
+            if(parsedValue.certNum == certNum){
+                console.log("Verifyed");
+                myCache.del(phNum);
             }
             else{
-                console.log("Invalid Phone Number");
+                console.log("Incorrect Verification Number");
             }
         }
-    });
+        else{
+            console.log("Timed Out");
+            myCache.del(phNum);
+        }
+    }
+    else{
+        console.log("Invalid Phone Number");
+    }
+
 }
