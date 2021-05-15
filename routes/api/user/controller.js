@@ -397,7 +397,7 @@ exports.getMember = (req,res,next)=>{
 
 exports.getMyTeam = (req,res,next)=>{
     model.Member.findAll({
-        attributes:['updatedAt'],
+        attributes:[],
         where:{team_member:req.body.team_member},
         include:[{model:model.Team,as:'teamRoom',attributes:['id','teamName']}],
     })
