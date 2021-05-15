@@ -408,7 +408,7 @@ exports.getMyTeam = (req,res,next)=>{
             })
         }
         res.json({
-            data:result
+            result
         })
     })
 }
