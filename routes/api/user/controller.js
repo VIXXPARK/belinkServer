@@ -220,18 +220,8 @@ exports.makeMember = (req,res,next)=>{
                 {
                     returning:true,
                     where:{team_member:{ne:null}}
-<<<<<<< HEAD
-                })
-            //수정요함
-            model.Accept.create({
-                total: Object.keys(req.body).length,
-                teamId: req.body[0].team_room
-            })
-            .then(result=>{
-=======
             })
             .then(fin=>{
->>>>>>> 01f01d08667bcc72910dfca9f6dee9b751376798
                 res.json({
                     success:true
                 })
