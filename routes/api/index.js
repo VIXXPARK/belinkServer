@@ -3,7 +3,7 @@ const user =require('./user')
 const location = require('./location');
 const push = require('./push');
 const store= require('./store');
-const sms= require('./sms');
+// const sms= require('./sms');
 
 router.use('/user', user)
 router.use('/location', location)
