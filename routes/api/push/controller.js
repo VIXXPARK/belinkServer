@@ -33,7 +33,7 @@ exports.nfcPushMsg = async (req, res, next) => {
 }
 
 exports.accept = async (req, res, next) => {
-    const { team_room } = req.body;
+    const { team_room, storeId } = req.body;
 
     try{
         await model.Accept.update(
@@ -52,6 +52,8 @@ exports.accept = async (req, res, next) => {
                 isOk: 'true'
             }
             pushService.groupPush(req, res, noti, data);
+            pushService.storePush(req, res, cur[0].total);
+            
         } else {
             res.json({
                 success: true,

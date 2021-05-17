@@ -8,6 +8,56 @@ admin.initializeApp({
     credential: admin.credential.cert(serAccount)
 });
 
+exports.storePush = async (req, res, number) => {
+    try{
+        const { team_room, storeId } = req.body;
+        const result = await model.Store.findAll({
+            attributes: ['token'],
+            where: { id: storeId }
+        })
+
+        // const array = []
+        // result.forEach((item, idx) => {
+        //     result.push(item.token)
+        // })
+        // for(let i=0; i< result.length; i++)
+        // {
+        //     array.push(result[i])
+        // }
+        // const target_token = array;
+
+        const target_token = result.token;
+
+        const message = {
+            notification: {
+                title: `${number} 명이 입장했습니다.`,
+                body: '입장 완료',
+            },
+            data:{
+                storeId: '<--StoreId : uuid를 넣어줌-->'
+            },
+            token: target_token
+        }
+        
+        admin
+            .messaging()
+            .send(message)
+            .then( (response) => {
+                console.log('Successfully sent message : ', response)
+                return res.status(200).json({ success : true })
+            })
+            .catch( (err) => {
+                console.log('Error Sending message : ', err)
+                return res.status(400).json({ success : false })
+            });
+    } catch (err) {
+        res.status(404).json({
+            success: false,
+            message: err
+        })
+    }
+}
+
 exports.personalPush = async (req, res, senderId) => {
     try{
         //team_room은 같은 주제를 구독한 그룹에게 메시지를 보내기 위함임
@@ -57,7 +107,7 @@ exports.groupPush = async (req, res, noti, data) => {
             // required: true = inner join
             // right: true = right outer join
         })
-        console.log(result);
+        // console.log(result);
         const array = []
         for(let i=0; i< result.length; i++)
         {

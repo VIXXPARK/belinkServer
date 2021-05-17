@@ -217,6 +217,7 @@ exports.makeMember =(req,res,next)=>{
                     returning:true,
                     where:{team_member:{ne:null}}
                 })
+            //수정요함
             model.Accept.create({
                 total: Object.keys(req.body).length,
                 teamId: req.body[0].team_room
