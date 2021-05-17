@@ -9,5 +9,5 @@ router.use('/user', user)
 router.use('/location', location)
 router.use('/push', push)
 router.use('/store',store)
-router.use('/sms',sms);
+// router.use('/sms',sms);
 module.exports = router
