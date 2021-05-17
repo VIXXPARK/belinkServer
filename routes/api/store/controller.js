@@ -1,7 +1,6 @@
 const requestApi = require('request');
 const express = require("express");
-const model = require('../../models/index')
-const store = require('../../models/store');
+const model = require('../../../models')
 
 exports.signup = (req, res, next) => {
     //매장의 주소(address) & 매장 이름(name) & 사업자 번호(companyNum) 입력 받음
