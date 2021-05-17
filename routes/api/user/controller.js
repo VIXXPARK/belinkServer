@@ -23,7 +23,7 @@ exports.register = (req,res)=>{
             model.User.create({
                 phNum:req.body.phNum,
                 username:req.body.username,
-                token: req.body.token       //fcm 기기토큰을 말하는것
+                token:req.body.token
             })
             .then(result=>{
                 res.status(201).json({
@@ -47,11 +47,11 @@ exports.contactUser = (req,res,next)=>{
             res.status(200).json({
                 message:"해당되는 연락처가 없습니다."
             })
+        }else{
+            res.status(200).json({
+                data:result
+            })
         }
-        
-        res.status(200).json({
-            data:result
-        })
     })
     .catch(err=>{
         res.status(500).json({
@@ -192,14 +192,14 @@ exports.deleteTeam = (req,res,next)=>{
 
 
 
-exports.makeMember =(req,res,next)=>{
+exports.makeMember = (req,res,next)=>{
     if(req.body==null||req.body==undefined||req.body.length==0){
         res.status(400).json({
             success:false,
             message:"멤버를 선택해주세요"
         })
     }else{
-        model.Team.findOne({
+      model.Team.findOne({
             where:{id:req.body[0].team_room}
         })
         .then(teamResult=>{
@@ -210,12 +210,17 @@ exports.makeMember =(req,res,next)=>{
                 })
             }
         })
-        .then(()=>{
-            model.Member.bulkCreate(
+        .then(async ()=>{
+            await model.Accept.create({
+                total: Object.keys(req.body).length,
+                teamId: req.body[0].team_room
+            })
+            await model.Member.bulkCreate(
                 req.body,
                 {
                     returning:true,
                     where:{team_member:{ne:null}}
+<<<<<<< HEAD
                 })
             //수정요함
             model.Accept.create({
@@ -223,6 +228,10 @@ exports.makeMember =(req,res,next)=>{
                 teamId: req.body[0].team_room
             })
             .then(result=>{
+=======
+            })
+            .then(fin=>{
+>>>>>>> 01f01d08667bcc72910dfca9f6dee9b751376798
                 res.json({
                     success:true
                 })
@@ -398,7 +407,7 @@ exports.getMember = (req,res,next)=>{
 
 exports.getMyTeam = (req,res,next)=>{
     model.Member.findAll({
-        attributes:['updatedAt'],
+        attributes:[],
         where:{team_member:req.body.team_member},
         include:[{model:model.Team,as:'teamRoom',attributes:['id','teamName']}],
     })
@@ -409,7 +418,7 @@ exports.getMyTeam = (req,res,next)=>{
             })
         }
         res.json({
-            data:result
+            result
         })
     })
 }

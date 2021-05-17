@@ -1,11 +1,11 @@
 FROM node:12
 
-WORKDIR C:\Users\vixx1\OneDrive\문서\캡스톤서버\backend
+WORKDIR /usr/app
 
 COPY package*.json ./
 
-RUN npm install
-COPY . .
+RUN npm install -g
+COPY . ./
 
 EXPOSE 3000
 CMD [ "node", "app.js"]

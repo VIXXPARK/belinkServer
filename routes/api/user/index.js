@@ -17,6 +17,7 @@ router.get('/edit-info',authMiddleware,controller.deleteUser)  //회원탈퇴
 router.delete('/edit-member',controller.deleteMember)//멤버 삭제하기
 router.get('/get-member/',controller.getMember)//멤버 목록 가져오기
 router.put('/infect-user',controller.infectUser)//감염환자시 infect true로 변경
+router.post('/get-my-team',controller.getMyTeam)
 
 router.delete('/test/delete',controller.testDelete)//mocha 테스트때 쓰일 삭제 기능
 module.exports = router

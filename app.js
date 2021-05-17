@@ -12,6 +12,7 @@ var app = express();
 
 sequelize.sync().then(()=>{
   console.log("DB CONNECT")
+  console.log(process.env.TYPE)
 }).catch(err=>{
   console.log('disconnect')
   console.log(err)

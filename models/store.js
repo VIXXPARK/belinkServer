@@ -18,7 +18,7 @@ module.exports = (sequelize,DataTypes)=>{
             allowNull:false
         },
         storeType:{
-            type:DataTypes.TINYINT,
+            type:DataTypes.STRING,
             defaultValue:0
         },
         companyNum:{
