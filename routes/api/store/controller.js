@@ -23,10 +23,9 @@ exports.signup = (req, res, next) => {
             encoding: "utf-8"
         }
 
-        requestApi(kakaoOptions,  function(err, fin, body){
+        requestApi(kakaoOptions, function(err, ress, body){
             var parsedBody = JSON.parse(body);
             var place = parsedBody['documents'][0];
-            console.log(place)
             // 테마카페(THM), 노래방(KAR), PC방(PC), 플스방(PC), 영화관(TH1), 연극장(TH2) category_name으로 구별
             //음식점, 일반카페는 category_code로 구별
             if(parsedBody['meta']['total_count'] == 0){
@@ -61,7 +60,7 @@ exports.signup = (req, res, next) => {
                         storeType = "TH2";
                     }
                 }
-               
+
                 model.Store.create({
                     id: place.id,
                     storeName: place.place_name,
@@ -70,13 +69,14 @@ exports.signup = (req, res, next) => {
                     companyNum: companyNum
                 })
                 .then(result=>{
-                    console.log(place)
                     res.json({
                         data:result
                     })
                 })
+                .catch(err => {
+                    console.log(err.errors)
+                })
             }
-             
         });
     }
 }
