@@ -11,7 +11,7 @@ mydb = mysql.connector.connect(
     host="localhost",
     user="root",
     password="0000",
-    database="test_db"
+    database="belink"
 )
 
 def getRules(tree, feature_names, class_names):
@@ -22,7 +22,7 @@ def getRules(tree, feature_names, class_names):
     ]
 
     paths = []
-    path = [0,24,1,7, 0, 6]
+    path = [0,24,1,7]
 
 
     def myRecurse(node, path, paths):
@@ -35,16 +35,14 @@ def getRules(tree, feature_names, class_names):
                 p1[0] = threshold
             elif name == 'myDay':
                 p1[2] = threshold
-            elif name == 'prior':
-                p1[4] = threshold
+
             myRecurse(tree_.children_right[node], p1, paths)
             
             if name == 'myHour':
                 p2[1] = threshold
             elif name == 'myDay':
                 p2[3] = threshold
-            elif name == 'prior':
-                p2[5] = threshold
+
             myRecurse(tree_.children_left[node], p2, paths)
         else:
             path += [(tree_.value[node], tree_.n_node_samples[node])]
@@ -66,11 +64,11 @@ def getRules(tree, feature_names, class_names):
         
     return rules
 
-file_path = "C:/Users/pies6/Desktop/캡스톤/project/visits/useableVisits.csv"
+file_path = "./useableVisits.csv"
 data = pd.read_csv(file_path)
-data_features = ["myDay", "myHour", "prior"]
+data_features = ["myDay", "myHour"]
 
-y = data.storeType
+y = data.result
 X = data[data_features]
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1)
@@ -83,13 +81,16 @@ tree.fit(X_train, y_train)
 
 rules = getRules(tree, data_features, tree.classes_)
 mycursor = mydb.cursor()
-cnt = 1
+mycursor.execute("DELETE FROM treeResults")
 for rule in rules:
-    query = "INSERT INTO treeResults VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
-    val = (cnt, rule[0], rule[1], rule[2], rule[3], rule[4], rule[5], rule[6])
+    r_split = rule[4].split(",")
+    p = r_split[0]
+    s = r_split[1]
+    query = "INSERT INTO treeResults VALUES(%s, %s, %s, %s, %s, %s)"
+    val = (rule[0], rule[1], rule[2], rule[3], p, s)
     mycursor.execute(query, val)
 
     mydb.commit()
-    cnt +=1
+
 print("DONE")
 
