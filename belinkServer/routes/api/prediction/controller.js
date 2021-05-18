@@ -42,15 +42,15 @@ exports.getPrediction = async (req, res, next) => {
                 ['createdAt', 'DESC']
             ]
         });
-        var prior = ""
+        var myPrior = ""
         if(getPrior == null){
-            prior = "none";
+            myPrior = "none";
         }
         else{
-            prior = getPrior['store.storeType'];
+            myPrior = getPrior['store.storeType'];
         }
 
-        var getPrediction = await model.treeResult.findAll({
+        await model.treeResult.findAll({
             raw: true,
             attributes:['storeType'],
             where:{
@@ -65,86 +65,94 @@ exports.getPrediction = async (req, res, next) => {
                 },
                 dDay:{
                     [Op.gte]: day
+                },
+                prior: myPrior
+            }
+        }).then(async result => {
+            const kMethod = 'GET';
+            const kHeaders = {
+                'Authorization': 'KakaoAK c9f67cf11819f1c1e3c318b99d7dfac1'
+            }
+            const kEncoding = 'utf-8';
+
+            if(result == undefined){
+                const predictedStore = result[0]['storeType'];
+                var kUrl = '';
+                if(predictedStore == 'CE7' || predictedStore == 'FD6'){
+                    kUrl = "https://dapi.kakao.com/v2/local/search/category.json?category_group_code="+predictedStore+"&page=1&size=15&sort=distance&radius="+radius+"&x="+curX+"&y="+curY;
+                }
+                else{
+                    var storeKeyword = '';
+                    if(predictedStore == 'KAR'){
+                        storeKeyword = "노래방";
+                    }
+                    else if(predictedStore == 'THM'){
+                        storeKeyword = "테마카페";
+                    }
+                    else if(predictedStore == 'PC'){
+                        storeKeyword = "PC방";
+                    }
+                    else if(predictedStore == 'TH1'){
+                        storeKeyword = "영화관";
+                    }
+                    else if(predictedStore == 'TH2'){
+                        storeKeyword = "연극극장";
+                    }
+                    kUrl = encodeURI("https://dapi.kakao.com/v2/local/search/keyword.json?page=1&size=15&sort=accuracy&x="+curX+"&y="+curY+"&query="+storeKeyword);
                 }
             }
-        });
+            else{
+                kUrl = "https://dapi.kakao.com/v2/local/search/category.json?category_group_code=CE7&page=1&size=15&sort=distance&radius="+radius+"&x="+curX+"&y="+curY;
+            }
 
-        const predictedStore = getPrediction[0]['storeType'];
-        var kUrl = '';
-        const kMethod = 'GET';
-        const kHeaders = {
-            'Authorization': 'KakaoAK c9f67cf11819f1c1e3c318b99d7dfac1'
-        }
-        const kEncoding = 'utf-8';
-        if(predictedStore == 'CE7' || predictedStore == 'FD6'){
-            kUrl = "https://dapi.kakao.com/v2/local/search/category.json?category_group_code="+predictedStore+"&page=1&size=15&sort=distance&radius="+radius+"&x="+curX+"&y="+curY;
-        }
-        else{
-            var storeKeyword = '';
-            if(predictedStore == 'KAR'){
-                storeKeyword = "노래방";
+            let kakaoOptions = {
+                uri: kUrl,
+                method: kMethod,
+                headers: kHeaders,
+                encoding: kEncoding
             }
-            else if(predictedStore == 'THM'){
-                storeKeyword = "테마카페";
-            }
-            else if(predictedStore == 'PC'){
-                storeKeyword = "PC방";
-            }
-            else if(predictedStore == 'TH1'){
-                storeKeyword = "영화관";
-            }
-            else if(predictedStore == 'TH2'){
-                storeKeyword = "연극극장";
-            }
-            kUrl = encodeURI("https://dapi.kakao.com/v2/local/search/keyword.json?page=1&size=15&sort=accuracy&x="+curX+"&y="+curY+"&query="+storeKeyword);
-        }
 
-        let kakaoOptions = {
-            uri: kUrl,
-            method: kMethod,
-            headers: kHeaders,
-            encoding: kEncoding
-        }
-
-        requestApi(kakaoOptions, function(err, res, body){
-            var parsedBody = JSON.parse(body);
-            var places = parsedBody['documents'];
-            var cnt = 0;
-            for(cur of places){
-                model.Visit.findAndCountAll({
-                //SELECT id,createdAt,updatedAt,storeId,userId,count(*) FROM visits WHERE TIMEDIFF(${dateObj},createdAt) BETWEEN "00:00:01" AND "01:00:00" AND storeId=${cur.id}  GROUP BY storeId;
-                    raw: true,
-                    where:{
-                        storeId: cur.id,
-                        [Op.and]: [
-                            sequelize.where(
-                                sequelize.fn('TIMEDIFF',dateObj,sequelize.col('visit.createdAt')),{
-                                    [Op.lte]: '01:00:00',
-                                    [Op.gt]: '00:00:01'
-                                }
-                            )
-                        ]
-                    },
-                    group: "storeId"
-                }).then(result => {
-                    if(result.count.length != 0){
-                        //console.log(result.count[0]['count']);
-                        //console.log(result.rows);
-                        cur['realTime'] = result.count[0]['count'];
-                    }
-                    else{
-                        cur['realTime'] = 0;
-                    }
-                }).then(result =>{
-                    console.log(cur);
-                })
-            }
-        })
+            await requestApi(kakaoOptions, function(err, res, body){
+                var parsedBody = JSON.parse(body);
+                var places = parsedBody['documents'];
+                for(const cur of places){
+                    model.Visit.findAndCountAll({
+                    //SELECT id,createdAt,updatedAt,storeId,userId,count(*) FROM visits WHERE TIMEDIFF(${dateObj},createdAt) BETWEEN "00:00:01" AND "01:00:00" AND storeId=${cur.id}  GROUP BY storeId;
+                        raw: true,
+                        where:{
+                            storeId: cur.id,
+                            [Op.and]: [
+                                sequelize.where(
+                                    sequelize.fn('TIMEDIFF',dateObj,sequelize.col('visit.createdAt')),{
+                                        [Op.lte]: '01:00:00',
+                                        [Op.gt]: '00:00:01'
+                                    }
+                                )
+                            ]
+                        },
+                        group: "storeId"
+                    }).then(result => {
+                        if(result.count.length != 0){
+                            cur['realTime'] = result.count[0]['count'];
+                        }
+                        else{
+                            cur['realTime'] = 0;
+                        }
+                        console.log(cur);
+                    })
+                }
+            })
+    })
         
 }
 
 exports.makePrediction = async (req, res, next) => {
-    const getView = await model.useableVisit.findAll();
+    const getView = await model.useableVisit.findAll({
+        attributes:[
+            'myDay', 'myHour', 
+            [sequelize.fn('concat', sequelize.col('prior'), ',', sequelize.col('storeType')), 'result']
+        ]
+    });
     const parsedView = JSON.parse(JSON.stringify(getView));
     const json2csvParser = new Json2csvParser({header: true});
     const csvFile = json2csvParser.parse(parsedView);
