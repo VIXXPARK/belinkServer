@@ -4,24 +4,26 @@ module.exports = (sequelize,DataTypes)=>{
     return sequelize.define('treeResult',{
         sTime:{
             type:DataTypes.INTEGER,
+            primaryKey:true
         },
         dTime:{
             type:DataTypes.INTEGER,
+            primaryKey:true
         },
         sDay:{
             type:DataTypes.INTEGER,
+            primaryKey:true
         },
         dDay:{
             type:DataTypes.INTEGER,
+            primaryKey:true
         },
-        sPrior:{
-            type:DataTypes.INTEGER,
-        },
-        dPrior:{
-            type:DataTypes.INTEGER,
+        prior:{
+            type:DataTypes.STRING,
+            primaryKey:true
         },
         storeType:{
-            type:DataTypes.STRING(3)
+            type:DataTypes.STRING
         }
     },{
         timestamps:false,
