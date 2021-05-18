@@ -1,6 +1,7 @@
 const requestApi = require('request');
 const express = require("express");
-const model = require('../../../models')
+const model = require('../../models/index')
+const store = require('../../models/store');
 
 exports.signup = (req, res, next) => {
     //매장의 주소(address) & 매장 이름(name) & 사업자 번호(companyNum) 입력 받음
@@ -23,7 +24,7 @@ exports.signup = (req, res, next) => {
             encoding: "utf-8"
         }
 
-        requestApi(kakaoOptions, function(err, ress, body){
+        requestApi(kakaoOptions, function(err, res, body){
             var parsedBody = JSON.parse(body);
             var place = parsedBody['documents'][0];
             // 테마카페(THM), 노래방(KAR), PC방(PC), 플스방(PC), 영화관(TH1), 연극장(TH2) category_name으로 구별
@@ -67,13 +68,7 @@ exports.signup = (req, res, next) => {
                     storeLocation: place.road_address_name,
                     storeType: storeType,
                     companyNum: companyNum
-                })
-                .then(result=>{
-                    res.json({
-                        data:result
-                    })
-                })
-                .catch(err => {
+                }).catch(err => {
                     console.log(err.errors)
                 })
             }
