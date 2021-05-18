@@ -3,7 +3,12 @@ const express = require("express");
 const cryptoJS = require('crypto-js');
 const sha256 = require('crypto-js/sha256');
 const base64 = require('crypto-js/enc-base64');
-const keys = require('../../config/naver_config');
+const keys = {
+    "senderNum": process.env.senderNum,
+    "accessKey": process.env.accessKey,
+    "secretKey": process.env.secretKey,
+    "serviceId": process.env.serviceId
+}
 const nodeCahce = require("node-cache");
 const myCache = new nodeCahce();
 
