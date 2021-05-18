@@ -23,6 +23,9 @@ module.exports = (sequelize,DataTypes)=>{
         },
         companyNum:{
             type:DataTypes.STRING,
+        },
+        token:{
+            type:DataTypes.STRING
         }
     },{
         timestamps:true

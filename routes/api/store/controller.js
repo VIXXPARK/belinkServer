@@ -67,7 +67,8 @@ exports.signup = (req, res, next) => {
                     storeName: place.place_name,
                     storeLocation: place.road_address_name,
                     storeType: storeType,
-                    companyNum: companyNum
+                    companyNum: companyNum,
+                    token:req.body.token
                 })
                 .then(result=>{
                     console.log(place)
