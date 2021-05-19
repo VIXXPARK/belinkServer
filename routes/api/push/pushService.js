@@ -142,7 +142,8 @@ exports.storePush = async (req, res, number) => {
                 body: '입장 완료',
             },
             data:{
-                storeId: '<--StoreId : uuid를 넣어줌-->'
+                //storeId: '<--StoreId : uuid를 넣어줌-->'
+                // data가 필요없음
             },
             token: target_token
         }
