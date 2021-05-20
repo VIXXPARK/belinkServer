@@ -41,8 +41,11 @@ exports.accept = async (req, res, next) => {
             { where: { teamId : team_room }}
         )
         const cur = await model.Accept.findAll({ attributes: ['cnt', 'total'], where: { teamId: team_room }})
-
-        if(cur[0].total == cur[0].cnt)
+        if(cur[0].total == 1)
+        {
+            pushService.storePush(req, res, cur[0].total);
+        }
+        else if(cur[0].total == cur[0].cnt)
         {
             const noti = {
                 title: '완료되었습니다.',
