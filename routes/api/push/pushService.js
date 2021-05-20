@@ -117,13 +117,13 @@ exports.groupPush = async (req, res, noti, data) => {
 }
 
 exports.storePush = async (req, res, number) => {
+    const { team_room, storeId } = req.body;
     try{
-        const { team_room, storeId } = req.body;
         const result = await model.Store.findAll({
             attributes: ['token'],
             where: { id: storeId }
         })
-
+        //console.log(result);
         // const array = []
         // result.forEach((item, idx) => {
         //     result.push(item.token)

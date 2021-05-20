@@ -41,16 +41,22 @@ exports.accept = async (req, res, next) => {
             { where: { teamId : team_room }}
         )
         const cur = await model.Accept.findAll({ attributes: ['cnt', 'total'], where: { teamId: team_room }})
+        
+        const noti = {
+            title: '완료되었습니다.',
+            body: '방문기록 작성이 완료되었습니다.'
+        }
+        const data = {
+            isOk: 'true'
+        }
 
-        if(cur[0].total == cur[0].cnt)
+        if(cur[0].total == 1)
         {
-            const noti = {
-                title: '완료되었습니다.',
-                body: '방문기록 작성이 완료되었습니다.'
-            }
-            const data = {
-                isOk: 'true'
-            }
+            pushService.storePush(req, res, cur[0].total);
+        }
+        else if(cur[0].total == cur[0].cnt)
+        {
+            
             pushService.groupPush(req, res, noti, data);
             pushService.storePush(req, res, cur[0].total);
             
@@ -104,34 +110,17 @@ exports.groupInfectionPush = async (req, res) => {
 }
 
 exports.test = async(req, res) => {
-    const { userId, name } = req.body;
+    const { storeId } = req.body;
     try{
-        const team_rooms = await model.Member.findAll({
-            attributes: ['team_room'],
-            where: { team_member: userId }
+        const result = await model.Store.findAll({
+            attributes: ['token'],
+            where: { id: storeId }
         })
-        const teamRoomArray = [];
-        team_rooms.forEach((item, idx)=>{
-            teamRoomArray.push(item.team_room);
-        });
-
-        console.log(teamRoomArray);
-        console.log("check1");
-        const result = await model.Member.findAll({
-            attributes: [],
-            where: { team_room: teamRoomArray },
-            include: [{ model: model.User, as: 'teamMember', where: {id: { [Op.not]: userId }}, attributes: ['token'] }]
-        })
-        console.log("check2");
-        const infectArray = [];
-        result.forEach((item, idx)=>{
-            infectArray.push(item.teamMember.token);
-        });
-        console.log(infectArray);
+        console.log(result);
 
         res.json({
             success: true,
-            message: infectArray
+            message: result
         })
     } catch (err) {
         res.status(404).json({
