@@ -41,19 +41,22 @@ exports.accept = async (req, res, next) => {
             { where: { teamId : team_room }}
         )
         const cur = await model.Accept.findAll({ attributes: ['cnt', 'total'], where: { teamId: team_room }})
+        
+        const noti = {
+            title: '완료되었습니다.',
+            body: '방문기록 작성이 완료되었습니다.'
+        }
+        const data = {
+            isOk: 'true'
+        }
+
         if(cur[0].total == 1)
         {
             pushService.storePush(req, res, cur[0].total);
         }
         else if(cur[0].total == cur[0].cnt)
         {
-            const noti = {
-                title: '완료되었습니다.',
-                body: '방문기록 작성이 완료되었습니다.'
-            }
-            const data = {
-                isOk: 'true'
-            }
+            
             pushService.groupPush(req, res, noti, data);
             pushService.storePush(req, res, cur[0].total);
             
