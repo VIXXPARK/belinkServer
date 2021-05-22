@@ -184,7 +184,7 @@ exports.infectionPush = async (req, res) => {
         const result = await model.Member.findAll({
             attributes: [],
             where: { team_room: teamRoomArray },
-            include: [{ model: model.User, as: 'teamMember', where: {id: { [Op.not]: userId }}, attributes: ['token'] }]
+            include: [{ model: model.User, as: 'teamMember', attributes: ['token'] }]//, where: {id: { [Op.not]: userId }}
         })
 
         const infectArray = [];

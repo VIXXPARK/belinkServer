@@ -79,9 +79,15 @@ exports.sendMsg = (req, res, next) => {
         
         requestApi(msgOptions, function(err, res2, success){
             if(err){
+                res.json({
+                    success:false
+                })
                 console.log(err);
             }
             else{
+                res.json({
+                    success:true
+                })
                 console.log(success);
             }
         });
@@ -96,19 +102,31 @@ exports.sendCode = (req, res, next) => {
         var parsedValue = JSON.parse(phValue)
         if(Date.now() - parsedValue.time <= 180000){
             if(parsedValue.certNum == certNum){
+                res.json({
+                    success:true
+                })
                 console.log("Verifyed");
                 myCache.del(phNum);
             }
             else{
+                res.json({
+                    success:false
+                })
                 console.log("Incorrect Verification Number");
             }
         }
         else{
+            res.json({
+                success:false
+            })
             console.log("Timed Out");
             myCache.del(phNum);
         }
     }
     else{
+        res.json({
+            success:false
+        })
         console.log("Invalid Phone Number");
     }
 
