@@ -116,19 +116,18 @@ exports.test = async(req, res) => {
             attributes: ['team_room'],
             where: { team_member: userId }
         })
+        
         const teamRoomArray = [];
         team_rooms.forEach((item, idx)=>{
             teamRoomArray.push(item.team_room);
         });
 
         console.log(teamRoomArray);
-        console.log("check1");
         const result = await model.Member.findAll({
             attributes: [],
             where: { team_room: teamRoomArray },
             include: [{ model: model.User, as: 'teamMember', where: {id: { [Op.not]: userId }}, attributes: ['token'] }]
         })
-        console.log("check2");
         const infectArray = [];
         result.forEach((item, idx)=>{
             infectArray.push(item.teamMember.token);
