@@ -15,11 +15,14 @@ exports.nfcPushMsg = async (req, res, next) => {
             { where: { teamId : team_room }})
 
         const noti = {
-            title: '그룹 nfc',
-            body: '그룹 수락 요청입니다.'
+            // title: '그룹 nfc',
+            // body: '그룹 수락 요청입니다.'
         }
         const data = {
-            storeId: storeId
+            title: '그룹 nfc',
+            body: '그룹 수락 요청입니다.',
+            storeId: storeId,
+            click_action: 'goActivity'
         }
 
         pushService.groupPush(req, res, noti, data);
@@ -112,33 +115,33 @@ exports.groupInfectionPush = async (req, res) => {
 exports.test = async(req, res) => {
     const { userId, name } = req.body;
     try{
-        const team_rooms = await model.Member.findAll({
-            attributes: ['team_room'],
-            where: { team_member: userId }
-        })
-        const teamRoomArray = [];
-        team_rooms.forEach((item, idx)=>{
-            teamRoomArray.push(item.team_room);
-        });
+        // const team_rooms = await model.Member.findAll({
+        //     attributes: ['team_room'],
+        //     where: { team_member: userId }
+        // })
+        // const teamRoomArray = [];
+        // team_rooms.forEach((item, idx)=>{
+        //     teamRoomArray.push(item.team_room);
+        // });
 
-        console.log(teamRoomArray);
-        console.log("check1");
-        const result = await model.Member.findAll({
-            attributes: [],
-            where: { team_room: teamRoomArray },
-            include: [{ model: model.User, as: 'teamMember', where: {id: { [Op.not]: userId }}, attributes: ['token'] }]
-        })
-        console.log("check2");
-        const infectArray = [];
-        result.forEach((item, idx)=>{
-            infectArray.push(item.teamMember.token);
-        });
-        console.log(infectArray);
+        // console.log(teamRoomArray);
+        // const result = await model.Member.findAll({
+        //     attributes: [],
+        //     where: { team_room: teamRoomArray },
+        //     include: [{ model: model.User, as: 'teamMember', attributes: ['id','username', 'token'] }]
+        // })
+        // const infectArray = [];
+        // result.forEach((item, idx)=>{
+        //     if(item.teamMember.id != userId)
+        //         infectArray.push(item.teamMember.username);
+        // });
+        // console.log(infectArray);
 
         res.json({
             success: true,
             message: infectArray
         })
+        
     } catch (err) {
         res.status(404).json({
             success: false,
