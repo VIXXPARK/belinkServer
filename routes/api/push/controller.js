@@ -47,6 +47,7 @@ exports.accept = async (req, res, next) => {
             body: '방문기록 작성이 완료되었습니다.'
         }
         const data = {
+            storeId: 'storeId',
             isOk: 'true'
         }
 
@@ -116,7 +117,7 @@ exports.test = async(req, res) => {
             attributes: ['token'],
             where: { id: storeId }
         })
-        console.log(result);
+        console.log(result[0].token);
 
         res.json({
             success: true,

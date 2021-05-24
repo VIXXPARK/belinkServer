@@ -21,6 +21,7 @@ db.Store=require('./store')(sequelize,Sequelize);
 db.Visit=require('./visit')(sequelize,Sequelize);
 db.Member=require('./member')(sequelize,Sequelize);
 db.treeResult=require('./treeResult')(sequelize,Sequelize);
+// db.useableVisit=require('./useableVisit')(sequelize,Sequelize);
 db.Accept = require('./accept')(sequelize, Sequelize);
 
 db.User.hasMany(db.Visit)
@@ -97,9 +98,9 @@ db.Team.hasMany(db.Accept)
 db.Accept.belongsTo(db.User)
 db.Accept.belongsTo(db.Team)
 
-setTimeout(()=>{
-    db.useableVisit=require('./useableVisit')(sequelize,Sequelize);
-},2000)
+// setTimeout(()=>{
+//     db.useableVisit=require('./useableVisit')(sequelize,Sequelize);
+// },2000)
 
 
 module.exports = db;

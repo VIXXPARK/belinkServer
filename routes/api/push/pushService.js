@@ -134,7 +134,7 @@ exports.storePush = async (req, res, number) => {
         // }
         // const target_token = array;
 
-        const target_token = result.token;
+        const target_token = result[0].token;
 
         const message = {
             notification: {
