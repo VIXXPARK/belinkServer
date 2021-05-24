@@ -250,6 +250,7 @@ exports.makeFriend = (req,res,next)=>{
             where:{id:req.body[0].device}
         })
         .then((userResult)=>{
+            console.log(userResult)
             if(userResult==undefined || userResult==null){
                 res.status(400).json({
                     success:false,
@@ -258,6 +259,7 @@ exports.makeFriend = (req,res,next)=>{
             }
         })
         .then((val)=>{
+            console.log(val)
             if(val==null || val==undefined || val.length==0){
                 res.setHeader
                 res.status(400).json({
