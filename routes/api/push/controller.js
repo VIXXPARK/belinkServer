@@ -32,7 +32,7 @@ exports.nfcPushMsg = async (req, res, next) => {
     } catch (err) {
         res.status(404).json({
             success: false,
-            message: err
+            message: "실패"
         })
     }
 }
@@ -56,13 +56,12 @@ exports.accept = async (req, res, next) => {
             body: '방문기록 작성이 완료되었습니다.',
             storeId: storeId,
             teamId: team_room,
-            click_action: 'goActivity',
+            click_action: 'MainActivity',
             isOk: '1'
         }
 
         if(cur[0].total == cur[0].cnt)
         {
-            
             pushService.groupPush(req, res, noti, data);
             pushService.storePush(req, res, cur[0].total);
             
@@ -97,7 +96,7 @@ exports.reject = async (req, res) => {
             body: '거절되었습니다.',
             storeId: '',
             teamId: team_room,
-            click_action: 'goActivity',
+            click_action: 'MainActivity',
             isOk: '0'
         }
         pushService.groupPush(req, res, noti, data);

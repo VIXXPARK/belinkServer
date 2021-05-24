@@ -70,10 +70,13 @@ exports.groupPush = async (req, res, noti, data) => {
         })
         // console.log(result);
         const array = []
-        for(let i=0; i< result.length; i++)
-        {
-            array.push(result[i].teamMember.token)
-        }
+        // for(let i=0; i< result.length; i++)
+        // {
+        //     array.push(result[i].teamMember.token)
+        // }
+        result.forEach((item, idx)=>{
+            array.push(item.teamMember.token);
+        });
         const registrationTokens = array
         // const registrationTokens = [
         //     '<--기기토큰-->'
