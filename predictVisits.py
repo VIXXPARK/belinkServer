@@ -11,7 +11,7 @@ mydb = mysql.connector.connect(
     host="localhost",
     user="root",
     password="0000",
-    database="test_db"
+    database="belink"
 )
 
 def getRules(tree, feature_names, class_names):
