@@ -246,61 +246,22 @@ exports.makeFriend = (req,res,next)=>{
             message:"요청된 값이 존재하지 않습니다."
         })
     }else{
-        model.User.findOne({
-            where:{id:req.body[0].device}
-        })
-        .then((userResult)=>{
-            if(userResult==undefined || userResult==null){
-                res.status(400).json({
-                    success:false,
-                    message:"해당되는 유저 정보가 없습니다."
+        model.Friend.bulkCreate(req,
+            {returning:true,
+                where:{
+                    myFriend:{ne:null}
+            }})
+            .then(()=>{
+                res.json({
+                    success:true
                 })
-            }
-        })
-        .then(async()=>{
-            var parseBody = [];
-            for(idx in req.body){
-                var x = await model.Friend.findOne({where:req.body[idx]})
-                if(x!=null || x!=undefined){
-                    continue;
-                }else{
-                    parseBody.push(req.body[idx])
-                }   
-            }            
-            return parseBody
-        })
-        .then((val)=>{
-            if(val==null || val==undefined || val.length==0){
-                res.setHeader
-                res.status(400).json({
-                    success:false,
-                    message:"이미 친구관계입니다"
-                })
-            }else{
-                model.Friend.bulkCreate(val,
-                    {returning:true,
-                        where:{
-                            myFriend:{ne:null}
-                    }})
-                    .then(()=>{
-                        res.json({
-                            success:true
-                        })
-                    })
-                    .catch((err)=>{
-                        res.status(400).json({
-                            success:false,
-                            message:err
-                        })
-                    })
-            }
-        })
-        .catch(err=>{
-            res.status(400).json({
-                success:false,
-                message:err
             })
-        })
+            .catch((err)=>{
+                res.status(400).json({
+                    success:false,
+                    message:err
+                })
+            })
     }
     
 }

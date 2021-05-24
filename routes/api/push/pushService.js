@@ -62,18 +62,19 @@ exports.groupPush = async (req, res, noti, data) => {
     
     try{
         const result = await model.Member.findAll({
-            attributes: ['updatedAt'],
+            raw:true,
             where: { team_room: team_room },
             include: [{ model: model.User, as: 'teamMember', attributes: ['token'] }]
             // required: true = inner join
             // right: true = right outer join
         })
-        // console.log(result);
+        //console.log(result);
         const array = []
-        for(let i=0; i< result.length; i++)
-        {
-            array.push(result[i].teamMember.token)
+        
+        for(const cur of result){
+            array.push(cur['teamMember.token']);
         }
+        
         const registrationTokens = array
         // const registrationTokens = [
         //     '<--기기토큰-->'
@@ -123,7 +124,7 @@ exports.storePush = async (req, res, number) => {
             attributes: ['token'],
             where: { id: storeId }
         })
-
+        //console.log(result);
         // const array = []
         // result.forEach((item, idx) => {
         //     result.push(item.token)
@@ -138,11 +139,16 @@ exports.storePush = async (req, res, number) => {
 
         const message = {
             notification: {
-                title: `${number} 명이 입장했습니다.`,
-                body: '입장 완료',
+                // title: `${number} 명이 입장했습니다.`,
+                // body: '입장 완료',
             },
             data:{
-                storeId: '<--StoreId : uuid를 넣어줌-->'
+                title: `${number} 명이 입장했습니다.`,
+                body: '입장 완료',
+                storeId: '',
+                teamId: '',
+                click_action: '',
+                isOk: '1'
             },
             token: target_token
         }

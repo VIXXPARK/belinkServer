@@ -11,6 +11,7 @@ exports.signup = (req, res, next) => {
         const address = req.body.address;
         const name = req.body.name;
         const companyNum = req.body.companyNum;
+        const storeToken = req.body.token
 
         var keyword = address + " " + name;
         var url = encodeURI("https://dapi.kakao.com/v2/local/search/keyword.json?page=1&size=15&sort=accuracy&query=" + keyword);   
