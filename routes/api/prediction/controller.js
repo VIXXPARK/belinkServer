@@ -77,8 +77,8 @@ exports.getPrediction = async (req, res, next) => {
             },
             prior: myPrior
         }
-    }).then(async result => {
-        if(result == undefined){
+    }).then(result => {
+        if(result != undefined){
             const predictedStore = result[0]['storeType'];
             if(predictedStore == 'CE7' || predictedStore == 'FD6'){
                 kUrl = "https://dapi.kakao.com/v2/local/search/category.json?category_group_code="+predictedStore+"&page=1&size=15&sort=distance&radius="+radius+"&x="+curX+"&y="+curY;
@@ -119,7 +119,7 @@ exports.getPrediction = async (req, res, next) => {
     }
     
     
-    requestApi(kakaoOptions, async function(err, apiRes, body){
+    await requestApi(kakaoOptions, async function(err, apiRes, body){
         if(err){
             res.json({
                 data: "err"
