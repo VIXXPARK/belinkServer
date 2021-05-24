@@ -259,12 +259,12 @@ exports.makeFriend = (req,res,next)=>{
         })
         .then(async()=>{
             var parseBody = [];
-            for(idx in req.body){
-                var x = await model.Friend.findOne({where:req.body[idx]})
+            for(idx of req.body){
+                var x = await model.Friend.findOne({where:idx})
                 if(x!=null || x!=undefined){
                     continue;
                 }else{
-                    parseBody.push(req.body[idx])
+                    parseBody.push(idx)
                 }   
             }            
             return parseBody
