@@ -59,31 +59,22 @@ exports.personalPush = async (req, res, senderId) => {
 
 exports.groupPush = async (req, res, noti, data) => {
     const { team_room, userId, storeId } = req.body;
-    
+    const array = []
+
     try{
-        const result = await model.Member.findAll({
-            attributes: ['updatedAt'],
+        await model.Member.findAll({
+            raw:true,
             where: { team_room: team_room },
             include: [{ model: model.User, as: 'teamMember', attributes: ['token'] }]
             // required: true = inner join
             // right: true = right outer join
-        })
-        // console.log(result);
-        const array = []
-        // for(let i=0; i< result.length; i++)
-        // {
-        //     array.push(result[i].teamMember.token)
-        // }
-        // result.forEach((item, idx)=>{
-        //     array.push(item.teamMember.token);
-        // });
-        for(const cur of result){
-            array.push(cur['teamMember']['token']);
-        }
-        const registrationTokens = array
-        // const registrationTokens = [
-        //     '<--기기토큰-->'
-        // ];
+        }).then(result => {
+               
+            for(const cur of result){
+                array.push(cur['teamMember.token']);
+            }
+        }).then(resultB => {
+            const registrationTokens = array
 
         const message = {
             notification: noti,
@@ -114,6 +105,7 @@ exports.groupPush = async (req, res, noti, data) => {
                 console.log('Error Sending message : ', err)
                 return res.status(400).json({ success : false })
             });
+        })
     } catch (err) {
         res.status(404).json({
             success: false,

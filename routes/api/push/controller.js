@@ -120,8 +120,31 @@ exports.groupInfectionPush = async (req, res) => {
 }
 
 exports.test = async(req, res) => {
-    const { storeId } = req.body;
+    const { team_room, storeId } = req.body;
+
+    const array = []
     try{
+        await model.Member.findAll({
+            raw:true,
+            where: { team_room: team_room },
+            include: [{ model: model.User, as: 'teamMember', attributes: ['token'] }]
+            // required: true = inner join
+            // right: true = right outer join
+        }).then(result => {
+               
+            for(const cur of result){
+                array.push(cur['teamMember.token']);
+            }
+        }).then(resultB => {
+            console.log(array);
+            res.json({
+                success: true,
+                message: array
+            })
+        })
+        //console.log(result);
+        
+        
         // const team_rooms = await model.Member.findAll({
         //     attributes: ['team_room'],
         //     where: { team_member: userId }
@@ -144,10 +167,10 @@ exports.test = async(req, res) => {
         // });
         // console.log(infectArray);
 
-        res.json({
-            success: true,
-            message: result
-        })
+        // res.json({
+        //     success: true,
+        //     message: result
+        // })
         
     } catch (err) {
         res.status(404).json({
