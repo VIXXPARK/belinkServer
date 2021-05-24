@@ -139,11 +139,12 @@ exports.storePush = async (req, res, number) => {
 
         const message = {
             notification: {
-                title: `${number} 명이 입장했습니다.`,
-                body: '입장 완료',
+                // title: `${number} 명이 입장했습니다.`,
+                // body: '입장 완료',
             },
             data:{
-                storeId: '<--StoreId : uuid를 넣어줌-->'
+                title: `${number} 명이 입장했습니다.`,
+                body: '입장 완료'
             },
             token: target_token
         }
