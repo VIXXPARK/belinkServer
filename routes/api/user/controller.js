@@ -260,11 +260,11 @@ exports.makeFriend = (req,res,next)=>{
         .then(async()=>{
             var parseBody = [];
             for(idx of req.body){
-                var x = await model.Friend.findOne({where:idx})
+                var x = await model.Friend.findOne({where:{device:idx.device}})
                 if(x!=null || x!=undefined){
                     continue;
                 }else{
-                    parseBody.push(idx)
+                    parseBody.push(idx.device)
                 }   
             }            
             return parseBody
