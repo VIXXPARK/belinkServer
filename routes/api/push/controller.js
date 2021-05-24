@@ -63,7 +63,7 @@ exports.accept = async (req, res, next) => {
         if(cur[0].total == cur[0].cnt)
         {
             pushService.groupPush(req, res, noti, data);
-            //pushService.storePush(req, res, cur[0].total);
+            pushService.storePush(req, res, cur[0].total);
             
         } else {
             res.json({
