@@ -76,21 +76,22 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1)
 tree = DecisionTreeClassifier(random_state=0)
 tree.fit(X_train, y_train)
 
-#export_graphviz(tree, out_file = "useableVisits.dot", class_names = tree.classes_,
-#                feature_names = data_features, impurity = False, filled = True, precision=0)
-
 rules = getRules(tree, data_features, tree.classes_)
 mycursor = mydb.cursor()
-mycursor.execute("DELETE FROM treeResults")
+
 for rule in rules:
     r_split = rule[4].split(",")
     p = r_split[0]
     s = r_split[1]
     query = "INSERT INTO treeResults VALUES(%s, %s, %s, %s, %s, %s)"
     val = (rule[0], rule[1], rule[2], rule[3], p, s)
-    mycursor.execute(query, val)
+    try:
+        mycursor.execute(query, val)
 
-    mydb.commit()
+        mydb.commit()
+    except:
+        continue
+    
 
 print("DONE")
 
