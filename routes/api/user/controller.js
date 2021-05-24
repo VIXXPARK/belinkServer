@@ -257,18 +257,6 @@ exports.makeFriend = (req,res,next)=>{
                 })
             }
         })
-        .then(async()=>{
-            var parseBody = [];
-            for(idx of req.body){
-                var x = await model.Friend.findOne({where:{device:idx.device}})
-                if(x!=null || x!=undefined){
-                    continue;
-                }else{
-                    parseBody.push(idx.device)
-                }   
-            }            
-            return parseBody
-        })
         .then((val)=>{
             if(val==null || val==undefined || val.length==0){
                 res.setHeader
