@@ -179,19 +179,26 @@ exports.infectionPush = async (req, res) => {
             teamRoomArray.push(item.team_room);
         })
 
-        //console.log(teamRoomArray);
+        // const result = await model.Member.findAll({
+        //     attributes: [],
+        //     where: { team_room: teamRoomArray },
+        //     include: [{ model: model.User, as: 'teamMember', attributes: ['token'] }]//, where: {id: { [Op.not]: userId }}
+        // })
 
         const result = await model.Member.findAll({
             attributes: [],
             where: { team_room: teamRoomArray },
-            include: [{ model: model.User, as: 'teamMember', where: {id: { [Op.not]: userId }}, attributes: ['token'] }]
+            include: [{ model: model.User, as: 'teamMember', attributes: ['id', 'token'] }]
         })
 
         const infectArray = [];
+        // result.forEach((item, idx)=>{
+        //     infectArray.push(item.teamMember.token);
+        // });
         result.forEach((item, idx)=>{
-            infectArray.push(item.teamMember.token);
+            if(item.teamMember.id != userId)
+                infectArray.push(item.teamMember.token);
         });
-        //console.log(infectArray);
         
         const registrationTokens = infectArray
 
@@ -230,6 +237,48 @@ exports.infectionPush = async (req, res) => {
             });
 
     } catch(err) {
+        res.status(404).json({
+            success: false,
+            message: err
+        })
+    }
+}
+
+exports.predictPush = async () => {
+    const { storeId } = req.body;
+    let Date = new Date();
+    try{
+        const result = await model.Store.findAll({
+            attributes: ['storeName', 'token'],
+            where: { id: storeId }
+        })
+
+        const target_token = result[0].token;
+
+        const message = {
+            notification: {
+                title: 'Be-Link 앱 알림',
+                body: `${result[0].storeName}
+                        ${Date}`,
+            },
+            data:{
+                storeId: '<--StoreId : uuid를 넣어줌-->'
+            },
+            token: target_token
+        }
+        
+        admin
+            .messaging()
+            .send(message)
+            .then( (response) => {
+                console.log('Successfully sent message : ', response)
+                return res.status(200).json({ success : true })
+            })
+            .catch( (err) => {
+                console.log('Error Sending message : ', err)
+                return res.status(400).json({ success : false })
+            });
+    } catch (err) {
         res.status(404).json({
             success: false,
             message: err
