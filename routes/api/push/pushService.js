@@ -291,3 +291,82 @@ exports.predictPush = async () => {
         })
     }
 }
+
+exports.acceptPush = async (req, res, noti, data, number) => {
+    const { team_room, userId, storeId } = req.body;
+
+    try{
+        const result = await model.Member.findAll({
+            raw:true,
+            where: { team_room: team_room },
+            include: [{ model: model.User, as: 'teamMember', attributes: ['token'] }]
+        })
+        const result2 = await model.Store.findAll({
+            attributes: ['token'],
+            where: { id: storeId }
+        })
+        //console.log(result);
+
+        const array = []
+        for(const cur of result){
+            array.push(cur['teamMember.token']);
+        }
+        //console.log(array);
+        const registrationTokens = array
+
+        const message = {
+            notification: noti,
+            data: data,
+            tokens: registrationTokens,
+        }
+
+        const storeToken = result2[0].token;
+        //console.log(storeToken);
+        const message2 = {
+            notification: {
+                // title: `${number} 명이 입장했습니다.`,
+                // body: '입장 완료',
+            },
+            data:{
+                title: `${number} 명이 입장했습니다.`,
+                body: '입장 완료',
+            },
+            token: storeToken
+        }
+
+        admin
+            .messaging()
+            .sendMulticast(message)
+            .then(async (response) => {
+                await admin.messaging().send(message2)
+                
+                await model.Visit.create({
+                    userId: userId,
+                    storeId: storeId
+                })
+
+                console.log('Successfully sent message : ', response)
+                
+                if (response.failureCount > 0) {
+                    const failedTokens = [];
+                    response.responses.forEach((resp, idx) => {
+                    if (!resp.success) {
+                        failedTokens.push(registrationTokens[idx]);
+                    }
+                    });
+                    console.log('List of tokens that caused failures: ' + failedTokens);
+                }
+
+                return res.status(200).json({ success : true })
+            })
+            .catch( (err) => {
+                console.log('Error Sending message : ', err)
+                return res.status(400).json({ success : false })
+            });
+    } catch (err) {
+        res.status(404).json({
+            success: false,
+            message: err
+        })
+    }
+}
