@@ -144,7 +144,11 @@ exports.storePush = async (req, res, number) => {
             },
             data:{
                 title: `${number} 명이 입장했습니다.`,
-                body: '입장 완료'
+                body: '입장 완료',
+                storeId: '',
+                teamId: '',
+                click_action: '',
+                isOk: '1'
             },
             token: target_token
         }
