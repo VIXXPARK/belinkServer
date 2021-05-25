@@ -1,5 +1,5 @@
 # belinkServer
-세종대학교 캡스톤
+##세종대학교 캡스톤
 [![Build Status](https://travis-ci.com/VIXXPARK/belinkServer.svg?branch=main)](https://travis-ci.com/VIXXPARK/belinkServer)
 ------------------------
 ```
@@ -30,3 +30,118 @@ api
 ```
 1. 데이터베이스를 설정할 때 window 환경에서는 set NODE_ENV=test or development or production으로 지정해서 하자
 2. 리눅스 환경에서는 export NODE_ENV=production or test or development 이다.
+```
+## 역할 분담
+
+|박수한|김경재|김민섭|
+|------|------|------|
+|서버담당|...|kakao api 사용|
+|DB|...|네이버api 사용|
+|CI/CD|Firebase연동|의사결정트리 작성|
+|User기능담당|Push서비스담당|Store/sms/location 담당|
+
+
+## 기술 스택
+
+1. Nodejs
+2. mocha framework를 통한 테스트 주도 개발
+3. travis-ci를 통한 빌드 테스트 
+4. aws ec2 와 rds를 통한 서버 구축
+5. firebase를 통해 push서비스 구현
+6. naver api를 연동하여 sms서비스 구현
+7. kakao api를 연동하여 가게 위치 및 사용자 위치 기반 추천 가게 서비스 구현
+8. sequelize를 통한 orm형식 코드 작성
+
+
+## 폴더 구조
+```
+C:.
+│  .dockerignore    
+│  .env
+│  .gitignore       
+│  .sequelizerc     
+│  .travis.yml      
+│  app.js
+│  Dockerfile       
+│  package-lock.json
+│  package.json     
+│  predictVisits.py 
+│  README.md        
+│
+├─bin
+│      www
+│
+├─config
+│      config.js    
+│      database.yml 
+│      options.js   
+│
+├─middlewares       
+│      auth.js      
+│
+├─migrations        
+├─models
+│      accept.js      
+│      friend.js      
+│      index.js       
+│      member.js      
+│      store.js       
+│      team.js        
+│      treeResult.js  
+│      useableVisit.js
+│      user.js        
+│      visit.js       
+│
+├─public
+│  ├─images
+│  ├─javascripts      
+│  └─stylesheets      
+│          style.css
+│
+├─routes
+│  └─api
+│      │  index.js
+│      │
+│      ├─location
+│      │      controller.js
+│      │      index.js
+│      │
+│      ├─prediction
+│      │      controller.js
+│      │      index.js
+│      │
+│      ├─push
+│      │      controller.js
+│      │      index.js
+│      │      pushService.js
+│      │
+│      ├─sms
+│      │      controller.js
+│      │      index.js
+│      │
+│      ├─store
+│      │      controller.js
+│      │      index.js
+│      │
+│      └─user
+│              controller.js
+│              index.js
+│
+├─seeders
+├─target
+├─test
+│      test01.user.spec.js
+│      test02.team.spec.js
+│      test03.friend.spec.js
+│
+└─views
+        error.jade
+        index.jade
+        layout.jade
+```
+
+## 데이터베이스 관계도
+<img src="public/images/databaseImage.png">
+
+
+
