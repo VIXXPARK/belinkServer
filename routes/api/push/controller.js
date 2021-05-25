@@ -28,7 +28,7 @@ exports.nfcPushMsg = async (req, res, next) => {
         }
 
         pushService.groupPush(req, res, noti, data);
-
+        
     } catch (err) {
         res.status(404).json({
             success: false,
@@ -62,9 +62,7 @@ exports.accept = async (req, res, next) => {
 
         if(cur[0].total == cur[0].cnt)
         {
-            pushService.groupPush(req, res, noti, data);
-            //pushService.storePush(req, res, cur[0].total);
-            
+            pushService.groupPush(req, res, noti, data);            
         } else {
             res.json({
                 success: true,

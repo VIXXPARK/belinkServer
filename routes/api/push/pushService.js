@@ -250,7 +250,7 @@ exports.infectionPush = async (req, res) => {
     }
 }
 
-exports.predictPush = async () => {
+exports.predictPush = async (req, res) => {
     const { storeId } = req.body;
     let Date = new Date();
     try{
@@ -278,6 +278,65 @@ exports.predictPush = async () => {
             .send(message)
             .then( (response) => {
                 console.log('Successfully sent message : ', response)
+                return res.status(200).json({ success : true })
+            })
+            .catch( (err) => {
+                console.log('Error Sending message : ', err)
+                return res.status(400).json({ success : false })
+            });
+    } catch (err) {
+        res.status(404).json({
+            success: false,
+            message: err
+        })
+    }
+}
+
+exports.acceptPush = async (req, res, num) => {
+    const { team_room, userId, storeId } = req.body;
+    
+    try{
+        const result = await model.Member.findAll({
+            raw:true,
+            where: { team_room: team_room },
+            include: [{ model: model.User, as: 'teamMember', attributes: ['token'] }]
+        })
+        const array = []
+        
+        for(const cur of result){
+            array.push(cur['teamMember.token']);
+        }
+
+        const result = await model.Store.findAll({
+            attributes: ['token'],
+            where: { id: storeId }
+        })
+        array.push(result[0].token);
+        const registrationTokens = array
+        
+        const message = {
+            notification: noti,
+            data: data,
+            tokens: registrationTokens,
+        }
+        
+        admin
+            .messaging()
+            .sendMulticast(message)
+            .then((response) => {
+
+                console.log('Successfully sent message : ', response)
+                
+                if (response.failureCount > 0) {
+                    const failedTokens = [];
+                    response.responses.forEach((resp, idx) => {
+                    if (!resp.success) {
+                        failedTokens.push(registrationTokens[idx]);
+                    }
+                    });
+                    console.log('List of tokens that caused failures: ' + failedTokens);
+                }
+
                 return res.status(200).json({ success : true })
             })
             .catch( (err) => {
