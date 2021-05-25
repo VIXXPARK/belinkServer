@@ -59,11 +59,13 @@ exports.accept = async (req, res, next) => {
             click_action: 'MainActivity',
             isOk: '1'
         }
-
+        console.log(cur)
         if(cur[0].total == cur[0].cnt)
         {
             //pushService.groupPush(req, res, noti, data);
             //pushService.storePush(req, res, cur[0].total);
+            console.log("if문 안에 들어옴")
+            console.log("acceptPush문으로 들어간다.")
             pushService.acceptPush(req, res, noti, data, cur[0].total);
             
         } else {
