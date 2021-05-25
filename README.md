@@ -36,12 +36,15 @@ api
 |박수한|김경재|김민섭|
 |------|------|------|
 |서버담당|...|kakao api 사용|
-|DB|...|네이버api 사용|
+|DB설계|...|네이버api 사용|
 |CI/CD|Firebase연동|의사결정트리 작성|
 |User기능담당|Push서비스담당|Store/sms/location 담당|
+|mocha를 통한 테스트 주도 개발|...|...|
 
 
 ## 기술 스택
+
+<img src="public/images/tech_stack.png">
 
 1. Nodejs
 2. mocha framework를 통한 테스트 주도 개발
