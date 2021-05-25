@@ -17,7 +17,7 @@ exports.getPrediction = async (req, res, next) => {
     const id = req.body.id;
     const radius = 100;
     
-    let ts = Date.now() + 32400000; //Date.now()는 UTC 기준; 한국은 UTC+9hours; 9 hours == 32400000 ms
+    let ts = Date.now(); //Date.now()는 UTC 기준; 한국은 UTC+9hours; 9 hours == 32400000 ms
     let dateObj = new Date(ts);
     let hour = dateObj.getHours();
     let day = dateObj.getDay();
@@ -76,7 +76,11 @@ exports.getPrediction = async (req, res, next) => {
                 [Op.gte]: day
             },
             prior: myPrior
-        }
+        },
+        order: [
+            [sequelize.literal('dTime - sTime'), 'ASC'],
+            [sequelize.literal('dDay - sDay'), 'ASC']
+        ]
     }).then(result => {
         if(result != undefined){
             const predictedStore = result[0]['storeType'];
