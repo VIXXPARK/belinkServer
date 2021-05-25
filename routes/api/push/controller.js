@@ -76,7 +76,7 @@ exports.accept = async (req, res, next) => {
         }
 
     } catch (err) {
-        res.status(404).json({
+        res.status(500).json({
             success: false,
             message: '전송실패'
         })
@@ -125,24 +125,46 @@ exports.groupInfectionPush = async (req, res) => {
 exports.test = async(req, res) => {
     const { team_room, storeId } = req.body;
     try{
-        const result = await model.Member.findAll({
-            raw:true,
-            where: { team_room: team_room },
-            include: [{ model: model.User, as: 'teamMember', attributes: ['token'] }]
-            // required: true = inner join
-            // right: true = right outer join
+        const r = await model.Member.findAll({
+            attributes: ['team_member'],
+            where: { team_room: team_room }
         })
-        //console.log(result);
-        const array = []
-        
-        for(const cur of result){
-            array.push(cur['teamMember.token']);
+
+        var jsonArray = new Array();
+        for (var i=0; i<r.length; i++) {
+            var jsonObj = new Object();
+                
+            jsonObj.userId = r[i].team_member;                
+            jsonObj = JSON.stringify(jsonObj);
+            //String 형태로 파싱한 객체를 다시 json으로 변환
+            jsonArray.push(JSON.parse(jsonObj));
         }
-        console.log(array);
+        console.log(jsonArray);
+        await model.Visit.bulkCreate(
+            jsonArray)
+
         res.json({
-            success: true,
-            message: array
+            success : true,
+            message : jsonArray
         })
+        // const result = await model.Member.findAll({
+        //     raw:true,
+        //     where: { team_room: team_room },
+        //     include: [{ model: model.User, as: 'teamMember', attributes: ['token'] }]
+        //     // required: true = inner join
+        //     // right: true = right outer join
+        // })
+        // //console.log(result);
+        // const array = []
+        
+        // for(const cur of result){
+        //     array.push(cur['teamMember.token']);
+        // }
+        // console.log(array);
+        // res.json({
+        //     success: true,
+        //     message: array
+        // })
         // const team_rooms = await model.Member.findAll({
         //     attributes: ['team_room'],
         //     where: { team_member: userId }

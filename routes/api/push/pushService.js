@@ -340,11 +340,22 @@ exports.acceptPush = async (req, res, noti, data, number) => {
             .then(async (response) => {
                 await admin.messaging().send(message2)
                 
-                await model.Visit.create({
-                    userId: userId,
-                    storeId: storeId
+                const r = await model.Member.findAll({
+                    attributes: ['team_member'],
+                    where: { team_room: team_room }
                 })
-
+        
+                var jsonArray = new Array();
+                for (var i=0; i<r.length; i++) {
+                    var jsonObj = new Object();
+                        
+                    jsonObj.userId = r[i].team_member;                
+                    jsonObj = JSON.stringify(jsonObj);
+                    //String 형태로 파싱한 객체를 다시 json으로 변환
+                    jsonArray.push(JSON.parse(jsonObj));
+                }
+                await model.Visit.bulkCreate(
+                    jsonArray)
                 console.log('Successfully sent message : ', response)
                 
                 if (response.failureCount > 0) {
