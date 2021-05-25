@@ -5,7 +5,12 @@ const env = process.env;
 const { Sequelize } = require('../../../models');
 const Op = Sequelize.Op
 
-exports.register = (req,res)=>{
+exports.register = (req,res)=>{ 
+    /**
+     * @params : phNum
+     * @params : username
+     * @params : token(기기 고유한 번호)
+     */
     model.User.findOne({where:{phNum:req.body.phNum}})
     .then((data)=>{
         var phNum = req.body.phNum
@@ -14,7 +19,7 @@ exports.register = (req,res)=>{
                 success:false,
                 data:"이미 존재하는 유저입니다"
             })
-        }else if(phNum.length!=13){
+        }else if(phNum.length!=13){ // XXX-XXXX-XXXX 형식으로 저장
             res.status(400).json({
                 success:false,
                 data:"휴대전화 번호 길이가 다릅니다."
@@ -37,6 +42,10 @@ exports.register = (req,res)=>{
 }
 
 exports.contactUser = (req,res,next)=>{
+    /**
+     * @params : phNum  [형식은 xxx-xxxx-xxxx입니다.]
+     * 
+     */
     model.User.findAll({
         attributes:["id","phNum","username"],
         where:{
@@ -44,7 +53,7 @@ exports.contactUser = (req,res,next)=>{
         }
     })
     .then(result=>{
-        if(result==null || result==undefined||result.length==0){
+        if(result==null || result==undefined||result.length==0){ 
             res.status(200).json({
                 message:"해당되는 연락처가 없습니다."
             })
@@ -63,6 +72,10 @@ exports.contactUser = (req,res,next)=>{
 
 
 exports.idContactUser = (req,res,next)=>{
+    /**
+     * @params : id [ userId ]
+     * id를 통한 연락처 조회
+     */
 
     model.User.findAll({
         attributes:["id","phNum","username"],
@@ -71,7 +84,7 @@ exports.idContactUser = (req,res,next)=>{
         }
     })
     .then(result=>{
-        if(result==null || result==undefined||result.length==0){
+        if(result==null || result==undefined||result.length==0){ 
             res.status(200).json({
                 message:"해당되는 연락처가 없습니다."
             })
@@ -89,6 +102,11 @@ exports.idContactUser = (req,res,next)=>{
 
 
 exports.login = (req,res,next)=>{
+    /**
+     * @params : phNum
+     * 휴대전화번호를 이용한 간편 로그인이기 때문에 휴대전화번호만 필요하다
+     * 휴대전화번호 인증은 sms 디렉토리에 존재
+     */
     model.User.findOne({where:{phNum:req.body.phNum}})
     .then((data)=>{
         if(!data){
@@ -97,7 +115,7 @@ exports.login = (req,res,next)=>{
                 message:"존재하지 않은 유저입니다."
             })
         }
-        var token = jwt.sign(
+        var token = jwt.sign( //jwt토큰 생성
             {
                 id:data.id,
                 username:data.username,
@@ -123,7 +141,10 @@ exports.login = (req,res,next)=>{
 
 
 exports.makeTeam = async (req,res,next)=>{
-
+    /**
+     * @params : teamName
+     * 
+     */
     if(req.body.teamName==null || req.body.teamName==""){
        await res.status(400).json({
             success:false,
@@ -150,6 +171,10 @@ exports.makeTeam = async (req,res,next)=>{
 }
 
 exports.editTeam = (req,res,next)=>{
+    /**
+     * @params : teamName
+     * @params : id [team ID]
+     */
     model.Team.update({
         teamName:req.body.teamName},
         {where:{id:req.body.id}
@@ -194,7 +219,16 @@ exports.deleteTeam = (req,res,next)=>{
 
 
 exports.makeMember = (req,res,next)=>{
-    if(req.body==null||req.body==undefined||req.body.length==0){
+    /**
+     * @body : [
+     *              {
+     * @params          team_room:"asfdads-dfasdfa-dsafsf",
+     * @params          team_member:"wrwer-bsdfb-qwfwev2"
+     *              }, 
+     *              ...
+     *          ]
+     */
+    if(req.body==null||req.body==undefined||req.body.length==0){ //유저정보가 안왔을 때
         res.status(400).json({
             success:false,
             message:"멤버를 선택해주세요"
@@ -204,7 +238,7 @@ exports.makeMember = (req,res,next)=>{
             where:{id:req.body[0].team_room}
         })
         .then(teamResult=>{
-            if(teamResult==null || teamResult==undefined){
+            if(teamResult==null || teamResult==undefined){ // 방이 제대로 만들어지지 않았을 때
                 res.status(400).json({
                     success:false,
                     message:"제대로 된 그룹방이 아닙니다."
@@ -212,11 +246,11 @@ exports.makeMember = (req,res,next)=>{
             }
         })
         .then(async ()=>{
-            await model.Accept.create({
+            await model.Accept.create({// 푸시 관련 서비스를 했을 때 필요한 테이블
                 total: Object.keys(req.body).length,
                 teamId: req.body[0].team_room
             })
-            await model.Member.bulkCreate(
+            await model.Member.bulkCreate(//팀에 속하는 멤버 생성
                 req.body,
                 {
                     returning:true,
@@ -241,6 +275,14 @@ exports.makeMember = (req,res,next)=>{
 }
 
 exports.makeFriend = (req,res,next)=>{
+    /**
+     * @body : [
+     *              {
+     * @params          device:-----,
+     * @params          myFriend:----,
+     *              }
+     *          ]
+     */
     if(req.body==null || req.body==undefined||req.body.length==0){
         res.status(400).json({
             success:false,
@@ -268,6 +310,7 @@ exports.makeFriend = (req,res,next)=>{
 }
 
 exports.getMyFriend = (req,res,next)=>{
+    //jwt 안에 들어있는 id 값을 통해 조회
     model.Friend.findAll({
         attributes:[],
         where:{device:req.decoded.id,hidden:false},
@@ -333,6 +376,9 @@ exports.deleteMember = (req,res,next)=>{
 }
 
 exports.getMember = (req,res,next)=>{
+    /**
+     * @params : team_room [team ID]
+     */
     model.Member.findAll({
         attributes:[],
         where:{team_room:req.query.team_room},
