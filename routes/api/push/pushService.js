@@ -292,38 +292,59 @@ exports.predictPush = async (req, res) => {
     }
 }
 
-exports.acceptPush = async (req, res, num) => {
+exports.acceptPush = async (req, res, noti, data, number) => {
     const { team_room, userId, storeId } = req.body;
-    
+
     try{
         const result = await model.Member.findAll({
             raw:true,
             where: { team_room: team_room },
             include: [{ model: model.User, as: 'teamMember', attributes: ['token'] }]
         })
-        const array = []
-        
-        for(const cur of result){
-            array.push(cur['teamMember.token']);
-        }
-
-        const result = await model.Store.findAll({
+        const result2 = await model.Store.findAll({
             attributes: ['token'],
             where: { id: storeId }
         })
-        array.push(result[0].token);
+        //console.log(result);
+
+        const array = []
+        for(const cur of result){
+            array.push(cur['teamMember.token']);
+        }
+        //console.log(array);
         const registrationTokens = array
-        
+
         const message = {
             notification: noti,
             data: data,
             tokens: registrationTokens,
         }
-        
+
+        const storeToken = result2[0].token;
+        //console.log(storeToken);
+        const message2 = {
+            notification: {
+                // title: `${number} 명이 입장했습니다.`,
+                // body: '입장 완료',
+            },
+            data:{
+                title: `${number} 명이 입장했습니다.`,
+                body: '입장 완료',
+                number : number
+            },
+            token: storeToken
+        }
+
         admin
             .messaging()
             .sendMulticast(message)
-            .then((response) => {
+            .then(async (response) => {
+                await admin.messaging().send(message2)
+                
+                await model.Visit.create({
+                    userId: userId,
+                    storeId: storeId
+                })
 
                 console.log('Successfully sent message : ', response)
                 
