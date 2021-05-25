@@ -329,8 +329,7 @@ exports.acceptPush = async (req, res, noti, data, number) => {
             },
             data:{
                 title: `${number} 명이 입장했습니다.`,
-                body: '입장 완료',
-                number : number
+                body: '입장 완료'
             },
             token: storeToken
         }

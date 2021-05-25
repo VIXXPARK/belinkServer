@@ -38,7 +38,7 @@ exports.nfcPushMsg = async (req, res, next) => {
 }
 
 exports.accept = async (req, res, next) => {
-    const { team_room, storeId } = req.body;
+    const { team_room, userId, storeId } = req.body;
 
     try{
         await model.Accept.update(
