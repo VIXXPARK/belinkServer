@@ -1,5 +1,6 @@
 const model = require('../../../models');
-const key = require('../../../key');
+require('dotenv').config();
+const env = process.env;
 const requestApi = require('request');
 
 exports.showPlace = (req, res) => {

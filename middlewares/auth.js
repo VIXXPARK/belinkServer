@@ -1,6 +1,8 @@
 const {resolve,reject} = require('bluebird')
 const jwt = require('jsonwebtoken')
-const key = require('../key')
+require('dotenv').config();
+const env = process.env;
+
 const model = require('../models')
 const authMiddleware = (req,res,next) =>{
     const token = req.headers['x-access-token']||req.query.token
@@ -14,7 +16,7 @@ const authMiddleware = (req,res,next) =>{
 
     const p = new Promise(
         (resolve,reject)=>{
-            jwt.verify(token,key.secretKey,(err,decoded)=>{
+            jwt.verify(token,env.JWT_SECRET_KEY,(err,decoded)=>{
                 if(err) reject(err)
                 resolve(decoded)
             })

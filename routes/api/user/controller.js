@@ -1,6 +1,7 @@
 const model = require('../../../models')
 const jwt = require('jsonwebtoken');
-const key = require('../../../key');
+require('dotenv').config();
+const env = process.env;
 const { Sequelize } = require('../../../models');
 const Op = Sequelize.Op
 
@@ -102,7 +103,7 @@ exports.login = (req,res,next)=>{
                 username:data.username,
                 phNum:data.phNum,
                 active:data.active
-            },key.secretKey,{
+            },env.JWT_SECRET_KEY,{
                 expiresIn:'30d',
                 issuer:'belink',
                 subject:'userInfo'
