@@ -19,9 +19,10 @@ env:
 
 before_install:
   - npm install -g
-  - npm install mocha chai chai-http express jsonwebtoken sequelize dotenv request
+  - npm install mocha chai chai-http express jsonwebtoken sequelize dotenv request json2csv python-shell
   - npm install -g mysql2 crypto-js redis
   - mysql -e 'create database belink_test;'
+
 
 install:
 

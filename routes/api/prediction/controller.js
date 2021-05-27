@@ -4,10 +4,9 @@ const fs = require('fs');
 const Json2csvParser = require("json2csv").Parser;
 const {PythonShell} = require('python-shell');
 
-const model = require('../../models/index')
+const model = require('../../../models')
 const { Sequelize } = require('sequelize');
 const sequelize = require('sequelize');
-const store = require('../../models/store');
 const Op = Sequelize.Op;
 
 
