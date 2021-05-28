@@ -217,12 +217,11 @@ exports.infectionPush = async (req, res) => {
             body: '같이 있으셨던 분들께서는 자가 격리 해주시고, 빠른 시일 내에 가까운 선별 진료소를 찾아 코로나 검사를 받아주시기 바랍니다.',
             storeId: '',
             teamId: '',
-            click_action: '',
-            isOk: '1'
+            click_action: ''
         }
         const message = {
             notification: noti,
-            data:data,
+            data: data,
             tokens: registrationTokens,
         }
 
