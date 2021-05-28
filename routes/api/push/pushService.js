@@ -222,6 +222,7 @@ exports.infectionPush = async (req, res) => {
         }
         const message = {
             notification: noti,
+            data:data,
             tokens: registrationTokens,
         }
 
