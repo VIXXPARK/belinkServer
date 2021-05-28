@@ -209,10 +209,17 @@ exports.infectionPush = async (req, res) => {
         const registrationTokens = infectArray
 
         const noti = {
-            title: `${name} 님이 코로나에 확진되었습니다.`,
-            body: '같이 있으셨던 분들께서는 자가 격리 해주시고, 빠른 시일 내에 가까운 선별 진료소를 찾아 코로나 검사를 받아주시기 바랍니다.'
+            // title: `${name} 님이 코로나에 확진되었습니다.`,
+            // body: '같이 있으셨던 분들께서는 자가 격리 해주시고, 빠른 시일 내에 가까운 선별 진료소를 찾아 코로나 검사를 받아주시기 바랍니다.'
         }
-
+        const data = {
+            title: `${name} 님이 코로나에 확진되었습니다.`,
+            body: '같이 있으셨던 분들께서는 자가 격리 해주시고, 빠른 시일 내에 가까운 선별 진료소를 찾아 코로나 검사를 받아주시기 바랍니다.',
+            storeId: '',
+            teamId: '',
+            click_action: '',
+            isOk: '1'
+        }
         const message = {
             notification: noti,
             tokens: registrationTokens,
