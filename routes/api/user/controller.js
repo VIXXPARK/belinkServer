@@ -318,11 +318,6 @@ exports.getMyFriend = (req,res,next)=>{
                 {model:model.User,as:'myFriendUser',attributes:["id","phNum","username"]}]
     })
     .then(result=>{
-        if(result.length==0){
-            res.status(404).json({
-                msg:"err"
-            })
-        }
         res.json({
             data:result
         })
