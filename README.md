@@ -2,7 +2,7 @@
 ## 세종대학교 캡스톤
 [![Build Status](https://travis-ci.com/VIXXPARK/belinkServer.svg?branch=main)](https://travis-ci.com/VIXXPARK/belinkServer)
 ------------------------
-<img src="public/images/그룹수락_알림.gif">
+<img src="public/images/그룹수락_알림.gif" width="30%">
 
 ```
 1.  url 규칙은 api/를 시작으로 하며 그 다음 순서는 각 주요 데이터베이스 테이블 네임
