@@ -34,8 +34,8 @@ api
 2. 리눅스 환경에서는 export NODE_ENV=production or test or development 이다.
 ```
 ## 프론트 엔드 URL
-[Belink](https://github.com/VIXXPARK/belink)
-[BelinkStore](https://github.com/VIXXPARK/belinkStore-NFC-HCE)
+1.  [Belink](https://github.com/VIXXPARK/belink)
+2.  [BelinkStore](https://github.com/VIXXPARK/belinkStore-NFC-HCE)
 
 ## 역할 분담
 
