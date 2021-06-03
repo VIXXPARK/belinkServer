@@ -107,10 +107,6 @@ describe('GET 친구정보 가져오기',()=>{
                     reject(new Error(err))
                 }
                 expect(res).status(200)
-                // expect(res.body.data[0]).have.own.property('myFriendUser')
-                // expect(res.body.data[0].myFriendUser).have.own.property('id')
-                // expect(res.body.data[0].myFriendUser).have.own.property('phNum')
-                // expect(res.body.data[0].myFriendUser).have.own.property('username')
                 resolve();
             })
         })

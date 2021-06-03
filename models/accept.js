@@ -7,10 +7,6 @@ module.exports = (sequelize,DataTypes)=>{
             type: DataTypes.INTEGER,
             defaultValue: 0
         },
-        // accepted:{
-        //     type: DataTypes.BOOLEAN,
-        //     defaultValue: true
-        // },
         total:{
             type: DataTypes.INTEGER,
         }
