@@ -15,7 +15,46 @@ exports.getPrediction = async (req, res, next) => {
     const curY = req.body.y;
     const id = req.body.id;
     const radius = 100;
-    
+
+    await requestApi({
+        uri: encodeURI("https://dapi.kakao.com/v2/local/search/keyword.json?page=1&size=15&sort=accuracy&radius=100&x="+curX+"&y="+curY+"&query=백화점"),
+        method: 'GET',
+        headers: {
+            'Authorization': 'KakaoAK c9f67cf11819f1c1e3c318b99d7dfac1'
+        },
+        encoding: 'utf-8'
+    },function(preErr, preRes, preBody){
+        var preParsedBody = JSON.parse(preBody)
+        var prePlaces = preParsedBody['documents'];
+        var preFlag = 0;
+        for(const preCur of prePlaces){
+            if(preCur['category_name'].includes('백화점')){
+                preFlag += 1
+                model.Visit.create({
+                    raw:true,
+                    userId: id,
+                    storeId: preCur['id']
+                }).catch(() => {
+                    model.Store.create({
+                        id: preCur['id'],
+                        storeName: preCur['place_name'],
+                        storeLocation: preCur['road_address_name'],
+                        storeType: 'DEPT',
+                        companyNum: 'unknown'
+                    }).then(() =>{
+                        model.Visit.create({
+                            userId: id,
+                            storeId: preCur['id']
+                        })
+                    })
+                })
+            }
+            if(preFlag > 0){
+                break
+            }
+        }
+    })
+
     let ts = Date.now(); //Date.now()는 UTC 기준; 한국은 UTC+9hours; 9 hours == 32400000 ms
     let dateObj = new Date(ts);
     let hour = dateObj.getHours();
@@ -81,7 +120,7 @@ exports.getPrediction = async (req, res, next) => {
             [sequelize.literal('dDay - sDay'), 'ASC']
         ]
     }).then(result => {
-        if(result != undefined){
+        if(result.length != 0){
             const predictedStore = result[0]['storeType'];
             if(predictedStore == 'CE7' || predictedStore == 'FD6'){
                 kUrl = "https://dapi.kakao.com/v2/local/search/category.json?category_group_code="+predictedStore+"&page=1&size=15&sort=distance&radius="+radius+"&x="+curX+"&y="+curY;
@@ -122,18 +161,22 @@ exports.getPrediction = async (req, res, next) => {
     }
     
     
-    await requestApi(kakaoOptions, async function(err, apiRes, body){
+    await requestApi(kakaoOptions, function(err, apiRes, body){
         if(err){
             res.json({
                 data: "err"
             })
         }
         else{
-            getCnt(body);
+            var parsedBody = JSON.parse(body)
+            var places = parsedBody['documents']
+            res.json({
+                data: places
+            })
         }
     })
 
-    
+    /*
     function getCnt(body){
         var parsedBody = JSON.parse(body);
         var places = parsedBody['documents'];
@@ -173,7 +216,7 @@ exports.getPrediction = async (req, res, next) => {
                 }
             })
         }
-    }        
+    }    */    
 }
 
 exports.makePrediction = async (req, res, next) => {
