@@ -41,11 +41,11 @@ api
 
 |박수한|김경재|김민섭|
 |------|------|------|
-|서버담당|...|kakao api 사용|
+|서버담당|...|Kakao API 사용|
 |DB설계|DB설계|DB설계|
 |CI/CD|Firebase연동|의사결정트리 작성|
-|User기능담당|Push서비스담당|Store/sms/location 담당|
-|mocha를 통한 테스트 주도 개발|...|네이버api 사용|
+|User기능담당|Push서비스담당|Store/sms/location/prediction 담당|
+|mocha를 통한 테스트 주도 개발|...|Naver API 사용|
 
 
 ## 기술 스택
