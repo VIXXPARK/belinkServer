@@ -159,22 +159,22 @@ exports.makeMember = (req,res,next)=>{
      *              ...
      *          ]
      */
-    if(dataSizeZero(req.body)){ //유저정보가 안왔을 때
+    if(dataSizeZero(req.body)){ 
        doesNotExists(res,"멤버를 선택해주세요")
     }else{
       model.Team.findOne({
             where:{id:req.body[0].team_room}
         })
         .then(teamResult=>{
-            if(dataSizeZero(teamResult)){ // 방이 제대로 만들어지지 않았을 때
+            if(dataSizeZero(teamResult)){
                 doesNotExists(res,"제대로 된 그룹방이 아닙니다.")
             }
         })
-        .then(async ()=>{// 푸시 관련 서비스를 했을 때 필요한 테이블
+        .then(async ()=>{
             await model.Accept.create(acceptParameter(req))
             await model.Member.bulkCreate(
                 req.body,memberLimitAttribute()
-               )//팀에 속하는 멤버 생성
+               )
             .then(fin=>{
                 successTrue(res)
             })
@@ -209,7 +209,6 @@ exports.makeFriend = (req,res,next)=>{
 
 
 exports.getMyFriend = (req,res,next)=>{
-    //jwt 안에 들어있는 id 값을 통해 조회
     model.Friend.findAll(findFreindParameter(req))
     .then(result=>{
         resultDataOnly(res,result)
