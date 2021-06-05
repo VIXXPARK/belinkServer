@@ -90,7 +90,7 @@ describe('POST 데이터를 body에 넣어서 회원가입을 진행했을 때',
             .end((err,res)=>{
                 expect(res).status(400)
                 expect(res.body.success).to.equal(false)
-                expect(res.body.data).to.equal("이미 존재하는 유저입니다")
+                expect(res.body.message).to.equal("이미 존재하는 유저입니다")
                 if(err){
                     reject(new Error(err))
                 }

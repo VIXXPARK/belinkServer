@@ -20,7 +20,7 @@ exports.register = (req,res)=>{
     .then((data)=>{
         var phNum = req.body.phNum
         if(dataSizeZero(data)==false){
-            alreadyExistsUser(res)
+            doesNotExists(res,"이미 존재하는 유저입니다")
         }else if(!isRightPhoneNumberLength(phNum)){ // XXX-XXXX-XXXX 형식으로 저장
             isNotMatchingLengthPhoneNumber(res)
         }
@@ -36,7 +36,6 @@ exports.register = (req,res)=>{
 exports.contactUser = (req,res,next)=>{
     /**
      * @params : phNum  [형식은 xxx-xxxx-xxxx입니다.]
-     * 
      */
     model.User.findAll(findUserParameter("phNum",req.body.phNum))
     .then(result=>{
@@ -57,7 +56,6 @@ exports.idContactUser = (req,res,next)=>{
      * @params : id [ userId ]
      * id를 통한 연락처 조회
      */
-
     model.User.findAll(findUserParameter("id",req.body.id))
     .then(result=>{
         if(dataSizeZero(result)){ 
@@ -99,7 +97,6 @@ exports.login = (req,res,next)=>{
 exports.makeTeam = async (req,res,next)=>{
     /**
      * @params : teamName
-     * 
      */
     if(dataSizeZero(req.body.teamName)){
        await doesNotExists(res,"팀 이름을 적어주세요")
@@ -314,12 +311,7 @@ function isRightPhoneNumberLength(phNum){
     return phNum.length==13
 }
 
-function alreadyExistsUser(res){
-    return res.status(BAD_REQUEST).json({
-        success:false,
-        data:"이미 존재하는 유저입니다"
-    });
-}
+
 
 function isNotMatchingLengthPhoneNumber(res){
     return res.status(BAD_REQUEST).json({
