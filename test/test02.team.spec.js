@@ -188,7 +188,6 @@ describe('POST 팀 구성원 만들 때 (makeMember)',()=>{
             .send(params)
             .end((err,res)=>{
                 expect(res).status(400)
-                expect(res.body.success).to.equal(false)
                 expect(res.body.message).to.equal('멤버를 선택해주세요')
                 if(err){
                     reject(new Error(err))
@@ -211,7 +210,6 @@ describe('POST 팀 구성원 만들 때 (makeMember)',()=>{
             .send(params)
             .end((err,res)=>{
                 expect(res).status(400)
-                expect(res.body.success).to.equal(false)
                 expect(res.body).to.have.own.property('message')
                 if(err){
                     reject(new Error(err))
@@ -234,8 +232,7 @@ describe('POST 팀 구성원 만들 때 (makeMember)',()=>{
             .post('/api/user/make-member')
             .send(params)
             .end((err,res)=>{
-                expect(res).status(400)
-                expect(res.body.success).to.equal(false)
+                expect(res).status(500)
                 expect(res.body).to.have.own.property('message')
                 if(err){
                     reject(new Error(err))

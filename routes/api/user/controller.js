@@ -33,46 +33,6 @@ exports.register = (req,res)=>{
     })
 }
 
-function isRightPhoneNumberLength(phNum){
-    return phNum.length==13
-}
-
-function alreadyExistsUser(res){
-    return res.status(BAD_REQUEST).json({
-        success:false,
-        data:"이미 존재하는 유저입니다"
-    });
-}
-
-function isNotMatchingLengthPhoneNumber(res){
-    return res.status(BAD_REQUEST).json({
-        success:false,
-        data:"휴대전화 번호 길이가 다릅니다."
-    });
-}
-
-function userParameter(req){
-    return {
-                phNum:req.body.phNum,
-                username:req.body.username,
-                token:req.body.token
-        };
-}
-
-
-function makeUser(res,result){
-    return res.status(CREATED).json({
-        success:true,
-        data:result
-    });
-}
-
-
-
-
-
-
-
 exports.contactUser = (req,res,next)=>{
     /**
      * @params : phNum  [형식은 xxx-xxxx-xxxx입니다.]
@@ -81,52 +41,15 @@ exports.contactUser = (req,res,next)=>{
     model.User.findAll(findUserParameter("phNum",req.body.phNum))
     .then(result=>{
         if(dataSizeZero(result)){ 
-            doesNotHaveContactInformation(res);
+            doesNotresultDataOnly(res);
         }else{
-            haveContactInformation(res,result);
+            resultDataOnly(res,result);
         }
     })
     .catch(err=>{
         errMessage(res,err);
     })
 }
-
-function dataSizeZero(result){
-    return result==null || result==undefined||result.length==0;
-}
-
-function doesNotHaveContactInformation(res){
-    return res.status(OK).json({
-        message:"해당되는 연락처가 없습니다."
-    });
-}
-
-function findUserParameter(key,value){
-    let param={}
-    let subParam={}
-
-    subParam[key]=value
-
-    param["attributes"]=["id","phNum","username"]
-    param["where"]=subParam
-
-    return param;
-}
-
-function haveContactInformation(res,result){
-    return res.status(OK).json({
-        data:result
-    });
-}
-
-function errMessage(res,err){
-    return res.status(INTERNAL_SERVER_ERROR).json({
-        message:err
-    });
-}
-
-
-
 
 
 exports.idContactUser = (req,res,next)=>{
@@ -138,18 +61,15 @@ exports.idContactUser = (req,res,next)=>{
     model.User.findAll(findUserParameter("id",req.body.id))
     .then(result=>{
         if(dataSizeZero(result)){ 
-            doesNotHaveContactInformation(res);
+            doesNotresultDataOnly(res);
         }else{
-           haveContactInformation(res,result);
+           resultDataOnly(res,result);
         }
     })
     .catch(err=>{
         errMessage(res,err);
     })
 }
-
-
-
 
 
 exports.login = (req,res,next)=>{
@@ -176,31 +96,6 @@ exports.login = (req,res,next)=>{
 }
 
 
-function doesNotExists(res,msg){
-    return res.status(BAD_REQUEST).send({
-        success:false,
-        message:msg
-    })
-}
-
-function makeJWT(data){
-    return jwt.sign( //jwt토큰 생성
-        {
-            id:data.id,
-            username:data.username,
-            phNum:data.phNum,
-            active:data.active
-        },env.JWT_SECRET_KEY,{
-            expiresIn:'30d',
-            issuer:'belink',
-            subject:'userInfo'
-        }
-    );
-}
-
-
-
-
 exports.makeTeam = async (req,res,next)=>{
     /**
      * @params : teamName
@@ -220,20 +115,6 @@ exports.makeTeam = async (req,res,next)=>{
     
 }
 
-function teamParameter(req){
-    return {
-        teamName:req.body.teamName,
-        createdAt:new Date().getTime(),
-        updatedAt:new Date().getTime()
-    }
-}
-
-function responseSuccessAndId(res,result){
-    return res.status(CREATED).json({
-        success:true,
-        id:result.id
-    });
-}
 
 exports.editTeam = (req,res,next)=>{
     /**
@@ -249,12 +130,6 @@ exports.editTeam = (req,res,next)=>{
     })
 }
 
-function responseSuccessOnly(res,result){
-    var bool = isRight(result)
-        res.json({
-            success:bool
-        })
-}
 
 exports.deleteTeam = (req,res,next)=>{
     model.Member.destroy({
@@ -268,20 +143,13 @@ exports.deleteTeam = (req,res,next)=>{
            responseSuccessOnly(res,fin)
         })
         .catch(err=>{
-            res.status(INTERNAL_SERVER_ERROR).json({
-                success:false,
-                message:"해당되는 그룹이 존재하지 않습니다."
-            })
+            errMessageAddDetail(res,"해당되는 그룹이 존재하지 않습니다.")
         })
     })
     .catch(err=>{
-        res.status(INTERNAL_SERVER_ERROR).json({
-            success:false,
-            message:"해당되는 그룹이 존재하지 않습니다."
-        })
+        errMessageAddDetail(res,"해당되는 그룹이 존재하지 않습니다.")
     })
 }
-
 
 
 exports.makeMember = (req,res,next)=>{
@@ -294,50 +162,30 @@ exports.makeMember = (req,res,next)=>{
      *              ...
      *          ]
      */
-    if(req.body==null||req.body==undefined||req.body.length==0){ //유저정보가 안왔을 때
-        res.status(BAD_REQUEST).json({
-            success:false,
-            message:"멤버를 선택해주세요"
-        })
+    if(dataSizeZero(req.body)){ //유저정보가 안왔을 때
+       doesNotExists(res,"멤버를 선택해주세요")
     }else{
       model.Team.findOne({
             where:{id:req.body[0].team_room}
         })
         .then(teamResult=>{
             if(dataSizeZero(teamResult)){ // 방이 제대로 만들어지지 않았을 때
-                res.status(BAD_REQUEST).json({
-                    success:false,
-                    message:"제대로 된 그룹방이 아닙니다."
-                })
+                doesNotExists(res,"제대로 된 그룹방이 아닙니다.")
             }
         })
-        .then(async ()=>{
-            await model.Accept.create({// 푸시 관련 서비스를 했을 때 필요한 테이블
-                total: Object.keys(req.body).length,
-                teamId: req.body[0].team_room
-            })
-            await model.Member.bulkCreate(//팀에 속하는 멤버 생성
-                req.body,
-                {
-                    returning:true,
-                    where:{team_member:{ne:null}}
-            })
+        .then(async ()=>{// 푸시 관련 서비스를 했을 때 필요한 테이블
+            await model.Accept.create(acceptParameter(req))
+            await model.Member.bulkCreate(
+                req.body,memberLimitAttribute()
+               )//팀에 속하는 멤버 생성
             .then(fin=>{
-                res.json({
-                    success:true
-                })
+                successTrue(res)
             })
             .catch(err=>{
-                res.status(BAD_REQUEST).json({
-                    success:false,
-                    message:err
-                })
+                errMessage(res,err)
             })
-        })
-        
+        })   
     }
-
-    
 }
 
 exports.makeFriend = (req,res,next)=>{
@@ -350,46 +198,30 @@ exports.makeFriend = (req,res,next)=>{
      *          ]
      */
     if(dataSizeZero(req.body)){
-        res.status(BAD_REQUEST).json({
-            success:false,
-            message:"요청된 값이 존재하지 않습니다."
-        })
+        doesNotExists(res,"요청된 값이 존재하지 않습니다.")
     }else{
-        model.Friend.bulkCreate(req,
-            {returning:true,
-                where:{
-                    myFriend:{ne:null}
-            }})
+        model.Friend.bulkCreate(req,friendLimitAttributes())
             .then(()=>{
-                res.json({
-                    success:true
-                })
+                successTrue(res)
             })
             .catch((err)=>{
-                res.status(BAD_REQUEST).json({
-                    success:false,
-                    message:err
-                })
+                errMessage(res,err)
             })
-    }
-    
+    }   
 }
+
 
 exports.getMyFriend = (req,res,next)=>{
     //jwt 안에 들어있는 id 값을 통해 조회
-    model.Friend.findAll({
-        attributes:[],
-        where:{device:req.decoded.id,hidden:false},
-        include:[
-                {model:model.User,as:'myFriendUser',attributes:["id","phNum","username"]}]
-    })
+    model.Friend.findAll(findFreindParameter(req))
     .then(result=>{
-        res.json({
-            data:result
-        })
+        resultDataOnly(res,result)
     })
-    .catch(err=>res.status(INTERNAL_SERVER_ERROR).send(err))
+    .catch(err=>{
+        errMessage(res,err)
+    })
 }
+
 
 exports.editUser = (req,res,next)=>{
     model.User.update({
@@ -403,6 +235,7 @@ exports.editUser = (req,res,next)=>{
             })
 }
 
+
 exports.deleteUser = (req,res,next)=>{
     model.User.destroy({
         where:{id:req.decoded.id||req.body.id}
@@ -411,10 +244,7 @@ exports.deleteUser = (req,res,next)=>{
        responseSuccessOnly(res,result[0])
     })
     .catch(err=>{
-        res.status(INTERNAL_SERVER_ERROR).json({
-            success:false,
-            message:'잘못된 정보입니다.'
-        })
+        errMessageAddDetail(res,'잘못된 정보입니다.')
     })
 }
 
@@ -431,38 +261,23 @@ exports.getMember = (req,res,next)=>{
     /**
      * @params : team_room [team ID]
      */
-    model.Member.findAll({
-        attributes:[],
-        where:{team_room:req.query.team_room},
-        include:[{model:model.User,as:'teamMember',attributes:['id','username','phNum']}],
-    })
+    model.Member.findAll(findMemberParameter(req))
     .then(result=>{
         if(dataSizeZero(result)){
-            res.status(BAD_REQUEST).json({
-                success:false,
-                message:'잘못된 팀 정보입니다.'
-            })
+            doesNotExists(res,'잘못된 팀 정보입니다.')
         }else{
-            res.json({
-                data:result
-            })
+            resultDataOnly(res,result)
         }
-        
     })
-    .catch(err=>res.status(INTERNAL_SERVER_ERROR).json({
-        success:false,
-        message:err
-    }))
+    .catch(err=>{
+        errMessage(res,err)
+    })
 }
 
 exports.getMyTeam = (req,res,next)=>{
-    model.Member.findAll({
-        attributes:[],
-        where:{team_member:req.body.team_member},
-        include:[{model:model.Team,as:'teamRoom',attributes:['id','teamName']}],
-    })
+    model.Member.findAll(findTeamParameter(req))
     .then(result=>{
-        if(req.body.team_member == null){
+        if(dataSizeZero(req.body.team_member)){
             res.status(NOT_FOUND).json({
                 msg:"id가 없습니다."
             })
@@ -490,6 +305,180 @@ exports.testDelete = (req,res,next)=>{
     .then(result=>{
        responseSuccessOnly(res,result)
     })
+}
+
+
+/** ================function================= */
+
+function isRightPhoneNumberLength(phNum){
+    return phNum.length==13
+}
+
+function alreadyExistsUser(res){
+    return res.status(BAD_REQUEST).json({
+        success:false,
+        data:"이미 존재하는 유저입니다"
+    });
+}
+
+function isNotMatchingLengthPhoneNumber(res){
+    return res.status(BAD_REQUEST).json({
+        success:false,
+        data:"휴대전화 번호 길이가 다릅니다."
+    });
+}
+
+function userParameter(req){
+    return {
+                phNum:req.body.phNum,
+                username:req.body.username,
+                token:req.body.token
+        };
+}
+
+function makeUser(res,result){
+    return res.status(CREATED).json({
+        success:true,
+        data:result
+    });
+}
+
+function dataSizeZero(result){
+    return result==null || result==undefined||result.length==0;
+}
+
+function doesNotresultDataOnly(res){
+    return res.status(OK).json({
+        message:"해당되는 연락처가 없습니다."
+    });
+}
+
+function findUserParameter(key,value){
+    let param={}
+    let subParam={}
+
+    subParam[key]=value
+
+    param["attributes"]=["id","phNum","username"]
+    param["where"]=subParam
+
+    return param;
+}
+
+function resultDataOnly(res,result){
+    return res.status(OK).json({
+        data:result
+    });
+}
+
+function errMessage(res,err){
+    return res.status(INTERNAL_SERVER_ERROR).json({
+        message:err
+    });
+}
+
+
+function doesNotExists(res,msg){
+    return res.status(BAD_REQUEST).send({
+        success:false,
+        message:msg
+    })
+}
+
+function makeJWT(data){
+    return jwt.sign( //jwt토큰 생성
+        {
+            id:data.id,
+            username:data.username,
+            phNum:data.phNum,
+            active:data.active
+        },env.JWT_SECRET_KEY,{
+            expiresIn:'30d',
+            issuer:'belink',
+            subject:'userInfo'
+        }
+    );
+}
+
+function teamParameter(req){
+    return {
+        teamName:req.body.teamName,
+        createdAt:new Date().getTime(),
+        updatedAt:new Date().getTime()
+    }
+}
+
+function responseSuccessAndId(res,result){
+    return res.status(CREATED).json({
+        success:true,
+        id:result.id
+    });
+}
+
+function responseSuccessOnly(res,result){
+    var bool = isRight(result)
+        res.json({
+            success:bool
+        })
+}
+
+function errMessageAddDetail(res,msg){
+    return res.status(INTERNAL_SERVER_ERROR).json({
+        success:false,
+        message:msg
+    })
+}
+
+function acceptParameter(req){
+    return {
+        total: Object.keys(req.body).length,
+        teamId: req.body[0].team_room
+    }
+}
+
+function memberLimitAttribute(){
+    return  {
+        returning:true,
+        where:{team_member:{ne:null}}
+    };
+}
+
+function successTrue(res){
+    res.json({
+        success:true
+    })
+}
+
+function friendLimitAttributes(){
+    return {returning:true,
+        where:{
+            myFriend:{ne:null}
+    }};
+}
+
+function findFreindParameter(req){
+    return {
+        attributes:[],
+        where:{device:req.decoded.id,hidden:false},
+        include:[
+                {model:model.User,as:'myFriendUser',attributes:["id","phNum","username"]}]
+    };
+}
+
+function findMemberParameter(req){
+    return {
+        attributes:[],
+        where:{team_room:req.query.team_room},
+        include:[{model:model.User,as:'teamMember',attributes:['id','username','phNum']}],
+    };
+}
+
+function findTeamParameter(req){
+    return {
+        attributes:[],
+        where:{team_member:req.body.team_member},
+        include:[{model:model.Team,as:'teamRoom',attributes:['id','teamName']}],
+    };
 }
 
 function isRight(result){
