@@ -43,8 +43,6 @@ exports.savePlace = (req, res) => {
 
 exports.searchPlace = (req, res) => {
     const keyword = req.body.keyword;
-
-    console.log(keyword)
     var kUrl = '';
     const kMethod = 'GET';
     const kHeaders = {

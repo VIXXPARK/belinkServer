@@ -68,7 +68,6 @@ exports.groupPush = async (req, res, noti, data) => {
             // required: true = inner join
             // right: true = right outer join
         })
-        //console.log(result);
         const array = []
         
         for(const cur of result){
@@ -124,23 +123,11 @@ exports.storePush = async (req, res, number) => {
             attributes: ['token'],
             where: { id: storeId }
         })
-        //console.log(result);
-        // const array = []
-        // result.forEach((item, idx) => {
-        //     result.push(item.token)
-        // })
-        // for(let i=0; i< result.length; i++)
-        // {
-        //     array.push(result[i])
-        // }
-        // const target_token = array;
-
+        
         const target_token = result[0].token;
 
         const message = {
             notification: {
-                // title: `${number} 명이 입장했습니다.`,
-                // body: '입장 완료',
             },
             data:{
                 title: `${number} 명이 입장했습니다.`,
@@ -185,12 +172,6 @@ exports.infectionPush = async (req, res) => {
             teamRoomArray.push(item.team_room);
         })
 
-        // const result = await model.Member.findAll({
-        //     attributes: [],
-        //     where: { team_room: teamRoomArray },
-        //     include: [{ model: model.User, as: 'teamMember', attributes: ['token'] }]//, where: {id: { [Op.not]: userId }}
-        // })
-
         const result = await model.Member.findAll({
             attributes: [],
             where: { team_room: teamRoomArray },
@@ -198,9 +179,6 @@ exports.infectionPush = async (req, res) => {
         })
 
         const infectArray = [];
-        // result.forEach((item, idx)=>{
-        //     infectArray.push(item.teamMember.token);
-        // });
         result.forEach((item, idx)=>{
             if(item.teamMember.id != userId)
                 infectArray.push(item.teamMember.token);
@@ -209,8 +187,6 @@ exports.infectionPush = async (req, res) => {
         const registrationTokens = infectArray
 
         const noti = {
-            // title: `${name} 님이 코로나에 확진되었습니다.`,
-            // body: '같이 있으셨던 분들께서는 자가 격리 해주시고, 빠른 시일 내에 가까운 선별 진료소를 찾아 코로나 검사를 받아주시기 바랍니다.'
         }
         const data = {
             title: `${name} 님이 코로나에 확진되었습니다.`,
@@ -312,13 +288,11 @@ exports.acceptPush = async (req, res, noti, data, number) => {
             attributes: ['token'],
             where: { id: storeId }
         })
-        //console.log(result);
 
         const array = []
         for(const cur of result){
             array.push(cur['teamMember.token']);
         }
-        //console.log(array);
         const registrationTokens = array
 
         const message = {
@@ -328,11 +302,8 @@ exports.acceptPush = async (req, res, noti, data, number) => {
         }
 
         const storeToken = result2[0].token;
-        //console.log(storeToken);
         const message2 = {
             notification: {
-                // title: `${number} 명이 입장했습니다.`,
-                // body: '입장 완료',
             },
             data:{
                 title: `${number} 명이 입장했습니다.`,

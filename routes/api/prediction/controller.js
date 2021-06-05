@@ -176,47 +176,7 @@ exports.getPrediction = async (req, res, next) => {
         }
     })
 
-    /*
-    function getCnt(body){
-        var parsedBody = JSON.parse(body);
-        var places = parsedBody['documents'];
-        var finalStores = [];
-        var flag = 0
-        for(const cur of places){
-            model.Visit.findAndCountAll({
-            //SELECT id,createdAt,updatedAt,storeId,userId,count(*) FROM visits WHERE TIMEDIFF(${dateObj},createdAt) BETWEEN "00:00:01" AND "01:00:00" AND storeId=${cur.id}  GROUP BY storeId;
-                raw: true,
-                where:{
-                    storeId: cur.id,
-                    [Op.and]: [
-                        sequelize.where(
-                            sequelize.fn('TIMEDIFF',dateObj,sequelize.col('visit.createdAt')),{
-                                [Op.lte]: '01:00:00',
-                                [Op.gt]: '00:00:01'
-                            }
-                        )
-                    ]
-                },
-                group: "storeId"
-            }).then(result => {
-                flag += 1
-                if(result.count.length != 0){
-                    cur['realTime'] = result.count[0]['count'];
-                }
-                else{
-                    cur['realTime'] = 0;
-                }
-                finalStores.push(cur);
-
-            }).then(resultB => {
-                if(flag == places.length){
-                    res.json({
-                        data:finalStores
-                    })
-                }
-            })
-        }
-    }    */    
+    
 }
 
 exports.makePrediction = async (req, res, next) => {

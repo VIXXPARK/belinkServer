@@ -39,11 +39,6 @@ describe('POST 친구를 만들 때',()=>{
         
     })
 
-    
-
-    
-
-
     it('정상적으로 친구맺기 성공했을 때',()=>{
         return new Promise((resolve,reject)=>{
             var params=[
@@ -62,9 +57,7 @@ describe('POST 친구를 만들 때',()=>{
                 resolve()
             })
         })
-    })
-
-    
+    })   
 })
 
 
@@ -89,12 +82,7 @@ describe('사전에 로그인 필수',()=>{
     })
 })
 
-
-
 describe('GET 친구정보 가져오기',()=>{
-    
-   
-    
     
     it(`성공했을 때`,()=>{
         

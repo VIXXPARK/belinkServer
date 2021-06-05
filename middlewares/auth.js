@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config();
 const env = process.env;
 
-const model = require('../models')
 const authMiddleware = (req,res,next) =>{
     const token = req.headers['x-access-token']||req.query.token
 
