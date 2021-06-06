@@ -226,9 +226,9 @@ describe('PUT 회원 유저 정보 수정',() => {
                 expect(res).status(200)
                 expect(res.body.success).to.equal(true)
                 if(err){
-                    reject(err)
+                    reject(err);
                 }
-                resolve()
+                resolve();
             })
         })
     })
