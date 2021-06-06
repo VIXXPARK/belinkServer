@@ -36,10 +36,10 @@ exports.contactUser = (req,res,next)=>{
     /**
      * @params : phNum  [형식은 xxx-xxxx-xxxx입니다.]
      */
-    model.User.findAll(findUserParameter("phNum",req.body.phNum))
+    model.User.findAll(findUser_Attribute_Id_Phone_Username("phNum",req.body.phNum))
     .then(result=>{
         if(dataSizeZero(result)){ 
-            doesNotresultDataOnly(res);
+            doesNotHaveContact(res);
         }else{
             resultDataResponse(res,result);
         }
@@ -55,10 +55,10 @@ exports.idContactUser = (req,res,next)=>{
      * @params : id [ userId ]
      * id를 통한 연락처 조회
      */
-    model.User.findAll(findUserParameter("id",req.body.id))
+    model.User.findAll(findUser_Attribute_Id_Phone_Username("id",req.body.id))
     .then(result=>{
         if(dataSizeZero(result)){ 
-            doesNotresultDataOnly(res);
+            doesNotHaveContact(res);
         }else{
            resultDataResponse(res,result);
         }
@@ -100,7 +100,7 @@ exports.makeTeam = async (req,res,next)=>{
     if(dataSizeZero(req.body.teamName)){
        await doesNotExists(res,"팀 이름을 적어주세요")
     }else{
-        await model.Team.create(teamParameter(req))
+        await model.Team.create(team_Attribute_All(req))
         .then(result=>{
             responseSuccessAndId(res,result);
         })
@@ -206,7 +206,7 @@ exports.makeFriend = (req,res,next)=>{
 
 
 exports.getMyFriend = (req,res,next)=>{
-    model.Friend.findAll(findFreindParameter(req))
+    model.Friend.findAll(findFreind_Attribute_Id_Phone_Username(req))
     .then(result=>{
         resultDataResponse(res,result)
     })
@@ -238,7 +238,7 @@ exports.deleteUser = (req,res,next)=>{
 }
 
 exports.deleteMember = (req,res,next)=>{
-    model.Member.destroy(deleteMemberParameter(req))
+    model.Member.destroy(deleteMember_TeamMember_TeamRoom(req))
     .then(result=>{
         compareWithResultResponse(res,result)
     })
@@ -250,7 +250,7 @@ exports.getMember = (req,res,next)=>{
     /**
      * @params : team_room [team ID]
      */
-    model.Member.findAll(findMemberParameter(req))
+    model.Member.findAll(findMember_Attribute_Id_Phone_Username(req))
     .then(result=>{
         if(dataSizeZero(result)){
             doesNotExists(res,'잘못된 팀 정보입니다.')
@@ -264,7 +264,7 @@ exports.getMember = (req,res,next)=>{
 }
 
 exports.getMyTeam = (req,res,next)=>{
-    model.Member.findAll(findTeamParameter(req))
+    model.Member.findAll(findTeam_Attribute_Id_TeamName(req))
     .then(result=>{
         if(dataSizeZero(req.body.team_member)){
             res.status(NOT_FOUND).json({
@@ -279,7 +279,7 @@ exports.getMyTeam = (req,res,next)=>{
 }
 
 exports.infectUser = (req,res,next)=>{
-    model.User.update(updateInfectParameter(req))
+    model.User.update(updateInfect_Attribute_All(req))
     .then(result=>{
         compareWithResultResponse(res,result[0])
     })
@@ -329,13 +329,13 @@ function dataSizeZero(result){
     return result==null || result==undefined||result.length==0;
 }
 
-function doesNotresultDataOnly(res){
+function doesNotHaveContact(res){
     return res.status(OK).json({
         message:"해당되는 연락처가 없습니다."
     });
 }
 
-function findUserParameter(key,value){
+function findUser_Attribute_Id_Phone_Username(key,value){
     let param={}
     let subParam={}
 
@@ -382,7 +382,7 @@ function makeJWT(data){
     );
 }
 
-function teamParameter(req){
+function team_Attribute_All(req){
     return {
         teamName:req.body.teamName,
         createdAt:new Date().getTime(),
@@ -451,7 +451,7 @@ function friendLimitAttributes(){
     }};
 }
 
-function findFreindParameter(req){
+function findFreind_Attribute_Id_Phone_Username(req){
     return {
         attributes:[],
         where:{device:req.decoded.id,hidden:false},
@@ -460,7 +460,7 @@ function findFreindParameter(req){
     };
 }
 
-function findMemberParameter(req){
+function findMember_Attribute_Id_Phone_Username(req){
     return {
         attributes:[],
         where:{team_room:req.query.team_room},
@@ -468,13 +468,13 @@ function findMemberParameter(req){
     };
 }
 
-function deleteMemberParameter(req){
+function deleteMember_TeamMember_TeamRoom(req){
     return {
         where:{team_member:req.body.userId,team_room:req.body.teamId}
     };
 }
 
-function findTeamParameter(req){
+function findTeam_Attribute_Id_TeamName(req){
     return {
         attributes:[],
         where:{team_member:req.body.team_member},
@@ -482,7 +482,7 @@ function findTeamParameter(req){
     };
 }
 
-function updateInfectParameter(req){
+function updateInfect_Attribute_All(req){
     return {
         infect:req.body.infect,
         },{where:{id:req.body.id}
