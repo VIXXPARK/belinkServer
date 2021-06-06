@@ -8,6 +8,8 @@ const OK=200
 const INTERNAL_SERVER_ERROR=500
 const CREATED = 201
 const NOT_FOUND=404
+const PHONE_LENGTH=13
+const TRUE=1
 
 exports.register = (req,res)=>{ 
     /**
@@ -168,7 +170,7 @@ exports.makeMember = (req,res,next)=>{
             }
         })
         .then(async ()=>{
-            await model.Accept.create(acceptParameter(req))
+            await model.Accept.create(accept_Attribute_All(req))
             await model.Member.bulkCreate(
                 req.body,memberLimitAttribute()
                )
@@ -298,7 +300,7 @@ exports.testDelete = (req,res,next)=>{
 /** ================function================= */
 
 function isRightPhoneNumberLength(phNum){
-    return phNum.length==13
+    return phNum.length==PHONE_LENGTH
 }
 
 
@@ -424,7 +426,7 @@ function errMessageAddDetail(res,msg){
     })
 }
 
-function acceptParameter(req){
+function accept_Attribute_All(req){
     return {
         total: Object.keys(req.body).length,
         teamId: req.body[0].team_room
@@ -491,5 +493,5 @@ function updateInfect_Attribute_All(req){
 
 
 function isRight(result){
-    return result==1
+    return result==TRUE
 }
