@@ -279,7 +279,7 @@ exports.infectUser = (req,res,next)=>{
 
 exports.testDelete = (req,res,next)=>{
     model.User.destroy({
-        where:{phNum:req.body.phNum,username:req.body.username}
+        where:phoneNumberAndUsername(req)
     })
     .then(result=>{
        compareWithResultResponse(res,result)
