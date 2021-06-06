@@ -359,17 +359,27 @@ function doesNotExists(res,msg){
 
 function makeJWT(data){
     return jwt.sign( //jwt토큰 생성
-        {
-            id:data.id,
-            username:data.username,
-            phNum:data.phNum,
-            active:data.active
-        },env.JWT_SECRET_KEY,{
-            expiresIn:'30d',
-            issuer:'belink',
-            subject:'userInfo'
-        }
+       JWTPayload(data),
+       env.JWT_SECRET_KEY,
+       JWTPayloadTail()
     );
+}
+
+function JWTPayload(data){
+    return {
+        id:data.id,
+        username:data.username,
+        phNum:data.phNum,
+        active:data.active
+    };
+}
+
+function JWTPayloadTail(){
+    return {
+        expiresIn:'30d',
+        issuer:'belink',
+        subject:'userInfo'
+    };
 }
 
 function team_Attribute_All(req){
