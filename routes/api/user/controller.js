@@ -55,7 +55,6 @@ exports.contactUser = (req,res,next)=>{
 exports.idContactUser = (req,res,next)=>{
     /**
      * @params : id [ userId ]
-     * id를 통한 연락처 조회
      */
     model.User.findAll(findUser_Attribute_Id_Phone_Username("id",req.body.id))
     .then(result=>{
@@ -74,8 +73,6 @@ exports.idContactUser = (req,res,next)=>{
 exports.login = (req,res,next)=>{
     /**
      * @params : phNum
-     * 휴대전화번호를 이용한 간편 로그인이기 때문에 휴대전화번호만 필요하다
-     * 휴대전화번호 인증은 sms 디렉토리에 존재
      */
     model.User.findOne({where:{phNum:req.body.phNum}})
     .then((data)=>{
@@ -150,13 +147,9 @@ exports.deleteTeam = (req,res,next)=>{
 
 exports.makeMember = (req,res,next)=>{
     /**
-     * @body : [
-     *              {
-     * @params          team_room:"asfdads-dfasdfa-dsafsf",
-     * @params          team_member:"wrwer-bsdfb-qwfwev2"
-     *              }, 
-     *              ...
-     *          ]
+     * @body
+*          @params  team_room:"asfdads-dfasdfa-dsafsf",
+*          @params  team_member:"wrwer-bsdfb-qwfwev2"
      */
     if(dataSizeZero(req.body)){ 
        doesNotExists(res,"멤버를 선택해주세요")
@@ -186,12 +179,9 @@ exports.makeMember = (req,res,next)=>{
 
 exports.makeFriend = (req,res,next)=>{
     /**
-     * @body : [
-     *              {
-     * @params          device:-----,
-     * @params          myFriend:----,
-     *              }
-     *          ]
+     * @body 
+     *      @params          device:-----,
+     *      @params          myFriend:----,
      */
     if(dataSizeZero(req.body)){
         doesNotExists(res,"요청된 값이 존재하지 않습니다.")
