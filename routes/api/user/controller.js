@@ -191,7 +191,7 @@ exports.getMyFriend = (req, res, next) => {
 };
 
 exports.editUser = (req, res, next) => {
-  model.User.update(phoneNumberAndUsername(req), limitIdAttribute(req)).then(
+  model.User.update(phoneNumberAndUsernameAndToken(req), limitIdAttribute(req)).then(
     (result) => {
       compareWithResultResponse(res, result[0]);
     }
