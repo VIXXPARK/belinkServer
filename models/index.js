@@ -6,7 +6,7 @@ const config = require(path.join(__dirname, "..", "config", "config.js"))[env];
 const db = {};
 if (config.username == "root") {
   console.log("여기에 들어옴");
-  config.password = null;
+  config.password = '0000';
 }
 const sequelize = new Sequelize(
   config.database,
@@ -25,9 +25,13 @@ db.Visit = require("./visit")(sequelize, Sequelize);
 db.Member = require("./member")(sequelize, Sequelize);
 db.treeResult = require("./treeResult")(sequelize, Sequelize);
 db.Accept = require("./accept")(sequelize, Sequelize);
+db.pendingVisit = require("./pendingVisit")(sequelize, Sequelize);
 
 db.User.hasMany(db.Visit);
 db.Store.hasMany(db.Visit);
+
+db.User.hasMany(db.pendingVisit);
+db.Store.hasMany(db.pendingVisit);
 
 db.User.hasMany(db.Member, {
   as: "teamMember",
@@ -89,8 +93,10 @@ db.Friend.belongsTo(db.User, {
 });
 
 db.Visit.belongsTo(db.User);
-
 db.Visit.belongsTo(db.Store);
+
+db.pendingVisit.belongsTo(db.User);
+db.pendingVisit.belongsTo(db.Store);
 
 db.User.hasMany(db.Accept);
 db.Team.hasMany(db.Accept);

@@ -82,3 +82,46 @@ exports.signup = (req, res, next) => {
         });
     }
 }
+
+exports.getPending = (req, res) => {
+    model.pendingVisit.findAll({
+        where:{
+            storeId: req.body.storeId
+        }
+    }).then(result => {
+        res.json({
+            data: result
+        })
+    })
+}
+
+exports.acceptPending = (req, res) => {
+    model.Visit.create({
+        createdAt: req.body.createdAt,
+        updatedAt: req.body.updatedAt,
+        userId: req.body.userId,
+        storeId: req.body.storeId
+    }).then(() => {
+        model.pendingVisit.destroy({
+            where:{
+                id: req.body.id
+            }
+        }).then(() => {
+            res.json({
+                result: "Visit Accepted"
+            })
+        })
+    })
+}
+
+exports.rejectPending = (req, res) => {
+    model.pendingVisit.destroy({
+        where:{
+            id: req.body.id
+        }
+    }).then(() => {
+        res.json({
+            result: "Visit Rejected"
+        })
+    })
+}
