@@ -68,7 +68,7 @@ exports.login = (req, res, next) => {
   /**
    * @params : phNum
    */
-  model.User.findOne({ where: { phNum: req.body.phNum } })
+  model.User.findOne(limitPhoneNumberAttribute(req))
     .then((data) => {
       if (!data) {
         doesNotExists(res, "존재하지 않은 유저입니다.");
@@ -79,6 +79,18 @@ exports.login = (req, res, next) => {
     .catch((err) => {
       errMessage(res, err);
     });
+};
+
+exports.refreshToken = (req, res, next) => {
+  /**
+   * @params  : phNum {String}
+   */
+  model.User.update(
+    phoneNumberAndUsernameAndToken(req),
+    limitPhoneNumberAttribute(req)
+  ).then((result) => {
+    compareWithResultResponse(res, result[0]);
+  });
 };
 
 exports.makeTeam = async (req, res, next) => {
@@ -191,11 +203,12 @@ exports.getMyFriend = (req, res, next) => {
 };
 
 exports.editUser = (req, res, next) => {
-  model.User.update(phoneNumberAndUsernameAndToken(req), limitIdAttribute(req)).then(
-    (result) => {
-      compareWithResultResponse(res, result[0]);
-    }
-  );
+  model.User.update(
+    phoneNumberAndUsernameAndToken(req),
+    limitIdAttribute(req)
+  ).then((result) => {
+    compareWithResultResponse(res, result[0]);
+  });
 };
 
 exports.deleteUser = (req, res, next) => {
@@ -276,6 +289,10 @@ function phoneNumberAndUsernameAndToken(req) {
     username: req.body.username,
     token: req.body.token,
   };
+}
+
+function limitPhoneNumberAttribute(req) {
+  return { where: { phNum: req.body.phNum } };
 }
 
 function successAndDataResponse(res, result) {
