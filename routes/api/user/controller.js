@@ -38,7 +38,7 @@ exports.contactUser = (req,res,next)=>{
     /**
      * @params : phNum  [형식은 xxx-xxxx-xxxx입니다.]
      */
-    model.User.findAll(findBy_("phNum",req.body.phNum))
+    model.User.findAll(findUserBy_("phNum",req.body.phNum))
     .then(result=>{
         if(dataSizeZero(result)){ 
             doesNotHaveContact(res);
@@ -56,7 +56,7 @@ exports.idContactUser = (req,res,next)=>{
     /**
      * @params : id [ userId ]
      */
-    model.User.findAll(findBy_("id",req.body.id))
+    model.User.findAll(findUserBy_("id",req.body.id))
     .then(result=>{
         if(dataSizeZero(result)){ 
             doesNotHaveContact(res);
@@ -99,7 +99,7 @@ exports.makeTeam = async (req,res,next)=>{
     if(dataSizeZero(req.body.teamName)){
        await doesNotExists(res,"팀 이름을 적어주세요")
     }else{
-        await model.Team.create(team_Attribute_All(req))
+        await model.Team.create(insertTeamName(req))
         .then(result=>{
             responseSuccessAndId(res,result);
         })
@@ -163,7 +163,7 @@ exports.makeMember = (req,res,next)=>{
             }
         })
         .then(async ()=>{
-            await model.Accept.create(accept_Attribute_All(req))
+            await model.Accept.create(totalAndTeamId(req))
             await model.Member.bulkCreate(
                 req.body,memberLimitAttribute()
                )
@@ -325,7 +325,7 @@ function doesNotHaveContact(res){
     });
 }
 
-function findBy_(key,value){
+function findUserBy_(key,value){
     let param={}
     let subParam={}
 
@@ -382,7 +382,7 @@ function JWTPayloadTail(){
     };
 }
 
-function team_Attribute_All(req){
+function insertTeamName(req){
     return {
         teamName:req.body.teamName,
         createdAt:new Date().getTime(),
@@ -424,7 +424,7 @@ function errMessageAddDetail(res,msg){
     })
 }
 
-function accept_Attribute_All(req){
+function totalAndTeamId(req){
     return {
         total: Object.keys(req.body).length,
         teamId: req.body[0].team_room
