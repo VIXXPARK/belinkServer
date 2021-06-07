@@ -1,4 +1,3 @@
-module.exports = (sequelize,DataTypes)=>{
-    return sequelize.define("member",{
-    })
-}
+module.exports = (sequelize, DataTypes) => {
+  return sequelize.define("member", {});
+};
