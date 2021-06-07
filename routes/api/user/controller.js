@@ -7,7 +7,6 @@ const BAD_REQUEST=400
 const OK=200
 const INTERNAL_SERVER_ERROR=500
 const CREATED = 201
-const NOT_FOUND=404
 const PHONE_LENGTH=13
 const TRUE=1
 
@@ -80,16 +79,13 @@ exports.login = (req,res,next)=>{
             doesNotExists(res,"존재하지 않은 유저입니다.")
         }
         var token = makeJWT(data)
-        res.json({
-            success:true,
-            accessToken:token,
-            id:data.id
-        })
+        loginSuccessTokenIdResponse(res,data,token)
     })
     .catch(err=>{
         errMessage(res,err)
     })
 }
+
 
 
 exports.makeTeam = async (req,res,next)=>{
@@ -261,12 +257,12 @@ exports.getMyTeam = (req,res,next)=>{
         if(dataSizeZero(req.body.team_member)){
             doesNotExists(res,"id가 없습니다.")
         }else{
-            res.json({
-                result
-            })
+            findTeamResponse(res,result)
         }
     })
 }
+
+
 
 exports.infectUser = (req,res,next)=>{
     model.User.update(updateFromInfectById(req))
@@ -349,6 +345,13 @@ function errMessage(res,err){
     });
 }
 
+function loginSuccessTokenIdResponse(res,data,token){
+    return res.json({
+        success:true,
+        accessToken:token,
+        id:data.id
+    })
+}
 
 function doesNotExists(res,msg){
     return res.status(BAD_REQUEST).send({
@@ -480,6 +483,12 @@ function findByTeamMember(req){
         where:{team_member:req.body.team_member},
         include:[{model:model.Team,as:'teamRoom',attributes:['id','teamName']}],
     };
+}
+
+function findTeamResponse(res,result){
+    return res.json({
+        result
+    });
 }
 
 function updateFromInfectById(req){
