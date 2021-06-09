@@ -9,23 +9,20 @@ chai.use(chaiHttp);
 describe("Create test tuple for pending Visit", () => {
     it("Create test tuple for store", () => {
         return new Promise((resolve, reject) => {
-            var body = {
-                address: "서울 송파구 올림픽로 289",
-                name: "스타벅스 잠실시그마타워점",
-                companyNum: "test04_test",
-                token: "test04_test"
-            }
-
-            chai.request(server)
-                .post("/api/store/signup")
-                .send(body)
-                .end((err, res) => {                    
-                    if(err){
-                        reject(err);
-                    }
-                    expect(res).status(200);
-                    resolve();
-                })
+            model.Store.create({
+                id: "50787790",
+                storeName: "스타벅스 잠실시그마타워점",
+                storeLocation:"서울 송파구 올림픽로 289",
+                storeType:"CE7",
+                companyNum:"test04_test",
+                token:"test04_test",
+                createdAt: new Date(),
+                updatedAt: new Date()
+            }).then(()=>{
+                resolve();
+            }).catch(err=>{
+                reject()
+            })
         })
     })
 
