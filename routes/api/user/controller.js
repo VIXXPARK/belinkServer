@@ -17,11 +17,11 @@ exports.register = (req, res) => {
    * @params : token(기기 고유한 번호)
    */
   model.User.findOne({ where: { phNum: req.body.phNum } }).then((data) => {
-    if (dataSizeZero(data) == false) {
-      doesNotExists(res, "이미 존재하는 유저입니다");
+    if (isDataSizeZero(data) == false) {
+      doesNotExistsResponse(res, "이미 존재하는 유저입니다");
     } else if (!isRightPhoneNumberLength(req.body.phNum)) {
       // XXX-XXXX-XXXX 형식으로 저장
-      isNotMatchingLengthPhoneNumber(res);
+      isNotMatchingLengthPhoneNumberResponse(res);
     } else {
       model.User.create(phoneNumberAndUsernameAndToken(req)).then((result) => {
         successAndDataResponse(res, result);
@@ -36,8 +36,8 @@ exports.contactUser = (req, res, next) => {
    */
   model.User.findAll(findUserBy_("phNum", req.body.phNum))
     .then((result) => {
-      if (dataSizeZero(result)) {
-        doesNotHaveContact(res);
+      if (isDataSizeZero(result)) {
+        doesNotHaveContactResponse(res);
       } else {
         resultDataResponse(res, result);
       }
@@ -53,8 +53,8 @@ exports.idContactUser = (req, res, next) => {
    */
   model.User.findAll(findUserBy_("id", req.body.id))
     .then((result) => {
-      if (dataSizeZero(result)) {
-        doesNotHaveContact(res);
+      if (isDataSizeZero(result)) {
+        doesNotHaveContactResponse(res);
       } else {
         resultDataResponse(res, result);
       }
@@ -71,7 +71,7 @@ exports.login = (req, res, next) => {
   model.User.findOne(limitPhoneNumberAttribute(req))
     .then((data) => {
       if (!data) {
-        doesNotExists(res, "존재하지 않은 유저입니다.");
+        doesNotExistsResponse(res, "존재하지 않은 유저입니다.");
       }
       var token = makeJWT(data);
       loginSuccessTokenIdResponse(res, data, token);
@@ -97,8 +97,8 @@ exports.makeTeam = async (req, res, next) => {
   /**
    * @params : teamName
    */
-  if (dataSizeZero(req.body.teamName)) {
-    await doesNotExists(res, "팀 이름을 적어주세요");
+  if (isDataSizeZero(req.body.teamName)) {
+    await doesNotExistsResponse(res, "팀 이름을 적어주세요");
   } else {
     await model.Team.create(insertTeamName(req))
       .then((result) => {
@@ -149,15 +149,15 @@ exports.makeMember = (req, res, next) => {
    *          @params  team_room:"asfdads-dfasdfa-dsafsf",
    *          @params  team_member:"wrwer-bsdfb-qwfwev2"
    */
-  if (dataSizeZero(req.body)) {
-    doesNotExists(res, "멤버를 선택해주세요");
+  if (isDataSizeZero(req.body)) {
+    doesNotExistsResponse(res, "멤버를 선택해주세요");
   } else {
     model.Team.findOne({
       where: { id: req.body[0].team_room },
     })
       .then((teamResult) => {
-        if (dataSizeZero(teamResult)) {
-          doesNotExists(res, "제대로 된 그룹방이 아닙니다.");
+        if (isDataSizeZero(teamResult)) {
+          doesNotExistsResponse(res, "제대로 된 그룹방이 아닙니다.");
         }
       })
       .then(async () => {
@@ -179,8 +179,8 @@ exports.makeFriend = (req, res, next) => {
    *      @params          device:-----,
    *      @params          myFriend:----,
    */
-  if (dataSizeZero(req.body)) {
-    doesNotExists(res, "요청된 값이 존재하지 않습니다.");
+  if (isDataSizeZero(req.body)) {
+    doesNotExistsResponse(res, "요청된 값이 존재하지 않습니다.");
   } else {
     model.Friend.bulkCreate(req, friendLimitAttributes())
       .then(() => {
@@ -235,8 +235,8 @@ exports.getMember = (req, res, next) => {
    */
   model.Member.findAll(findByTeamroom(req))
     .then((result) => {
-      if (dataSizeZero(result)) {
-        doesNotExists(res, "잘못된 팀 정보입니다.");
+      if (isDataSizeZero(result)) {
+        doesNotExistsResponse(res, "잘못된 팀 정보입니다.");
       } else {
         resultDataResponse(res, result);
       }
@@ -248,8 +248,8 @@ exports.getMember = (req, res, next) => {
 
 exports.getMyTeam = (req, res, next) => {
   model.Member.findAll(findByTeamMember(req)).then((result) => {
-    if (dataSizeZero(req.body.team_member)) {
-      doesNotExists(res, "id가 없습니다.");
+    if (isDataSizeZero(req.body.team_member)) {
+      doesNotExistsResponse(res, "id가 없습니다.");
     } else {
       findTeamResponse(res, result);
     }
@@ -276,7 +276,7 @@ function isRightPhoneNumberLength(phNum) {
   return phNum.length == PHONE_LENGTH;
 }
 
-function isNotMatchingLengthPhoneNumber(res) {
+function isNotMatchingLengthPhoneNumberResponse(res) {
   return res.status(BAD_REQUEST).json({
     success: false,
     data: "휴대전화 번호 길이가 다릅니다.",
@@ -302,11 +302,11 @@ function successAndDataResponse(res, result) {
   });
 }
 
-function dataSizeZero(result) {
+function isDataSizeZero(result) {
   return result == null || result == undefined || result.length == 0;
 }
 
-function doesNotHaveContact(res) {
+function doesNotHaveContactResponse(res) {
   return res.status(OK).json({
     message: "해당되는 연락처가 없습니다.",
   });
@@ -344,7 +344,7 @@ function loginSuccessTokenIdResponse(res, data, token) {
   });
 }
 
-function doesNotExists(res, msg) {
+function doesNotExistsResponse(res, msg) {
   return res.status(BAD_REQUEST).send({
     success: false,
     message: msg,
