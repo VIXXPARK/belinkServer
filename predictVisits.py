@@ -73,7 +73,7 @@ X = data[data_features]
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1)
 
-tree = DecisionTreeClassifier(random_state=0)
+tree = DecisionTreeClassifier(criterion='gini', random_state=0)
 tree.fit(X_train, y_train)
 
 rules = getRules(tree, data_features, tree.classes_)

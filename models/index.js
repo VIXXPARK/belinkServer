@@ -6,7 +6,7 @@ const config = require(path.join(__dirname, "..", "config", "config.js"))[env];
 const db = {};
 if (config.username == "root") {
   console.log("여기에 들어옴");
-  config.password = null;
+  config.password = '0000';
 }
 const sequelize = new Sequelize(
   config.database,

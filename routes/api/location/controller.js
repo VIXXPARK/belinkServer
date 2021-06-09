@@ -61,25 +61,32 @@ exports.savePlace = (req, res) => {
 }
 
 exports.pendingVisits = (req, res) => {
-    model.User.findOne({
-        where: {
-            id: req.body.userId
-        }
-    }).then(result => {
-        model.pendingVisit.create({
-            userId: req.body.userId,
-            phNum: result.phNum,
-            storeId: req.body.storeId
-        }).then(resultB => {
-            res.json({
-                result: resultB
+    if(!req.body.userId || !req.body.storeId){
+        res.status(400).json({
+            error: "Input userid && storeid"
+        })
+    }
+    else{
+        model.User.findOne({
+            where: {
+                id: req.body.userId
+            }
+        }).then(result => {
+            model.pendingVisit.create({
+                userId: req.body.userId,
+                phNum: result.phNum,
+                storeId: req.body.storeId
+            }).then(resultB => {
+                res.status(200).json({
+                    result: resultB
+                })
+            })
+        }).catch(err => {
+            res.status(400).json({
+                error: "Unavailable User/Store"
             })
         })
-    }).catch(err => {
-        res.json({
-            error: "Unavailable User"
-        })
-    })
+    }
 }
 
 exports.searchPlace = (req, res) => {

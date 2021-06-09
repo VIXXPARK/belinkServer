@@ -72,10 +72,21 @@ exports.signup = (req, res, next) => {
                     token:req.body.token
                 })
                 .then(result=>{
-                    console.log(place)
-                    res.json({
+                    res.status(200).json({
                         data:result
                     })
+                })
+                .catch((err) => {
+                    if(err.errors[0].type == 'unique violation'){
+                        res.status(200).json({
+                            result: "Store Already Exists"
+                        })
+                    }
+                    else{
+                        res.status(400).json({
+                            error: err.errors[0].type
+                        })
+                    }
                 })
             }
              
@@ -84,44 +95,76 @@ exports.signup = (req, res, next) => {
 }
 
 exports.getPending = (req, res) => {
-    model.pendingVisit.findAll({
-        where:{
-            storeId: req.body.storeId
-        }
-    }).then(result => {
-        res.json({
-            data: result
+    if(!req.body.storeId){
+        res.status(400).json({
+            error: "Missing storeId"
         })
-    })
+    }
+    else{
+        model.pendingVisit.findAll({
+            where:{
+                storeId: req.body.storeId
+            }
+        }).then(result => {
+            if(result.length !=0){
+                res.status(200).json({
+                    data: result
+                })
+            }
+            else{
+                res.status(400).json({
+                    error: "Invalid storeId"
+                })
+            }
+        }).catch(err => {
+            res.status(400).json({
+                error: err.errors[0].type
+            })
+        })
+    }
 }
 
 exports.acceptPending = (req, res) => {
-    model.Visit.create({
-        createdAt: req.body.createdAt,
-        updatedAt: req.body.updatedAt,
-        userId: req.body.userId,
-        storeId: req.body.storeId
-    }).then(() => {
+    if(!req.body.id || !req.body.userId || !req.body.userId || !req.body.storeId || !req.body.createdAt || !req.body.updatedAt){
+        res.status(400).json({
+            error: "Please Insert all the necessary parameters"
+        })
+    }
+    else{
+        model.Visit.create({
+            createdAt: req.body.createdAt,
+            updatedAt: req.body.updatedAt,
+            userId: req.body.userId,
+            storeId: req.body.storeId
+        }).then(() => {
+            model.pendingVisit.destroy({
+                where:{
+                    id: req.body.id
+                }
+            }).then(() => {
+                res.status(200).json({
+                    result: "Visit Accepted"
+                })
+            })
+        })
+    }
+}
+
+exports.rejectPending = (req, res) => {
+    if(!req.body.id){
+        res.status(400).json({
+            error: "Please Insert all the necessary parameters"
+        })
+    }
+    else{
         model.pendingVisit.destroy({
             where:{
                 id: req.body.id
             }
         }).then(() => {
-            res.json({
-                result: "Visit Accepted"
+            res.status(200).json({
+                result: "Visit Rejected"
             })
         })
-    })
-}
-
-exports.rejectPending = (req, res) => {
-    model.pendingVisit.destroy({
-        where:{
-            id: req.body.id
-        }
-    }).then(() => {
-        res.json({
-            result: "Visit Rejected"
-        })
-    })
+    }
 }
