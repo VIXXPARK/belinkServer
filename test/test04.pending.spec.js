@@ -5,6 +5,19 @@ const chaiHttp = require("chai-http");
 const { expect } = require("chai");
 chai.use(chaiHttp);
 
+describe("사전에 서버 시동 ", () => {
+    it("시동 확인", () => {
+      return new Promise((resolve, reject) => {
+        chai
+          .request(server)
+          .get("/")
+          .end((err, res) => {
+            resolve();
+          });
+      });
+    });
+  });
+
 
 describe("Create test tuple for pending Visit", () => {
     it("Create test tuple for store", () => {
