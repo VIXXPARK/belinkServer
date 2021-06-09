@@ -31,11 +31,12 @@ describe("Create test tuple for pending Visit", () => {
                 token:"test04_test",
                 createdAt: new Date(),
                 updatedAt: new Date()
-            }).then(()=>{
+            }).then((data)=>{
+                if(data==null)
+                    reject()
                 resolve();
             }).catch(err=>{
-                if(err)
-                    reject()
+                reject()
             })
         })
     })
