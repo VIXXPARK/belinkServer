@@ -2,8 +2,9 @@ const server = require("../app");
 const model = require("../models");
 const chai = require("chai");
 const chaiHttp = require("chai-http");
+const { expect } = require("chai");
 chai.use(chaiHttp);
-const should = chai.should();
+
 
 describe("Create test tuple for pending Visit", () => {
     it("Create test tuple for store", () => {
@@ -18,10 +19,11 @@ describe("Create test tuple for pending Visit", () => {
             chai.request(server)
                 .post("/api/store/signup")
                 .send(body)
-                .end((err, res) => {
-                    res.should.have.status(200)
-                    if(err)
+                .end((err, res) => {                    
+                    if(err){
                         reject(err);
+                    }
+                    expect(res).status(200);
                     resolve();
                 })
         })
@@ -61,9 +63,9 @@ describe("Send Pending Visit", () => {
             .post('/api/location/pendingVisits')
             .send(body)
             .end((err, res) => {
-                res.should.have.status(400);
                 if(err)
                     reject();
+                expect(res).status(400);
                 resolve();
             })
         })
@@ -78,9 +80,9 @@ describe("Send Pending Visit", () => {
             .post('/api/location/pendingVisits')
             .send(body)
             .end((err, res) => {
-                res.should.have.status(400);
                 if(err)
                     reject();
+                expect(res).status(400);
                 resolve();
             })
         })
@@ -96,9 +98,9 @@ describe("Send Pending Visit", () => {
             .post('/api/location/pendingVisits')
             .send(body)
             .end((err, res) => {
-                res.should.have.status(400);
                 if(err)
                     reject();
+                expect(res).status(400);
                 resolve();
             })
         })
@@ -114,9 +116,9 @@ describe("Send Pending Visit", () => {
             .post('/api/location/pendingVisits')
             .send(body)
             .end((err, res) => {
-                res.should.have.status(200);
                 if(err)
                     reject();
+                expect(res).status(200);
                 resolve();
             })
         })
@@ -132,9 +134,9 @@ describe("Store Pending Check", () => {
                 .post("/api/store/get-pending")
                 .send(body)
                 .end((err, res) => {
-                    res.should.have.status(400);
                     if(err)
                         reject();
+                    expect(res).status(400);
                     resolve();
                 })
         })
@@ -149,9 +151,9 @@ describe("Store Pending Check", () => {
                 .post("/api/store/get-pending")
                 .send(body)
                 .end((err, res) => {
-                    res.should.have.status(400);
                     if(err)
                         reject();
+                    expect(res).status(400);
                     resolve();
                 })
         })
@@ -166,9 +168,9 @@ describe("Store Pending Check", () => {
                 .post("/api/store/get-pending")
                 .send(body)
                 .end((err, res) => {
-                    res.should.have.status(200);
                     if(err)
                         reject();
+                    expect(res).status(200);
                     resolve();
                 })
         })
@@ -186,9 +188,9 @@ describe("Store Pending Check", () => {
                 .post("/api/store/accept-pending")
                 .send(body)
                 .end((err, res) => {
-                    res.should.have.status(400);
                     if(err)
                         reject();
+                    expect(res).status(400);
                     resolve();
                 })
         })
@@ -207,9 +209,9 @@ describe("Store Pending Check", () => {
                 .post("/api/store/accept-pending")
                 .send(body)
                 .end((err, res) => {
-                    res.should.have.status(200);
                     if(err)
                         reject();
+                    expect(res).status(200);
                     resolve();
                 })
         })
@@ -223,9 +225,9 @@ describe("Store Pending Check", () => {
                 .post("/api/store/reject-pending")
                 .send(body)
                 .end((err, res) => {
-                    res.should.have.status(400);
                     if(err)
                         reject();
+                    expect(res).status(400);
                     resolve();
                 })
         })
@@ -240,9 +242,9 @@ describe("Store Pending Check", () => {
                 .post("/api/store/reject-pending")
                 .send(body)
                 .end((err, res) => {
-                    res.should.have.status(200);
                     if(err)
                         reject();
+                    expect(res).status(200);
                     resolve();
                 })
         })
