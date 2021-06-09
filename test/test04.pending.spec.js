@@ -34,7 +34,8 @@ describe("Create test tuple for pending Visit", () => {
             }).then(()=>{
                 resolve();
             }).catch(err=>{
-                reject()
+                if(err)
+                    reject()
             })
         })
     })
