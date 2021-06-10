@@ -101,35 +101,25 @@ exports.getPending = (req, res) => {
         })
     }
     else{
-        model.Store.findOne({
+        model.pendingVisit.findAll({
             where:{
-                id: req.body.storeId
+                storeId: req.body.storeId
             }
         }).then(result => {
-            if(result.length != 0){
-                model.pendingVisit.findAll({
-                    where:{
-                        storeId: req.body.storeId
-                    }
-                }).then(result => {
-                    res.status(200).json({
-                        data: result
-                    })
-                }).catch(err => {
-                    res.status(400).json({
-                        error: err.errors[0].type
-                    })
+            if(result.length !=0){
+                res.status(200).json({
+                    data: result
                 })
             }
             else{
                 res.status(400).json({
-                   error: "Invalid Store"
+                    error: "Invalid storeId"
                 })
             }
         }).catch(err => {
             res.status(400).json({
-                error: "Invalid Store"
-             })
+                error: err.errors[0].type
+            })
         })
     }
 }

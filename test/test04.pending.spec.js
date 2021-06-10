@@ -153,23 +153,6 @@ describe("Store Pending Check", () => {
         })
     })
 
-    it("get-pending w/o valid storeId", () => {
-        return new Promise((resolve, reject) => {
-            var body = {
-                storeId: "Invaild_storeId"
-            }
-            chai.request(server)
-                .post("/api/store/get-pending")
-                .send(body)
-                .end((err, res) => {
-                    if(err)
-                        reject();
-                    expect(res).status(400);
-                    resolve();
-                })
-        })
-    })
-
     it("Successful get-pending", () => {
         return new Promise((resolve, reject) => {
             var body = {
