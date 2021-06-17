@@ -41,11 +41,11 @@ api
 
 |박수한|김경재|김민섭|
 |------|------|------|
-|서버담당|...|Kakao Maps API|
+|서버담당|...|Kakao Maps API, Naver SENS API|
 |DB설계|DB설계|DB설계|
-|CI/CD|Firebase연동|의사결정트리 작성|
+|CI/CD|Firebase연동|의사결정트리 작성(predictVisits.py)|
 |User기능담당|Push서비스담당|store/sms/location/prediction 담당|
-|mocha를 통한 테스트 주도 개발|...|Naver SENS API|
+|mocha를 통한 테스트 주도 개발|...|mocha를 이용해 테스트 |
 
 
 ## 기술 스택
